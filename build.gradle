@@ -1,0 +1,60 @@
+apply plugin: "java"
+apply plugin: "war"
+
+ext {
+    springVersion = "4.2.0.RELEASE"
+    springSecurityVersion = "4.0.2.RELEASE"
+}
+
+group = "edu.ucar.unidata"
+version = "0.1-SNAPSHOT"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+war {
+    archiveName = "project.name.war"
+    manifest {
+        attributes "Implementation-Version": project.version,
+                   "Implementation-Title": project.name,
+                   "Implementation-Vendor": "UCAR/Unidata",
+                   "Implementation-Vendor-Id": project.group,
+                   "Built-On": new Date(),
+                   "Build-Jdk": JavaVersion.current()
+    }
+}
+
+
+dependencies {
+    // format -> configurationName "group:name:version:classifier@extension"
+    // Spring Framework
+    compile "org.springframework:spring-beans:$springVersion"
+    compile "org.springframework:spring-context:$springVersion"
+    compile "org.springframework:spring-core:$springVersion"
+    compile "org.springframework:spring-expression:$springVersion"
+    compile "org.springframework:spring-web:$springVersion"
+    compile "org.springframework:spring-webmvc:$springVersion"
+
+    // Spring Security
+    compile "org.springframework.security:spring-security-web:$springSecurityVersion"
+    compile "org.springframework.security:spring-security-config:$springSecurityVersion"
+    compile "org.springframework.security:spring-security-taglibs:$springSecurityVersion"
+
+    // others
+    compile "log4j:log4j:1.2.17"
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+    compile "org.apache.commons:commons-lang3:3.4"
+    compile "commons-codec:commons-codec:1.10"
+    compile "org.apache.derby:derby:10.11.1.1"
+    compile "javax.validation:validation-api:1.1.0.Final"
+
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "2.6"
+}

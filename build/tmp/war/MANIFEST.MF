@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Version: 0.1-SNAPSHOT
+Implementation-Title: cloudcontrol
+Implementation-Vendor: UCAR/Unidata
+Implementation-Vendor-Id: edu.ucar.unidata
+Built-On: Fri Aug 14 17:17:54 MDT 2015
+Build-Jdk: 1.8
+
