@@ -1,4 +1,4 @@
-package edu.ucar.unidata.cloudcontrol.service;
+package edu.ucar.unidata.cloudcontrol.init;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,12 +35,13 @@ import javax.servlet.ServletException;
 
 
 /**
- * Done at application initialization
+ * Done at application initialization.
+ * Loads the cloudcontrol.properties information.
  */
 public class ApplicationInitialization implements ServletContextListener {
     protected static Logger logger = Logger.getLogger(ApplicationInitialization.class);
 
-    private static final String DEFAULT_HOME = System.getProperty("catalina.base") + "/content/cloudcontrol";
+    private static final String DEFAULT_HOME = System.getProperty("catalina.base") + "/cloudcontrol";
     private static final String DEFAULT_DATABASE = "derby";
 
     private String cloudcontrolHome = null;
@@ -48,6 +49,7 @@ public class ApplicationInitialization implements ServletContextListener {
 
     /**
      * Find the application home (cloudcontrol.home) and make sure it exists.  if not, create it.
+     * TODO: add -Dname=value JVM argument 
      * Find out what database was selected for use and create the database if it doesn't exist.
      * 
      * @param servletContextEvent  The event class.
@@ -123,6 +125,7 @@ public class ApplicationInitialization implements ServletContextListener {
         }
     }
 
+
     /**
      * Creates a directory (and parent directories as needed) using the provided file.
      * 
@@ -156,7 +159,7 @@ public class ApplicationInitialization implements ServletContextListener {
                     logger.error(e.getMessage()); 
                 }  
                 try { 
-	    		    createTables(derbyDriver, derbyUrl + ";create=true", null, null, servletContext);
+                    createTables(derbyDriver, derbyUrl + ";create=true", null, null, servletContext);
                     DriverManager.getConnection( derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
                     logger.error(e.getMessage()); 

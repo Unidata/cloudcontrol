@@ -1,3 +1,19 @@
    <header>
+     <ul class="account"> 
+      <c:choose>
+       <c:when test="${loggedIn}">
+        <li><a href="${baseUrl}/user/${authUserName}"><spring:message code="link.account.title"/> ${authUserName}</a></li>
+        <li><a href="${baseUrl}/auth/logout"><spring:message code="link.logout.title"/></a></li>
+       </c:when>
+       <c:otherwise>
+        <li><a href="${baseUrl}/auth/login"><spring:message code="link.login.title"/></a></li>
+       </c:otherwise>
+      </c:choose>    
+ 
+     </ul>
+
+
     <h1><spring:message code="global.title"/></h1>
+
+
    </header>

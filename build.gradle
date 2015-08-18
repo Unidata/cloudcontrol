@@ -9,15 +9,15 @@ ext {
 group = "edu.ucar.unidata"
 version = "0.1-SNAPSHOT"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
 }
 
 war {
-    archiveName = "project.name.war"
+    extension = "war"
     manifest {
         attributes "Implementation-Version": project.version,
                    "Implementation-Title": project.name,
@@ -30,7 +30,6 @@ war {
 
 
 dependencies {
-    // format -> configurationName "group:name:version:classifier@extension"
     // Spring Framework
     compile "org.springframework:spring-beans:$springVersion"
     compile "org.springframework:spring-context:$springVersion"
@@ -45,12 +44,20 @@ dependencies {
     compile "org.springframework.security:spring-security-taglibs:$springSecurityVersion"
 
     // others
-    compile "log4j:log4j:1.2.17"
-    compile "javax.servlet:javax.servlet-api:3.1.0"
-    compile "org.apache.commons:commons-lang3:3.4"
     compile "commons-codec:commons-codec:1.10"
-    compile "org.apache.derby:derby:10.11.1.1"
+    compile "commons-dbcp:commons-dbcp:1.4"
+
+    compile "javax.servlet:javax.servlet-api:3.1.0"
     compile "javax.validation:validation-api:1.1.0.Final"
+
+    compile "jstl:jstl:1.2"
+
+    compile "log4j:log4j:1.2.17"
+
+    compile "org.apache.commons:commons-lang3:3.4"
+    compile "org.apache.derby:derby:10.11.1.1"
+
+
 
 
 }
