@@ -19,7 +19,7 @@ hs_err_pid*
 # gradle build stuff #
 ######################
 build/
-.gradle
+.gradle/
 
 ######################
 # webapp files       #
