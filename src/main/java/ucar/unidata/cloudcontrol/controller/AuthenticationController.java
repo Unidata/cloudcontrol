@@ -37,12 +37,10 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/auth/login", method = RequestMethod.GET)
     public String getLoginPage(@RequestParam(value = "error", required = false) boolean error, Model model) {
-         logger.info("LOGIN!!!!!!!!!!!1");   
         if (error == true) {
             model.addAttribute("error", "You have entered an invalid username or password!");
         }
         return "login";
-
     }
 
     /**

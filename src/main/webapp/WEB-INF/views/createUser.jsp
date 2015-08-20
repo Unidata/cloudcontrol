@@ -82,6 +82,8 @@
          </c:choose>
         </c:when>
        </c:choose> 
+       <th>        
+       </th>
       </tr>
      </thead>
 

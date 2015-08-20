@@ -7,7 +7,7 @@
    <link type="text/css" rel="stylesheet" href="/resources/css/main.css" />
 
    <!-- js -->
-   <script type="text/javascript" src="/resources/js/jQuery/jquery-2.4.1.min.js"></script>
+   <script type="text/javascript" src="/resources/js/jQuery/jquery-2.1.4.min.js"></script>
    <script type="text/javascript" src="/resources/js/jQuery/ui/jquery-ui.min.js"></script>
    <script type="text/javascript" src="/resources/js/jQuery/plugins/jquery.metadata.js"></script>
    <script type="text/javascript" src="/resources/js/jQuery/plugins/jquery.tablesorter.min.js"></script>

@@ -167,7 +167,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/user/update/{userName}", method=RequestMethod.GET)
     public String updateUser(@PathVariable String userName, Model model) {   
         User user = userManager.lookupUser(userName);   
@@ -192,7 +192,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #user.userName == authentication.name")
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or #user.userName == authentication.name")
     @RequestMapping(value="/user/update", method=RequestMethod.POST)
     public ModelAndView updateUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -227,7 +227,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+ //   @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/user/delete", method=RequestMethod.POST)
     public ModelAndView deleteUser(User user, BindingResult result, Model model) {   
         try {
