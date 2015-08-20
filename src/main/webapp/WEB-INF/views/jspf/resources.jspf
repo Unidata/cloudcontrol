@@ -1,6 +1,16 @@
    <!-- css -->
-
+   <link type="text/css" rel="stylesheet" href="/resources/css/jQuery/ui/jquery-ui.min.css" />
+   <link type="text/css" rel="stylesheet" href="/resources/css/jQuery/ui/jquery-ui.structure.min.css" />
+   <link type="text/css" rel="stylesheet" href="/resources/css/jQuery/ui/jquery-ui.theme.min.css" />
+   <link type="text/css" rel="stylesheet" href="/resources/css/jQuery/plugins/jquery.tablesorter.pager.css" />
+   <link type="text/css" rel="stylesheet" href="/resources/css/jQuery/plugins/themes/blue/style.css" />
+   <link type="text/css" rel="stylesheet" href="/resources/css/main.css" />
 
    <!-- js -->
-
+   <script type="text/javascript" src="/resources/js/jQuery/jquery-2.4.1.min.js"></script>
+   <script type="text/javascript" src="/resources/js/jQuery/ui/jquery-ui.min.js"></script>
+   <script type="text/javascript" src="/resources/js/jQuery/plugins/jquery.metadata.js"></script>
+   <script type="text/javascript" src="/resources/js/jQuery/plugins/jquery.tablesorter.min.js"></script>
+   <script type="text/javascript" src="/resources/js/jQuery/plugins/jquery.tablesorter.pager.js"></script>
+   <script type="text/javascript" src="/resources/js/main.js"></script>
 

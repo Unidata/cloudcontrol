@@ -1,4 +1,22 @@
+  <div id="container">
    <header>
+	<h1><spring:message code="global.title"/></h1>	   
+    <nav>
+     <ul class="nav"> 
+      <li><a href="${baseUrl}">Home</a></li>
+      <li><a href="">Link 1</a></li>
+	  <li><a href="">Link 2</a></li>
+	  <li><a href="">Link 3</a></li>
+      <li><a href="${baseUrl}/user"><spring:message code="link.user.list.title"/></a></li>   
+      <c:choose>
+       <c:when test="${loggedIn}">
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
+         <li><a href="${baseUrl}/user/create"><spring:message code="link.user.create.title"/></a></li>
+        </sec:authorize>
+       </c:when>
+      </c:choose>  
+     </ul>
+	 
      <ul class="account"> 
       <c:choose>
        <c:when test="${loggedIn}">
@@ -9,11 +27,8 @@
         <li><a href="${baseUrl}/auth/login"><spring:message code="link.login.title"/></a></li>
        </c:otherwise>
       </c:choose>    
- 
-     </ul>
-
-
-    <h1><spring:message code="global.title"/></h1>
-
-
+     </ul>	
+	</nav>
    </header>
+
+   <div id="content">

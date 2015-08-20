@@ -18,6 +18,7 @@ repositories {
 
 war {
     extension = "war"
+    archiveName = 'ROOT.war'
     manifest {
         attributes "Implementation-Version": project.version,
                    "Implementation-Title": project.name,
