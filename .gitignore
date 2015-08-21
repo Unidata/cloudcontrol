@@ -31,3 +31,8 @@ cloudcontrol.properties
 # J2ME               #
 ######################
 .mtj.tmp/
+
+######################
+# Doxygen            #
+######################
+html/
