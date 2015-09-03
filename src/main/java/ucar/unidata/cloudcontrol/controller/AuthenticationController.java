@@ -35,12 +35,25 @@ public class AuthenticationController {
      * @param model The Model used by the View.
      * @return The 'login' path for the ViewResolver.
      */
-    @RequestMapping(value = "/auth/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginPage(@RequestParam(value = "error", required = false) boolean error, Model model) {
         if (error == true) {
             model.addAttribute("error", "You have entered an invalid username or password!");
         }
         return "login";
+    }
+
+    /**
+     * Accepts a GET request for the logout page.
+     * View is the logout page.
+     *
+     * @param error An error (if provided).
+     * @param model The Model used by the View.
+     * @return The 'logout' path for the ViewResolver.
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String getLogoutPage(Model model) {
+        return "logout";
     }
 
     /**
@@ -50,7 +63,7 @@ public class AuthenticationController {
      *
      * @return The 'denied' path for the ViewResolver.
      */
-    @RequestMapping(value = "/auth/denied", method = RequestMethod.GET)
+    @RequestMapping(value = "/denied", method = RequestMethod.GET)
     public String getDeniedPage() {
         return "denied";
     }

@@ -1,6 +1,6 @@
   <div id="container">
    <header>
-    <h1><spring:message code="global.title"/></h1>	   
+    <h1><spring:message code="global.title"/></h1>   
     <nav>
      <ul class="nav"> 
       <c:choose>
@@ -24,19 +24,32 @@
        </c:when>
       </c:choose>  
      </ul>
-	 
+ 
      <ul class="account"> 
       <c:choose>
        <c:when test="${loggedIn}">
-        <li><a href="${baseUrl}/user/${authUserName}"><spring:message code="link.account.title"/> ${authUserName}</a></li>
-        <li><a href="${baseUrl}/auth/logout"><spring:message code="link.logout.title"/></a></li>
+        <li>
+         <form action="${baseUrl}/user/${authUserName}" method="GET" class="loggedInAs">
+          <input type="submit" value="<spring:message code='link.account.title'/> ${authUserName}" />
+         </form>
+        </li>
+
+        <c:url var="logoutUrl" value="/j_spring_security_logout" />
+        <li>
+         <form action="${logoutUrl}" method="POST" class="logout">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+          <input type="submit" value="<spring:message code='link.logout.title'/>" />
+         </form>
+        </li>
        </c:when>
        <c:otherwise>
-        <li><a href="${baseUrl}/auth/login"><spring:message code="link.login.title"/></a></li>
+        <li><a href="${baseUrl}/login"><spring:message code="link.login.title"/></a></li>
        </c:otherwise>
       </c:choose>    
-     </ul>	
-	</nav>
+     </ul>
+    </nav>
    </header>
 
    <div id="content">
+
+

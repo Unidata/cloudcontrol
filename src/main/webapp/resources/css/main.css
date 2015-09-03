@@ -108,8 +108,8 @@ header ul.account {
  padding: 0;
 }
 header ul.account a:link {
-  color: #FFFFFF;
-  text-decoration: none;
+ color: #FFFFFF;
+ text-decoration: none;
 }
 header ul.account a:visited {
   color: #FFFFFF;
@@ -125,6 +125,40 @@ header ul li {
  margin: 0;
  padding: 0 8px 0 8px;
 }
+
+header nav ul.account li form {
+ padding:0;
+ margin: 0;
+ display:inline;
+ position: absolute;
+ top: 8px;
+}
+
+header nav ul.account li form.logout {
+ right: 10px;
+}
+
+header nav ul.account li form.loggedInAs {
+ right: 70px;
+}
+
+header nav ul.account li input {
+ color: #FFFFFF;
+ text-decoration: none;
+ font-weight: bold;
+ background: none !important;
+ padding:0;
+ border: none !important;
+ cursor:pointer;
+}
+
+header nav ul.account li input:active,
+header nav ul.account li input:hover {
+  text-decoration: underline;
+}
+
+
+
 
 /* content */
 #content {
@@ -159,7 +193,7 @@ header ul li {
 
 
 /* form elements */
-input[type=submit].action {
+#input[type=submit].action {
  font-size: 9px;
  margin: 0;
  padding: 0 0 0 20px;

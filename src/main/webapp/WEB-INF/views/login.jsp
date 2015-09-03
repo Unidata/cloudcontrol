@@ -11,19 +11,20 @@
    <div class="error">
     <p><c:out value="${error}" /></p>
    </div>
-
-   <form action="${baseUrl}/j_spring_security_check" method="POST">
+   <c:url var="loginUrl" value="/j_spring_security_check" />
+   <form action="${loginUrl}" method="POST">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <ul class="format">   
      <li>
       <label>
        User Name:<br />
-       <input type="text" name="j_username" value="" />
+       <input type="text" name="userName" value="" />
       </label>
      </li>
      <li>
       <label>
        Password:<br />
-       <input type="password" name="j_password" value="" />
+       <input type="password" name="password" value="" />
       </label>
      </li>
      <li>
