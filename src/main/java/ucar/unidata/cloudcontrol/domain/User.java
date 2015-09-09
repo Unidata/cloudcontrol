@@ -16,150 +16,189 @@ public class User implements Serializable {
     private String userName;
     private String password;
     private int accessLevel;
+    private int accountStatus;
     private String emailAddress;
-    private String fullName;
+    private String firstName;
+    private String lastName;
     private Date dateCreated;
     private Date dateModified;
 
     /**
-     * Returns the id of the user in the database (immutable/unique to each user).
+     * Returns the userId of the User (immutable/unique to each User).
      * 
-     * @return  The user id. 
+     * @return  The userId. 
      */
     public int getUserId() {
         return userId;
     }
 
     /**
-     * Sets the id of the user in the database (immutable/unique to each user).
+     * Sets the userId of the User (immutable/unique to each User).
      * 
-     * @param userId  The user id. 
+     * @param userId  The userId. 
      */
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
     /**
-     * Returns the user name of the user (immutable/unique to each user).
+     * Returns the userName of the User (immutable/unique to each User).
      * 
-     * @return  The user's user name.  
+     * @return  The User's userName.  
      */
     public String getUserName() {
         return userName;
     }
 
     /**
-     * Sets the user name of the user (immutable/unique to each user).
+     * Sets the userName of the User (immutable/unique to each User).
      * 
-     * @param userName  The user's user name. 
+     * @param userName  The User's userName. 
      */
     public void setUserName(String userName) {
         this.userName = userName;
     }
 
     /**
-     * Returns the user's password.
+     * Returns the User's password.
      * 
-     * @return  The user's password.  
+     * @return  The User's password.  
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Sets the user's password.
+     * Sets the User's password.
      * 
-     * @param password  The user's password. 
+     * @param password  The User's password. 
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
     /**
-     * Returns the access level of the user.
+     * Returns the access level of the User.
      * 
-     * @return  The user's access level. 
+     * @return  The User's access level. 
      */
     public int getAccessLevel() {
         return accessLevel;
     }
 
     /**
-     * Sets the access level of the user.
+     * Sets the access level of the User.
      * 
-     * @param accessLevel  The user's access level. 
+     * @param accessLevel  The User's access level. 
      */
     public void setAccessLevel(int accessLevel) {
         this.accessLevel = accessLevel;
     }
 
     /**
-     * Returns the email address of the user (mutable/unique to each user).
+     * Returns the status of the User's account.
      * 
-     * @return  The user's email address.  
+     * @return  The status of the User's account.
+     */
+    public int getAccountStatus() {
+        return accountStatus;
+    }
+
+    /**
+     * Sets the status of the User's account.
+     * 
+     * @param accountStatus  The status of the User's account.
+     */
+    public void setAccountStatus(int accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+
+    /**
+     * Returns the email address of the User (mutable/unique to each User).
+     * 
+     * @return  The User's email address.  
      */ 
     public String getEmailAddress() {
         return emailAddress;
     }
 
     /**
-     * Sets the email address of the user (mutable/unique to each user).
+     * Sets the email address of the User.
      * 
-     * @param emailAddress  The user's email address. 
+     * @param emailAddress  The User's email address. 
      */
     public void setEmailAddress(String emailAddress) {
         this.emailAddress = emailAddress;
     }
 
     /**
-     * Returns the full name of the user.
+     * Returns the first name of the User.
      * 
-     * @return  The user's full name.  
+     * @return  The User's first name.  
      */
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
     /**
-     * Sets the full name of the user.
+     * Sets the first name of the User.
      * 
-     * @param fullName  The user's full name. 
+     * @param firstName  The User's first name. 
      */
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     /**
-     * Returns date the user was created.
+     * Returns the last name of the User.
      * 
-     * @return  The user's creation date.
+     * @return  The User's last name.  
+     */
+    public String getLastName() {
+        return lastName;
+    }
+
+    /**
+     * Sets the last name of the User.
+     * 
+     * @param lastName  The User's last name. 
+     */
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    /**
+     * Returns date the User was created.
+     * 
+     * @return  The User's creation date.
      */
     public Date getDateCreated() {
         return dateCreated;
     }
     
     /**
-     * Sets the date the user was created.
+     * Sets the date the User was created.
      * 
-     * @param dateCreated   The user's creation date.
+     * @param dateCreated   The User's creation date.
      */    
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
     /**
-     * Returns date the user's account was last modified.
+     * Returns date the User's account was last modified.
      * 
-     * @return  The user account last modified date.
+     * @return  The User account last modified date.
      */
     public Date getDateModified() {
         return dateModified;
     }
     
     /**
-     * Sets the date the user's account was last modified.
+     * Sets the date the User's account was last modified.
      * 
-     * @param dateModified   The user account last modified date.
+     * @param dateModified   The User account last modified date.
      */    
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
@@ -176,8 +215,10 @@ public class User implements Serializable {
         buffer.append("userName: " + userName + "\n ");
         buffer.append("password: " + password + "\n ");
         buffer.append("accessLevel: " + String.valueOf(accessLevel) + "\n ");
+        buffer.append("accountStatus: " + String.valueOf(accountStatus) + "\n ");
         buffer.append("emailAddress: " + emailAddress + "\n ");
-        buffer.append("fullName: " + fullName + "\n ");
+        buffer.append("firstName: " + firstName + "\n ");
+        buffer.append("lastName: " + lastName + "\n ");
         buffer.append("dateCreated: " + dateCreated + "\n ");
         buffer.append("dateModified: " + dateModified + "\n ");        
        return buffer.toString();

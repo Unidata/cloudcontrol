@@ -11,67 +11,74 @@ import edu.ucar.unidata.cloudcontrol.domain.User;
 public interface UserDao {
 
     /**
-     * Looks up and retrieves a user from the persistence mechanism using the userId.
+     * Looks up and retrieves a User from the persistence mechanism using the userId.
      * 
-     * @param userId  The id of the user we are trying to locate (will be unique for each user). 
-     * @return  The user represented as a User object.   
+     * @param userId  The userId of the User to locate (will be unique for each User). 
+     * @return  The User.   
      */
     public User lookupUser(int userId);
 
     /**
-     * Looks up and retrieves a user from the persistence mechanism using the userName.
+     * Looks up and retrieves a User from the persistence mechanism using the userName.
      * 
-     * @param userName  The userName of the user we are trying to locate (will be unique for each user). 
-     * @return  The user represented as a User object.   
+     * @param userName  The userName of the User to locate (will be unique for each User). 
+     * @return  The User.   
      */
     public User lookupUser(String userName);
 
     /**
-     * Requests a List of all registries from the persistence mechanism.
+     * Requests a List of all Users from the persistence mechanism.
      * 
-     * @return  A List of registries.   
+     * @return  A List of Users.   
      */
     public List<User> getUserList();
 
     /**
-     * Queries the persistence mechanism and returns the number of registries.
+     * Queries the persistence mechanism and returns the number of Users.
      * 
-     * @return  The total number of registries as an int.   
+     * @return  The total number of Users.   
      */
     public int getUserCount();
 
     /**
-     * Finds and removes the user from the persistence mechanism.
+     * Finds and removes the User from the persistence mechanism using the userId.
      * 
-     * @param userId  The userId in the persistence mechanism.  
+     * @param userId  The userId of the User to locate (will be unique for each User). 
      */
     public void deleteUser(int userId);
 
     /**
-     * Finds and removes the user from the persistence mechanism.
+     * Finds and removes the User from the persistence mechanism using the userName.
      * 
-     * @param userName  The userName in the persistence mechanism.  
+     * @param userName  The userName of the User to locate (will be unique for each User). 
      */
     public void deleteUser(String userName);
 
     /**
-     * Creates a new user.
+     * Finds and toggles the User's accountStatus in the persistence mechanism.
      * 
-     * @param user  The user to be created. 
+     * @param user  The User whose accountStatus needs to be toggled. 
+     */
+    public void toggleAccountStatus(User user);
+
+    /**
+     * Creates a new User in the persistence mechanism.
+     * 
+     * @param user  The User to be created. 
      */
     public void createUser(User user);
 
     /**
-     * Saves changes made to an existing user.
+     * Saves changes made to an existing User in the persistence mechanism.
      * 
-     * @param user   The existing user with changes that needs to be saved. 
+     * @param user   The existing User with changes that needs to be saved. 
      */
     public void updateUser(User user);
 
     /**
-     * Updates the User's Password
+     * Updates the User's Password in the persistence mechanism.
      * 
-     * @param user  The user to whose password we need to update. 
+     * @param user  The User whose password needs to be update. 
      */
     public void updatePassword(User user);
 

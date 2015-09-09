@@ -23,7 +23,10 @@
        <spring:message code="user.userName"/>
       </th>
       <th>
-       <spring:message code="user.fullName"/>
+       <spring:message code="user.firstName"/>
+      </th>
+      <th>
+       <spring:message code="user.lastName"/>
       </th>
       <th>
        <spring:message code="user.emailAddress"/>
@@ -57,7 +60,10 @@
        <c:out value="${user.userName}" />
       </td>
       <td>
-       <c:out value="${user.fullName}" />
+       <c:out value="${user.firstName}" />
+      </td>
+      <td>
+       <c:out value="${user.lastName}" />
       </td>
       <td>
        <c:out value="${user.emailAddress}" />

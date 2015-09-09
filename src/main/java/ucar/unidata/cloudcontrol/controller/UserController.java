@@ -45,8 +45,6 @@ public class UserController implements HandlerExceptionResolver {
 
     @Resource(name="userManager")
     private UserManager userManager;
-//    @Resource(name="tableManager")
-//    private TableManager tableManager; 
     
     @Autowired
     private UserValidator userValidator;
@@ -88,9 +86,7 @@ public class UserController implements HandlerExceptionResolver {
     public String viewUser(@PathVariable String userName, Model model) { 
         try{
             User user = userManager.lookupUser(userName);           
-            model.addAttribute("user", user);    
-     //       List<Table> tables = tableManager.getTableList(user.getUserId());
-     //       model.addAttribute("tables", tables);         
+            model.addAttribute("user", user);       
             return "viewUser";
         } catch (RecoverableDataAccessException e) {
             model.addAttribute("error", e.getMessage());    
@@ -143,8 +139,6 @@ public class UserController implements HandlerExceptionResolver {
                 userManager.createUser(user);
                 user = userManager.lookupUser(user.getUserName());  
                 model.addAttribute("user", user);     
-         //       List<Table> tables = tableManager.getTableList(user.getUserId());
-         //      model.addAttribute("tables", tables);  
                 return new ModelAndView(new RedirectView("/user/" + user.getUserName(), true)); 
             } catch (RecoverableDataAccessException e) {
                 result.rejectValue("userName", "user.error", e.getMessage());
@@ -167,7 +161,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/user/update/{userName}", method=RequestMethod.GET)
     public String updateUser(@PathVariable String userName, Model model) {   
         User user = userManager.lookupUser(userName);   
@@ -192,7 +186,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
      */
-//    @PreAuthorize("hasRole('ROLE_ADMIN') or #user.userName == authentication.name")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #user.userName == authentication.name")
     @RequestMapping(value="/user/update", method=RequestMethod.POST)
     public ModelAndView updateUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -202,8 +196,6 @@ public class UserController implements HandlerExceptionResolver {
             try {
                 userManager.updateUser(user);
                 model.addAttribute("user", user);     
-    //            List<Table> tables = tableManager.getTableList(user.getUserId());
-    //            model.addAttribute("tables", tables);           
                 return new ModelAndView(new RedirectView("/user/" + user.getUserName(), true));   
             } catch (RecoverableDataAccessException e) {
                 model.addAttribute("error", e.getMessage());  
@@ -227,7 +219,7 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
      */
- //   @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/user/delete", method=RequestMethod.POST)
     public ModelAndView deleteUser(User user, BindingResult result, Model model) {   
         try {
@@ -236,9 +228,7 @@ public class UserController implements HandlerExceptionResolver {
             model.addAttribute("users", users);           
             return new ModelAndView(new RedirectView("/user", true));
         } catch (RecoverableDataAccessException e) {
-            model.addAttribute("error", e.getMessage());  
-    //        List<Table> tables = tableManager.getTableList(user.getUserId());
-    //        model.addAttribute("tables", tables);         
+            model.addAttribute("error", e.getMessage());       
             return new ModelAndView(new RedirectView("/user" + user.getUserName(), true)); 
         }
     }

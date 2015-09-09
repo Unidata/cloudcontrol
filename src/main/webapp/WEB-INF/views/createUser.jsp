@@ -17,13 +17,9 @@
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3><spring:message code="user.view.title"/>: <c:out value="${user.userName}" /></h3>
-   <p><spring:message code="user.view.message"/></p>
-
    <c:choose>
     <c:when test="${formAction == 'update'}">
-     <h3><spring:message code="user.update.title"/>:
-     <c:out value="${user.userName}" /></h3>
+     <h3><spring:message code="user.update.title"/>: <c:out value="${user.userName}" /></h3>
      <p><spring:message code="user.update.message"/></p>
     </c:when>
     <c:otherwise>
@@ -52,7 +48,10 @@
         <spring:message code="user.userName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.userName.description"/>"/>
        </th>
        <th>
-        <spring:message code="user.fullName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.fullName.description"/>"/>
+        <spring:message code="user.firstName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.firstName.description"/>"/>
+       </th>
+       <th>
+        <spring:message code="user.lastName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.lastName.description"/>"/>
        </th>
        <th>
         <spring:message code="user.emailAddress"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.emailAddress.description"/>"/>
@@ -82,8 +81,6 @@
          </c:choose>
         </c:when>
        </c:choose> 
-       <th>        
-       </th>
       </tr>
      </thead>
 
@@ -103,8 +100,12 @@
         </c:choose>        
        </td>
        <td>
-        <form:errors path="fullName" cssClass="error" />
-        <form:input path="fullName"/>
+        <form:errors path="firstName" cssClass="error" />
+        <form:input path="firstName"/>
+       </td>
+       <td>
+        <form:errors path="lastName" cssClass="error" />
+        <form:input path="lastName"/>
        </td>
        <td>
         <form:errors path="emailAddress" cssClass="error" />

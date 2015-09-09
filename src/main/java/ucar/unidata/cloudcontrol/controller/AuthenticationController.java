@@ -6,6 +6,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,8 +38,9 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginPage(@RequestParam(value = "error", required = false) boolean error, Model model) {
+logger.info("reg login: " + error);
         if (error == true) {
-            model.addAttribute("error", "You have entered an invalid username or password!");
+            model.addAttribute("error", "You have entered an invalid useName or password.  Please try again.");
         }
         return "login";
     }
@@ -57,8 +59,8 @@ public class AuthenticationController {
     }
 
     /**
-     * Accepts a GET request for the denied page. This is shown
-     * whenever a regular user tries to access an admin/user only page.
+     * Accepts a GET request for the denied page. This is shown whenever
+     * a regular User tries to access an admin/User-specific only page.
      * View is a denied page.
      *
      * @return The 'denied' path for the ViewResolver.

@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,37 +38,36 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     /**
-     * Retrieves a user record containing the user's credentials and access. 
+     * Retrieves a User record containing the User's credentials and access. 
      * 
-     * @param userName  The userName of the person authenticating.
+     * @param userName  The userName of the User authenticating.
      * @return  The userDetails used by Spring.
-     * @thows UsernameNotFoundException  If unable to find the user in the database.
+     * @thows UsernameNotFoundException  If unable to find the User in the database.
+     * @thows AccountStatusException  If the User's account has been deactived.
      * @thows DataAccessException  If we encounter an issue with accessing the data.
      */
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
         UserDetails userDetails = null;
-        try {    
-            edu.ucar.unidata.cloudcontrol.domain.User user = userDao.lookupUser(userName);
-            // org.springframework.security.core.userdetails.User
-            String username =  user.getUserName();
-            String password = user.getPassword();
-            boolean enabled = true;
-            boolean accountNonExpired = true; 
-            boolean credentialsNonExpired = true;
-            boolean accountNonLocked = true;
-            Collection<? extends GrantedAuthority> authorities = getAuthorities(user.getAccessLevel());
-            userDetails =  new org.springframework.security.core.userdetails.User (username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-        } catch (DataAccessException e) {
-            logger.error("DataAccessException: error in retrieving user: " + e.getMessage());
-        } catch (UsernameNotFoundException e) {
-            logger.error("UsernameNotFoundException: error in retrieving user: " + e.getMessage());
-        }
+        edu.ucar.unidata.cloudcontrol.domain.User user = userDao.lookupUser(userName);
+        // org.springframework.security.core.userdetails.User
+        String username =  user.getUserName();
+        logger.info("username: "+ username);
+        String password = user.getPassword();
+        boolean enabled = true;
+        if (user.getAccountStatus() == 0) {
+             enabled = false;
+        }       
+        boolean accountNonExpired = true; 
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+        Collection<? extends GrantedAuthority> authorities = getAuthorities(user.getAccessLevel());
+        userDetails =  new org.springframework.security.core.userdetails.User (username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);   
         return userDetails;
     }
 
     /**
      * Retrieves the correct ROLE type depending on the access level, where access level is an int.
-     * @param access  The int value representing the access of the user.
+     * @param access  The int value representing the access of the User.
      * @return The collection of granted authorities.
      */
     public Collection<GrantedAuthority> getAuthorities(int access) {

@@ -21,13 +21,13 @@ public class UserValidator implements Validator  {
     private String[] NAUGHTY_STRINGS = {"<script>", "../", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"}; 
     private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"}; 
 
-	private Pattern pattern;
-	private Matcher matcher;
+    private Pattern pattern;
+    private Matcher matcher;
  
-	private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-		                                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                                                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-	private static final String USER_NAME_PATTERN = "^[a-zA-Z0-9_-]{6,50}$";
+    private static final String USER_NAME_PATTERN = "^[a-zA-Z0-9_-]{6,50}$";
 
 
     public boolean supports(Class clazz) {
@@ -35,7 +35,7 @@ public class UserValidator implements Validator  {
     }
 
     /**
-     * Validates the user input contained in the User object.
+     * Validates the User input contained in the User object.
      * 
      * @param obj  The target object to validate.
      * @param error  Object in which to store any validation errors.
@@ -43,14 +43,15 @@ public class UserValidator implements Validator  {
     public void validate(Object obj, Errors errors) {
         User user = (User) obj;
         validateUserName(user.getUserName(), errors);  
-        validateFullName(user.getFullName(), errors); 
+        validateName("firstName", user.getFirstName(), errors); 
+        validateName("lastName",  user.getLastName(), errors); 
         validateEmailAddress(user.getEmailAddress(), errors);
     }
 
     /**
-     * Validates the user input for the userName field.
+     * Validates the User input for the userName field.
      * 
-     * @param input  The user input to validate.
+     * @param input  The User input to validate.
      * @param error  Object in which to store any validation errors.
      */
     public void validateUserName(String input, Errors errors) {
@@ -59,7 +60,7 @@ public class UserValidator implements Validator  {
             return;
         }
         if ((StringUtils.length(input) < 6) || (StringUtils.length(input) > 50)) {
-            errors.rejectValue("userName", "user.error", "The user name must be between 6 and 50 characters in length.");
+            errors.rejectValue("userName", "user.error", "The userName must be between 6 and 50 characters in length.");
             return;
         }        
         pattern = Pattern.compile(USER_NAME_PATTERN);
@@ -71,27 +72,29 @@ public class UserValidator implements Validator  {
     }
 
     /**
-     * Validates the user input for the fullName field.
+     * Validates the User input for the firstName and lastName fields.
      * 
-     * @param input  The user input to validate.
+     * @param formField  The form field corresponding to the User input.
+     * @param input  The User input to validate.
      * @param error  Object in which to store any validation errors.
      */
-    public void validateFullName(String input, Errors errors) {
+    public void validateName(String formField, String input, Errors errors) {
         if (StringUtils.isBlank(input)) {
-            errors.rejectValue("fullName", "user.error", "Full user name is required!");
+            errors.rejectValue(formField, "user.error", formField + " is required!");
             return;
         }
         if ((StringUtils.length(input) < 6) || (StringUtils.length(input) > 75)) {
-            errors.rejectValue("fullName", "user.error", "The full user name must be between 6 and 75 characters in length.");
+            errors.rejectValue(formField, "user.error", formField + " must be between 6 and 75 characters in length.");
             return;
         }  
-        validateInput("fullName", input, errors); 
+        validateInput(formField, input, errors); 
     }    
+     
    
     /**
-     * Validates the user input for the emailAddress field.
+     * Validates the User input for the emailAddress field.
      * 
-     * @param input  The user input to validate.
+     * @param input  The User input to validate.
      * @param error  Object in which to store any validation errors.
      */    
      public void validateEmailAddress(String input, Errors errors) {
@@ -108,10 +111,10 @@ public class UserValidator implements Validator  {
     }
 
     /**
-     * A generic utility method to validate user input against known bad characters and strings.
+     * A generic utility method to validate User input against known bad characters and strings.
      * 
-     * @param formField  The form field corresponding to the user input.
-     * @param input  The user input to validate.
+     * @param formField  The form field corresponding to the User input.
+     * @param input  The User input to validate.
      * @param error  Object in which to store any validation errors.
      */
     public void validateInput(String formField, String input, Errors errors) {
@@ -130,9 +133,9 @@ public class UserValidator implements Validator  {
     }
 
     /**
-     * Validates the user input against known bad strings.
+     * Validates the User input against known bad strings.
      * 
-     * @param itemToCheck  The user input to validate.
+     * @param itemToCheck  The User input to validate.
      */
     public String checkForNaughtyStrings(String itemToCheck) {
           for (String item : NAUGHTY_STRINGS) {              
@@ -144,9 +147,9 @@ public class UserValidator implements Validator  {
     }
 
     /**
-     * Validates the user input against known bad characters.
+     * Validates the User input against known bad characters.
      * 
-     * @param itemToCheck  The user input to validate.
+     * @param itemToCheck  The User input to validate.
      */
     public String checkForNaughtyChars(String itemToCheck) {
           for (String item : NAUGHTY_CHARS) {

@@ -169,7 +169,7 @@ public class ApplicationInitialization implements ServletContextListener {
                 logger.info("Our work here is done.");
             }
         } else {
-            // mySQL
+            // mySQL or whatever
         }
     }
 
@@ -192,15 +192,17 @@ public class ApplicationInitialization implements ServletContextListener {
                                      "userName VARCHAR(50) not null, " +
                                      "password CHAR(32) not null, " +
                                      "accessLevel INTEGER not null, " +
+                                     "accountStatus INTEGER not null, " +
                                      "emailAddress VARCHAR(75) not null, " +
-                                     "fullName VARCHAR(75) not null, " +
+                                     "firstName VARCHAR(75) not null, " +
+                                     "lastName VARCHAR(75) not null, " +
                                      "dateCreated TIMESTAMP not null, " +
                                      "dateModified TIMESTAMP not null" +
                                      ")";
 
         String insertAdminUserSQL = "INSERT INTO users " +
-                                    "(userName, password, accessLevel, emailAddress, fullName, dateCreated, dateModified) VALUES " +
-                                    "(?,?,?,?,?,?,?)"; 
+                                    "(userName, password, accessLevel, accountStatus, emailAddress, firstName, lastName, dateCreated, dateModified) VALUES " +
+                                    "(?,?,?,?,?,?,?,?,?)"; 
 
      
         try {
@@ -211,10 +213,24 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setString(1, "admin");
             preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
             preparedStatement.setInt(3, 2);
-            preparedStatement.setString(4, "plaza@unidata.ucar.edu");
-            preparedStatement.setString(5, "Cloud Control Admin");
-            preparedStatement.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.setInt(4, 1);
+            preparedStatement.setString(5, "plaza@unidata.ucar.edu");
+            preparedStatement.setString(6, "Cloud Control");
+            preparedStatement.setString(7, "Administrator");
+            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.executeUpdate();
+
+            preparedStatement = connection.prepareStatement(insertAdminUserSQL);
+            preparedStatement.setString(1, "test");
+            preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
+            preparedStatement.setInt(3, 1);
+            preparedStatement.setInt(4, 0);
+            preparedStatement.setString(5, "plaza@unidata.ucar.edu");
+            preparedStatement.setString(6, "test");
+            preparedStatement.setString(7, "user");
+            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) { 

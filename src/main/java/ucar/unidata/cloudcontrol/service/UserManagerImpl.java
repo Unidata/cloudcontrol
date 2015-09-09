@@ -27,65 +27,76 @@ public class UserManagerImpl implements UserManager {
     }
 
     /**
-     * Looks up and retrieves a user from the persistence mechanism using the userId.
+     * Looks up and retrieves a User using the userId.
      * 
-     * @param userId  The id of the user we are trying to locate (will be unique for each user). 
-     * @return  The user represented as a User object.  
+     * @param userId  The userId of the User to locate (will be unique for each User). 
+     * @return  The User.   
      */
     public User lookupUser(int userId) {
         return userDao.lookupUser(userId);
     }
 
     /**
-     * Looks up and retrieves a user from the persistence mechanism using the userName.
+     * Looks up and retrieves a User using the userName.
      * 
-     * @param userName  The userName of the user we are trying to locate (will be unique for each user). 
-     * @return  The user represented as a User object.   
+     * @param userName  The userName of the User to locate (will be unique for each User). 
+     * @return  The User.   
      */
     public User lookupUser(String userName){
         return userDao.lookupUser(userName);
     }
    
     /**
-     * Requests a List of all users from the persistence mechanism.
+     * Requests a List of all Users.
      * 
-     * @return  A List of users.   
+     * @return  A List of Users.   
      */
     public List<User> getUserList() {
         return userDao.getUserList();
     }
 
     /**
-     * Queries the persistence mechanism and returns the number of users.
+     * Queries and returns the number of Users.
      * 
-     * @return  The total number of users as an int.   
+     * @return  The total number of Users.   
      */
     public int getUserCount(){
         return userDao.getUserCount();
     }
 
     /**
-     * Finds and removes the user from the persistence mechanism.
+     * Finds and removes the User using the userId.
      * 
-     * @param userId  The userId in the persistence mechanism.  
+     * @param userId  The userId of the User to locate (will be unique for each User). 
      */
     public void deleteUser(int userId) {
         userDao.deleteUser(userId);
     }
 
     /**
-     * Finds and removes the user from the persistence mechanism.
+     * Finds and removes the User using the userName.
      * 
-     * @param userName  The userName in the persistence mechanism.  
+     * @param userName  The userName of the User to locate (will be unique for each User). 
      */
     public void deleteUser(String userName) {
         userDao.deleteUser(userName);
     }
 
     /**
-     * Creates a new user.
+     * Finds and toggles the User's accountStatus.
      * 
-     * @param user  The user to be created. 
+     * @param user  The User whose accountStatus needs to be toggled. 
+     */
+    public void toggleAccountStatus(User user) {
+        Date now = new Date(System.currentTimeMillis());
+        user.setDateModified(now);
+        userDao.updateUser(user);
+    }
+
+    /**
+     * Creates a new User.
+     * 
+     * @param user  The User to be created. 
      */
     public void createUser(User user) {
         String password = DigestUtils.md5Hex(user.getPassword());
@@ -98,9 +109,9 @@ public class UserManagerImpl implements UserManager {
     }
 
     /**
-     * Saves changes made to an existing user . 
+     * Saves changes made to an existing User. 
      * 
-     * @param user   The existing user with changes that needs to be saved. 
+     * @param user   The existing User with changes that needs to be saved. 
      */
     public void updateUser(User user) {
         Date now = new Date(System.currentTimeMillis());
@@ -109,9 +120,9 @@ public class UserManagerImpl implements UserManager {
     }
 
     /**
-     * Updates the User's Password
+     * Updates the User's Password.
      * 
-     * @param user  The user to whose password we need to update. 
+     * @param user  The User to whose password we need to update. 
      */
     public void updatePassword(User user) {
         String password = DigestUtils.md5Hex(user.getPassword());

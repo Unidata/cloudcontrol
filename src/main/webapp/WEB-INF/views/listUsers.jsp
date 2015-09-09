@@ -29,7 +29,10 @@
          <spring:message code="user.userName"/>
         </th>
         <th>
-         <spring:message code="user.fullName"/>
+         <spring:message code="user.firstName"/>
+        </th>
+        <th>
+         <spring:message code="user.lastName"/>
         </th>
         <th>
          <spring:message code="user.emailAddress"/>
@@ -49,7 +52,12 @@
          </td>
          <td>
           <a href="${baseUrl}/user/<c:out value="${user.userName}" />">
-          <c:out value="${user.fullName}" />
+          <c:out value="${user.firstName}" />
+          </a>
+         </td>
+         <td>
+          <a href="${baseUrl}/user/<c:out value="${user.userName}" />">
+          <c:out value="${user.lastName}" />
           </a>
          </td>
          <td>
