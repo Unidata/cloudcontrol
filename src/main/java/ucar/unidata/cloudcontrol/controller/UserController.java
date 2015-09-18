@@ -29,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-
 import edu.ucar.unidata.cloudcontrol.domain.User;
 import edu.ucar.unidata.cloudcontrol.service.UserManager;
 import edu.ucar.unidata.cloudcontrol.service.UserValidator;
@@ -84,7 +83,7 @@ public class UserController implements HandlerExceptionResolver {
      */
     @RequestMapping(value="/user/{userName}", method=RequestMethod.GET)
     public String viewUser(@PathVariable String userName, Model model) { 
-        try{
+        try {
             User user = userManager.lookupUser(userName);           
             model.addAttribute("user", user);       
             return "viewUser";

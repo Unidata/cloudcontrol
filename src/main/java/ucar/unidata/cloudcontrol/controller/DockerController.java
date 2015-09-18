@@ -4,10 +4,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +29,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import edu.ucar.unidata.cloudcontrol.domain.DockerImage;
+import edu.ucar.unidata.cloudcontrol.service.DockerImageManager;
+import edu.ucar.unidata.cloudcontrol.service.DockerImageValidator;
+
 /**
  * Controller to issue rudimentary docker commands.
  */
@@ -42,59 +42,44 @@ public class DockerController implements HandlerExceptionResolver {
 
     protected static Logger logger = Logger.getLogger(DockerController.class);
 
-    @RequestMapping(value="/docker", method=RequestMethod.GET)
-    public String listDockerVersion(Model model) throws InterruptedException, IOException { 
-        ProcessBuilder pb = new ProcessBuilder("docker", "version");
-        Process process = pb.start();
-        int errCode = process.waitFor();
-        logger.error("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "<br>");
-            }
-        } finally {
-            br.close();
-        }
-        model.addAttribute("output", sb.toString());   
-        return "docker";
-    }
+    @Resource(name="dockerImageManager")
+    private DockerImageManager dockerImageManager;
+	
+    @Autowired
+    private DockerImageValidator dockerImageValidator;
 
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.setValidator(dockerImageValidator);  
+    } 
 
+    /**
+     * Accepts a GET request for a List of all DockerImage objects.
+     *
+     * View is a list of all DockerImage objects from the given host. The
+	 * view can handle an empty list of DockerImages if none are found.
+     * 
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
     @RequestMapping(value="/docker/images", method=RequestMethod.GET)
-    public String listDockerImages(Model model) throws InterruptedException, IOException { 
-        ProcessBuilder pb = new ProcessBuilder("docker", "images");
-        Process process = pb.start();
-        int errCode = process.waitFor();
-        logger.error("Echo command executed, any errors? " + (errCode == 0 ? "No" : "Yes"));
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "<br>");
-            }
-        } finally {
-            br.close();
-        }
-        model.addAttribute("output", sb.toString());   
-        return "docker";
+    public String listDockerImages(Model model) { 
+        List<DockerImage> dockerImages = dockerImageManager.getDockerImageList();           
+        model.addAttribute("dockerImages", dockerImages);    
+        return "listDockerImages";
     }
 
     /**
      * This method gracefully handles any uncaught exception that are fatal 
-     * in nature and unresolvable by the user.
+     * in nature and unresolvable by the dockerImage.
      * 
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.
      * @param handler  The executed handler, or null if none chosen at the time of the exception.  
      * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the user. 
+     * @return  The error page containing the appropriate message to the dockerImage. 
      */
+		
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
         String message = "";

@@ -13,11 +13,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -48,7 +50,7 @@ public class ApplicationInitialization implements ServletContextListener {
     private String databaseSelected = null;
 
     /**
-     * Find the application home (cloudcontrol.home) and make sure it exists.  if not, create it.
+     * Find the application home ${cloudcontrol.home} and make sure it exists.  if not, create it.
      * TODO: add -Dname=value JVM argument 
      * Find out what database was selected for use and create the database if it doesn't exist.
      * 
@@ -57,14 +59,14 @@ public class ApplicationInitialization implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent)  {
         ServletContext servletContext = servletContextEvent.getServletContext();
-
+		logger.info("Application context initialization..."); 
         try {
             File configFile = new File(servletContext.getRealPath("") + "/WEB-INF/classes/cloudcontrol.properties");
             if (!configFile.exists()) {
                 logger.info("Configuration file not provided.");  
-                logger.info("Using cloudcontrol.home default: " + DEFAULT_HOME);    
+                logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);    
                 cloudcontrolHome = DEFAULT_HOME; 
-                logger.info("Using cloudcontrol.db default: " + DEFAULT_DATABASE);    
+                logger.info("Using ${cloudcontrol.db} default: " + DEFAULT_DATABASE);    
                 databaseSelected = DEFAULT_DATABASE;
             } else {
                 logger.info("Reading configuration file.");  
@@ -75,22 +77,22 @@ public class ApplicationInitialization implements ServletContextListener {
                     if ((lineData = StringUtils.stripToNull(currentLine)) != null) {
                         if (lineData.startsWith("cloudcontrol.home")) {
                             cloudcontrolHome = StringUtils.removeStart(lineData, "cloudcontrol.home=");
-                            logger.info("cloudcontrol.home set to: " + cloudcontrolHome);  
+                            logger.info("${cloudcontrol.home} set to: " + cloudcontrolHome);  
                         }
                         if (lineData.startsWith("cloudcontrol.db")) {
                             databaseSelected = StringUtils.removeStart(lineData, "cloudcontrol.db=");
-                            logger.info("cloudcontrol.db set to: " + databaseSelected);  
+                            logger.info("${cloudcontrol.db} set to: " + databaseSelected);  
                         }
                     }
                 }
                 if (cloudcontrolHome == null) {
-                    logger.info("Configuration file does not contain cloudcontrol.home information.");  
-                    logger.info("Using cloudcontrol.home default: " + DEFAULT_HOME);  
+                    logger.info("Configuration file does not contain ${cloudcontrol.home} information.");  
+                    logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);  
                     cloudcontrolHome = DEFAULT_HOME;      
                 }
                 if (databaseSelected == null) {
-                    logger.info("Configuration file does not contain cloudcontrol.db information.");  
-                    logger.info("Using cloudcontrol.db default: " + DEFAULT_DATABASE);  
+                    logger.info("Configuration file does not contain ${cloudcontrol.db} information.");  
+                    logger.info("Using ${cloudcontrol.db} default: " + DEFAULT_DATABASE);  
                     databaseSelected = DEFAULT_DATABASE;      
                 }
             }
@@ -111,18 +113,35 @@ public class ApplicationInitialization implements ServletContextListener {
     /**
      * Shutdown the database if it hasn't already been shutdown.
      * 
-     * @param sce  The event class.
+     * @param servletContextEvent  The event class.
      */
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+		logger.info("Application context destruction..."); 
         if (databaseSelected.equals("derby")) {
             String derbyUrl = "jdbc:derby:" + cloudcontrolHome + "/db/cloudcontrol";
-            try { 
+            try {				
                 DriverManager.getConnection( derbyUrl + ";shutdown=true");
             } catch (SQLException e) {
-                logger.error(e.getMessage()); 
+				if (e.getSQLState().equals("XJ004")) {
+					logger.info("Database is already shutdown" + e.getMessage()); 
+				} else {
+					logger.error("Error trying to get a database connection: " + e.getMessage()); 
+				}
             }  
+			
+			Enumeration<Driver> drivers = DriverManager.getDrivers();
+			while (drivers.hasMoreElements()) {
+			    Driver driver = drivers.nextElement();
+	            try { 
+					DriverManager.deregisterDriver(driver);
+					logger.info("Deregistering jdbc driver."); 
+	            } catch (SQLException e) {
+	                logger.error("Error deregistering driver: " + e.getMessage()); 
+	            }  
+			}
         }
+		logger.error("Goodbye."); 
     }
 
 
@@ -134,7 +153,7 @@ public class ApplicationInitialization implements ServletContextListener {
      */
     public void createDirectory(File file) throws RuntimeException {
         if (!file.exists()) {
-            logger.info("Creating cloudcontrol.home...");
+            logger.info("Creating ${cloudcontrol.home}...");
             if (!file.mkdirs()) {
                 throw new RuntimeException("Unable to create the following directory: " + file);
             }                   
@@ -144,8 +163,8 @@ public class ApplicationInitialization implements ServletContextListener {
     /**
      * Creates a directory (and parent directories as needed) using the provided file.
      * 
-     * @param cloudcontrolHome  The value of cloudcontrol.home.
-     * @param databaseSelected  The value of cloudcontrol.db.
+     * @param cloudcontrolHome  The value of ${cloudcontrol.home}.
+     * @param databaseSelected  The value of ${cloudcontrol.db}.
      */
     public void createDatabase(String cloudcontrolHome, String databaseSelected, ServletContext servletContext)  {
         if (databaseSelected.equals("derby")) {
@@ -160,9 +179,13 @@ public class ApplicationInitialization implements ServletContextListener {
                 }  
                 try { 
                     createTables(derbyDriver, derbyUrl + ";create=true", null, null, servletContext);
-                    DriverManager.getConnection( derbyUrl + ";shutdown=true");
+                    DriverManager.getConnection(derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
-                    logger.error(e.getMessage()); 
+					if (e.getSQLState().equals("08006")) {
+						logger.info(e.getMessage()); 
+					} else {
+						logger.error(e.getMessage()); 
+					}
                 }        
             } else {
                 logger.info("Database already exists.");

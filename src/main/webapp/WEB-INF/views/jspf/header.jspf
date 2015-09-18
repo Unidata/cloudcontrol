@@ -1,6 +1,15 @@
   <div id="container">
    <header>
-    <h1><spring:message code="global.title"/></h1>   
+    <h1>
+     <c:choose>
+      <c:when test="${baseUrl == ''}">
+       <a href="/"><spring:message code="global.title"/></a>
+      </c:when>
+      <c:otherwise>
+       <a href="${baseUrl}"><spring:message code="global.title"/></a>
+      </c:otherwise>
+     </c:choose>
+	</h1>   
     <nav>
      <ul class="nav"> 
       <c:choose>

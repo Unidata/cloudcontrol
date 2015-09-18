@@ -1,25 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
-<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
 
    <appender name="cloudcontrolLogger" class="org.apache.log4j.DailyRollingFileAppender">
       <param name="File" value="${catalina.home}/logs/cloudcontrol.log"/>
-      <param name="Threshold" value="INFO" />
+      <param name="Threshold" value="DEBUG" />
       <layout class="org.apache.log4j.PatternLayout">
          <param name="ConversionPattern" value="[%d{yyyy-MM-dd' 'HH:mm:ss Z}] %-5p [%c:%L] - %m%n"/>
       </layout>
    </appender>
 
-
    <logger name="edu.ucar.unidata.cloudcontrol">
-        <appender-ref ref="cloudcontrolLogger"/>
-   </logger> 
+     <level value="debug" />
+     <appender-ref ref="cloudcontrolLogger"/>
+   </logger>
 
+  <logger name="org.springframework">
+    <level value="WARN" />
+    <appender-ref ref="cloudcontrolLogger"/>
+  </logger>
+
+  <!-- below alternate between debug and info -->
   <root>
-    <level value="INFO"/>
+    <level value="DEBUG, file, stdout"/>
     <appender-ref ref="cloudcontrolLogger"/>
   </root>
 
-  
+
 </log4j:configuration>
