@@ -64,10 +64,10 @@ RUN /etc/init.d/tomcat start
 # Install cloudcontrol.
 ###
 
-COPY ./build/libs/ROOT.war /root/
-RUN chown tomcat /root/ROOT.war
-RUN mv ROOT.war /usr/local/${TC_NAME}/webapps/cloudcontrol.war
-RUN mv /usr/local/${TC_NAME}/webapps/ROOT /usr/local/${TC_NAME}/webapps/ROOT.old
+COPY ./build/libs/cloudcontrol.war /root/
+RUN chown tomcat /root/cloudcontrol.war
+RUN mv cloudcontrol.war /usr/local/${TC_NAME}/webapps/cloudcontrol.war
+
 ###
 # Final Items
 ###
