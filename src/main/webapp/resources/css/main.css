@@ -34,6 +34,17 @@ h1 {
  float:left;
  color: #FFFFFF;
 }
+h1 a:link {
+ color: #FFFFFF !important;
+}
+h1 a:visited {
+ color: #FFFFFF !important;
+}
+h1 a:active,
+h1 a:hover {
+ color: #FFFFFF !important;
+}
+
 h2 {
  font-size: 14pt; 
  margin: 0 0 10px 0;
@@ -276,18 +287,31 @@ table thead tr th img {
 table tbody tr {
  background-color: #FFFFFF;
 }
+table.nodec tbody tr {
+ background-color: transparent !important;
+ border-bottom: 1px solid #BCC4D0;
+}
 table tbody tr.odd {
  background-color: #EDF4FF;
+}
+table.nodec tbody tr.odd {
+ background-color: transparent !important;
 }
 table.list tbody tr:hover {
  background-color: #FFF8E9;
  cursor:pointer;
+}
+table.nodec tbody tr:hover {
+ background-color: transparent !important;
 }
 table tbody td {
  margin: 0;
  padding: 5px;
  vertical-align: top;
  border: 1px solid #BCC4D0;
+}
+table.nodec tbody td {
+ border: none !important;
 }
 table tbody td form {
  margin: 0;

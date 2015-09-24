@@ -51,16 +51,14 @@
   <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.UserManagerImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
-  
-  <bean id="dockerImageManager" class="edu.ucar.unidata.cloudcontrol.service.DockerImageManagerImpl">
-    <property name="dockerImageDao" ref="dockerImageDao"/>
-  </bean>
 
   <bean id="userDao" class="edu.ucar.unidata.cloudcontrol.repository.JdbcUserDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   
-  <bean id="dockerImageDao" class="edu.ucar.unidata.cloudcontrol.repository.DockerImageDaoImpl" />
+  <!-- Declaration for controller use -->
+  <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl" />
+  <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" />  
 
   <!-- Declare a datasource that has pooling capabilities--> 
   <bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">

@@ -126,7 +126,6 @@ public class UserController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View. 
      */
-
     @RequestMapping(value="/user/create", method=RequestMethod.POST)
     public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {  
         if (result.hasErrors()) {

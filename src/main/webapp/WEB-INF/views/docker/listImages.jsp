@@ -8,9 +8,8 @@
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
 
-   <h3><spring:message code="docker.list.images.title"/></h3>
+   <h3><c:out value="${fn:length(images)}" /> <spring:message code="docker.list.images.title"/></h3>
    <p><spring:message code="docker.list.images.message"/></p>
-
 
    <c:choose>
     <c:when test="${error != null}">
@@ -20,17 +19,17 @@
    
     <table class="list"> 
      <c:choose>
-      <c:when test="${fn:length(dockerImages) gt 0}">
+      <c:when test="${fn:length(images) gt 0}">
        <thead>
         <tr>
          <th>
-          <spring:message code="docker.image.repository"/>
+          <spring:message code="docker.image.repoTags"/>
          </th>
          <th>
-          <spring:message code="docker.image.tag"/>
+          <spring:message code="docker.image.id"/>
          </th>
          <th>
-          <spring:message code="docker.image.imageId"/>
+          <spring:message code="docker.image.parentId"/>
          </th>
          <th> 
           <spring:message code="docker.image.created"/>
@@ -38,31 +37,45 @@
          <th>
           <spring:message code="docker.image.virtualSize"/> 
          </th>
-	 	<th>
-          <spring:message code="form.action.title"/> 
+         <th>
+          <spring:message code="docker.image.size"/> 
          </th>
         </tr>
        </thead>
        <tbody>
-        <c:forEach items="${dockerImages}" var="dockerImage">    
+        <c:forEach items="${images}" var="image">    
          <tr>
           <td>
-           <c:out value="${dockerImage.repository}" />
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+		    <c:forEach var="tag" items="${image.repoTags}">   
+             <c:out value="${tag}" /><br/>
+		    </c:forEach>
+	       </a>
           </td>
           <td>
-           <c:out value="${dockerImage.tag}" />
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+            <c:out value="${image.id}" />
+		   </a>
           </td>
           <td>
-           <c:out value="${dockerImage.imageId}" />
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+            <c:out value="${image.parentId}" />
+		   </a> 
           </td>
           <td>
-           <c:out value="${dockerImage.created}" />	   
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+            <c:out value="${image.created}" />	
+	       </a> 		      
           </td>
           <td>
-           <c:out value="${dockerImage.virtualSize}" />	   
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+            <c:out value="${image.virtualSize}" />	
+	       </a> 		      
           </td>
           <td>
-		   <input type="submit" value="run" />
+		   <a href="${baseUrl}/docker/image/<c:out value="${image.id}" />">
+            <c:out value="${image.size}" />	  
+	       </a> 
           </td>
          </tr>
         </c:forEach>

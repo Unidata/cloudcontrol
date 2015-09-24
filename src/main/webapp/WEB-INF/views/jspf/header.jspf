@@ -20,10 +20,8 @@
        <li><a href="${baseUrl}">Home</a></li>
        </c:otherwise>
       </c:choose>
-      <li><a href="${baseUrl}/docker">View Docker Version</a></li>
-      <li><a href="${baseUrl}/docker/images">View Docker Images</a></li>
-      <li><a href="${baseUrl}">Link 3</a></li>
- 
+      <li><a href="${baseUrl}/docker/image/list">View Docker Images</a></li>
+      <li><a href="${baseUrl}/docker/container/list">View Docker Containers</a></li> 
       <c:choose>
        <c:when test="${loggedIn}">
         <sec:authorize access="hasRole('ROLE_ADMIN')">
