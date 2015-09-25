@@ -16,6 +16,7 @@ WORKDIR /root
 RUN apt-get update
 
 RUN apt-get install -y openjdk-8-jre openjdk-8-jdk
+#RUN apt-get install -y default-jre
 RUN apt-get install -y wget
 
 ###
@@ -35,15 +36,13 @@ RUN wget http://apache.mirrors.tds.net/tomcat/tomcat-8/v${TC_VERSION}/bin/${TC_F
 
 RUN mv ${TC_FILENAME} /usr/local
 RUN cd /usr/local && tar -zxf ${TC_FILENAME}
-
+RUN ln -s /usr/local/${TC_NAME} /usr/local/tomcat
 
 ###
 # Copy over configuration files.
 ###
 
-# Tomcat setenv.sh
-COPY docker/setenv.sh /usr/local/${TC_NAME}/bin/
-RUN chmod 755 /usr/local/${TC_NAME}/bin/setenv.sh
+
 
 # Tomcat users configuration.
 COPY docker/tomcat-users.xml /usr/local/${TC_NAME}/conf/

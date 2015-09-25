@@ -15,57 +15,56 @@ import edu.ucar.unidata.cloudcontrol.domain.docker.NewContainer;
 
 
 /**
- * Service for processing com.github.dockerjava.api.model.Container objects. 
+ * Service for processing com.github.dockerjava.api.model.Container objects.
  */
-public class ContainerManagerImpl implements ContainerManager { 
-    
+public class ContainerManagerImpl implements ContainerManager {
+
     /**
      * Initializes a com.github.dockerjava.api.DockerClient.
-     * 
-     * @return  A DockerClient object.   
+     *
+     * @return  A DockerClient object.
      */
     public DockerClient initializeDockerClient() {
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
             .withVersion("1.17")
-            .withDockerCertPath("/Users/oxelson/.docker/machine/machines/default")
             .build();
         return DockerClientBuilder.getInstance(config).build();
     }
-    
+
 
     /**
      * Requests a List of all available Containers.
-     * 
-     * @return  A List of available Containers.   
+     *
+     * @return  A List of available Containers.
      */
     public List<Container> getContainerList() {
         DockerClient dockerClient = initializeDockerClient();
         return dockerClient.listContainersCmd().withShowAll(true).exec();
     }
-   
+
     /**
      * Returns a requested InspectContainerResponse.
-     * 
+     *
      * @param id  The Container ID.
-     * @return  The requested InspectContainerResponse.  
+     * @return  The requested InspectContainerResponse.
      */
     public InspectContainerResponse inspectContainer(String id) {
         DockerClient dockerClient = initializeDockerClient();
         return dockerClient.inspectContainerCmd(id).exec();
     }
-    
+
     /**
      * Returns a requested InspectContainerResponse.
-     * 
+     *
      * @param newContainer  The NewContainer object that has the user-specified values.
-     * @return  The requested InspectContainerResponse.  
+     * @return  The requested InspectContainerResponse.
      */
     public CreateContainerResponse createContainer(NewContainer newContainer) {
         DockerClient dockerClient = initializeDockerClient();
 		ExposedPort port = ExposedPort.tcp(newContainer.getPortNumber());
 		Ports portBindings = new Ports();
 		portBindings.bind(port, Ports.Binding(11000 + newContainer.getPortNumber()));
-		
+
         return dockerClient.createContainerCmd("hello-world")
            .withTty(true)
            .withPublishAllPorts(true)
@@ -75,10 +74,10 @@ public class ContainerManagerImpl implements ContainerManager {
 		   .withHostName(newContainer.getHostName())
            .exec();
     }
-	
+
     /**
      * Starts a Container.
-     * 
+     *
      * @param container  The Container to start.
      */
     public void startContainer(Container container) {
@@ -88,7 +87,7 @@ public class ContainerManagerImpl implements ContainerManager {
 
     /**
      * Stops a Container.
-     * 
+     *
      * @param container  The Container to stop.
      */
     public void stopContainer(Container container) {
@@ -98,7 +97,7 @@ public class ContainerManagerImpl implements ContainerManager {
 
     /**
      * Stops a Container.
-     * 
+     *
      * @param container  The Container to stop.
 	 * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
      */
@@ -106,6 +105,6 @@ public class ContainerManagerImpl implements ContainerManager {
         DockerClient dockerClient = initializeDockerClient();
 		dockerClient.stopContainerCmd(container.getId()).withTimeout(timeout).exec();
     }
-    
-    
+
+
 }
