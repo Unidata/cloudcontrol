@@ -9,14 +9,16 @@
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
 
    <h3><c:out value="${fn:length(containers)}" /> <spring:message code="docker.list.containers.title"/></h3>
-   <p><spring:message code="docker.list.containers.message"/></p>
+  
+   <!-- left -->
+   <div class="left">
+    <c:choose>
+     <c:when test="${error != null}">
+      <p class="error"><b><c:out value="${error}" /></b></p>
+     </c:when>
+    </c:choose>
 
-   <c:choose>
-    <c:when test="${error != null}">
-     <p class="error"><b><c:out value="${error}" /></b></p>
-    </c:when>
-   </c:choose>
-   
+    <p><spring:message code="docker.list.containers.message"/></p>
     <table class="list"> 
      <c:choose>
       <c:when test="${fn:length(containers) gt 0}">
@@ -25,9 +27,11 @@
          <th>
           <spring:message code="docker.container.command"/>
          </th>
+		 <!--
          <th>
           <spring:message code="docker.container.id"/>
          </th>
+			 -->
          <th> 
           <spring:message code="docker.container.created"/>
          </th>
@@ -56,11 +60,13 @@
             <c:out value="${container.command}" />
    		   </a> 
           </td>
+		  <!--
           <td>
 		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
             <c:out value="${container.id}" />
 		   </a>
           </td>		  
+			  -->
           <td>
 		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
             <c:out value="${container.created}" />	
@@ -111,7 +117,15 @@
       </c:otherwise>
      </c:choose>
     </table> 
-
+   </div> <!-- /.left -->
+   <!-- right -->
+   <div class="right">
+    <h5><spring:message code="docker.list.containers"/></h5>
+    <ul>
+     <li><a href="${baseUrl}/docker/container/create"><spring:message code="docker.list.containers.option.create"/></a></li>
+     <li><spring:message code="docker.list.containers.option.build"/></li>
+    </ul>
+   </div><!-- /.right -->
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>
  </html>

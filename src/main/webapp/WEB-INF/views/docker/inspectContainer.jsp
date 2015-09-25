@@ -8,32 +8,109 @@
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
 
-   <h3><spring:message code="docker.container.inspect.title"/> <c:out value="${inspectContainerResponse.id}" /></h3>
-   <p><spring:message code="docker.container.inspect.message"/></p>
 
-   <c:choose>
-    <c:when test="${error != null}">
-     <p class="error"><b><c:out value="${error}" /></b></p>
-    </c:when>
-   </c:choose>
+   <h3>
+    <spring:message code="docker.container.inspect.title"/> 
+    <i><c:out value="${inspectContainerResponse.name}" /></i>
+   </h3>
+   <!-- left -->
+   <div class="left">
+    <c:choose>
+     <c:when test="${error != null}">
+      <p class="error"><b><c:out value="${error}" /></b></p>
+     </c:when>
+    </c:choose>
+	
+    <p>
+     <spring:message code="docker.container.inspect.message"/> 
+     <i><c:out value="${inspectContainerResponse.name}" /></i>
+    </p>
    
-    <table class="list"> 
-     <thead>
-      <tr>
-       <th>
-        <spring:message code="docker.container.inspect.attributeName"/>
-       </th>
-       <th>
-        <spring:message code="docker.container.inspect.attributeValue"/> 
-       </th>
-      </tr>
-     </thead>
+    <table> 
      <tbody>
       <tr>
        <td>
-        <spring:message code="docker.container.inspect.args"/>
+        <spring:message code="docker.container.names"/>
        </td>
        <td>
+	    <c:forEach var="name" items="${container.names}">   
+         <c:out value="${name}" /><br/>
+	    </c:forEach>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <spring:message code="docker.container.id"/>
+       </td>
+       <td>
+        <c:out value="${container.id}" />
+       </td>
+      </tr>   
+      <tr>
+       <td>
+        <spring:message code="docker.container.image"/>
+       </td>
+       <td>
+        <c:out value="${container.image}" />
+       </td>
+      </tr> 	  
+      <tr>
+       <td>
+        <spring:message code="docker.container.command"/>
+       </td>
+       <td>
+        <c:out value="${container.command}" />
+       </td>
+      </tr>    
+      <tr>
+       <td>
+        <spring:message code="docker.container.created"/>
+       </td>
+       <td>
+        <c:out value="${container.created}" />	
+       </td>
+      </tr>       
+      <tr>
+       <td>
+        <spring:message code="docker.container.ports"/>
+       </td>
+       <td>
+	    <c:forEach var="port" items="${container.ports}">   
+         <c:out value="${port}" /><br/>
+	    </c:forEach>
+       </td>
+      </tr>    	  
+      <tr>
+       <td>
+        <spring:message code="docker.container.labels"/>
+       </td>
+       <td>
+	    <c:forEach var="label" items="${container.labels}">   
+         <c:out value="${label.key}" /> : 
+		 <c:out value="${label.value}" /><br/>
+	    </c:forEach>
+       </td>
+      </tr>    	  
+      <tr>
+       <td>
+        <spring:message code="docker.container.status"/>
+       </td>
+       <td>
+        <c:out value="${container.status}" />	  
+       </td>
+      </tr> 	  	  
+     </tbody>
+    </table>
+	 
+    <h5><a href="#" id="inspectToggle" class="toggle"><spring:message code="docker.container.inspect.option.inspect"/></a></h5>
+    <div id="inspectToggleSection" class="hideandshow">   
+     <table class="list"> 
+      <tbody>
+       <tr>
+        <td>
+         <spring:message code="docker.container.inspect.args"/>
+        </td>
+        <td>
         <c:forEach var="arg" items="${inspectContainerResponse.args}">   
          <c:out value="${arg}" /><br/>
         </c:forEach>
@@ -120,9 +197,6 @@
                <c:out value="${port}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${exposedPortsError != null}">
-              <i class="error">An exception was raised whilst trying to access the Exposed Port information. Exception is: ${exposedPortsError}</i>
-             </c:if>
             </td>
            </tr>      
            <tr>
@@ -242,9 +316,7 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${containerConfigError != null}">
-         <i class="error">An exception was raised whilst trying to access the Container Configuration information. Exception is: ${containerConfigError}</i>
-        </c:if>
+
             
        </td>
       </tr>
@@ -291,9 +363,7 @@
                <c:out value="${bind}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${bindsError != null}">
-              <i class="error">An exception was raised whilst trying to access the Binds information. Exception is: ${bindsError}</i>
-             </c:if>         
+      
             </td>
            </tr>
            <tr>
@@ -307,9 +377,7 @@
               </c:forEach>
               <c:out value="${inspectContainerResponse.hostConfig.links}" />
              </c:catch>
-             <c:if test = "${linksError != null}">
-              <i class="error">An exception was raised whilst trying to access the Links information. Exception is: ${linksError}</i>
-             </c:if>     
+  
             </td>
            </tr>
            <tr>
@@ -322,9 +390,7 @@
                <c:out value="${conf}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${lxcConfError != null}">
-              <i class="error">An exception was raised whilst trying to access the LXC Configuration information. Exception is: ${lxcConfError}</i>
-             </c:if>  
+
             </td>
            </tr>
            <tr>
@@ -337,9 +403,6 @@
                <c:out value="${logConf}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${logConfigError != null}">
-              <i class="error">An exception was raised whilst trying to access the Log Configuration information. Exception is: ${logConfigError}</i>
-             </c:if> 
             </td>
            </tr>
            <tr>
@@ -350,9 +413,7 @@
              <c:catch var="portBindingsError">
               <c:out value="${inspectContainerResponse.hostConfig.portBindings}" />
              </c:catch>
-             <c:if test = "${portBindingsError != null}">
-              <i class="error">An exception was raised whilst trying to access the Port Bindings information. Exception is: ${portBindingsError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -409,9 +470,7 @@
                <c:out value="${volume}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${volumesFromError != null}">
-              <i class="error">An exception was raised whilst trying to access the Volumes From information. Exception is: ${volumesFromError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -432,9 +491,7 @@
                <c:out value="${cAdd}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${capAddError != null}">
-              <i class="error">An exception was raised whilst trying to access the Add Capabilities information. Exception is: ${capAddError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -447,9 +504,7 @@
                <c:out value="${cDrop}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${capDropError != null}">
-              <i class="error">An exception was raised whilst trying to access the Drop Capabilities information. Exception is: ${capDropError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -460,9 +515,7 @@
              <c:catch var="restartPolicyError">   
               <c:out value="${inspectContainerResponse.hostConfig.restartPolicy}" />
              </c:catch>
-             <c:if test = "${restartPolicyError != null}">
-              <i class="error">An exception was raised whilst trying to access the Restart Policy information. Exception is: ${restartPolicyError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -483,9 +536,6 @@
                <c:out value="${device}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${devicesError != null}">
-              <i class="error">An exception was raised whilst trying to access the Devices information. Exception is: ${devicesError}</i>
-             </c:if> 
             </td>
            </tr>
            <tr>
@@ -508,9 +558,7 @@
                <c:out value="${ulimit}" /><br/>
               </c:forEach>
              </c:catch>
-             <c:if test = "${ulimitsError != null}">
-              <i class="error">An exception was raised whilst trying to access the Ulimits information. Exception is: ${ulimitsError}</i>
-             </c:if> 
+
             </td>
            </tr>
            <tr>
@@ -540,10 +588,7 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${hostConfigError != null}">
-         <i class="error">An exception was raised whilst trying to access the Host Configuration information. Exception is: ${hostConfigError}</i>
-        </c:if>
-            
+
        </td>
       </tr>
       <tr>
@@ -606,10 +651,7 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${networkSettingsError != null}">
-         <i class="error">An exception was raised whilst trying to access the Network Settings information. Exception is: ${networkSettingsError}</i>
-        </c:if>    
-            
+
        </td>
       </tr>        
       <tr>
@@ -658,9 +700,7 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${stateError != null}">
-         <i class="error">An exception was raised whilst trying to access the Container State information. Exception is: ${stateError}</i>
-        </c:if>    
+   
             
        </td>
       </tr>                
@@ -676,9 +716,7 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${volumesError != null}">
-         <i class="error">An exception was raised whilst trying to access the Volume Binds information. Exception is: ${volumesError}</i>
-        </c:if>              
+           
             
        </td>
       </tr>        
@@ -694,16 +732,31 @@
           </tbody>
          </table>
         </c:catch>
-        <c:if test = "${volumesRWError != null}">
-         <i class="error">An exception was raised whilst trying to access the Volume RW information. Exception is: ${volumesRWError}</i>
-        </c:if>              
+
             
        </td>
       </tr>                
         
         
-     </tbody>
-    </table> 
+      </tbody>
+     </table> 
+    </div><!--./hideandshow-->
+ 
+   </div> <!-- /.left -->
+   <!-- right -->
+   <div class="right">
+    <h5>
+     <spring:message code="docker.container.inspect.option.title"/>
+     <i>
+	  <c:out value="${inspectContainerResponse.name}" />
+     </i>
+    </h5>
+    <ul>
+     <li><spring:message code="docker.container.inspect.option.start"/></li>
+     <li><spring:message code="docker.container.inspect.option.stop"/></li>
+     <li><spring:message code="docker.container.inspect.option.delete"/></li>
+    </ul>
+   </div><!-- /.right -->	
 
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>

@@ -1,0 +1,30 @@
+/*
+ * Toggle CSS
+ */
+
+.toggle {
+    font-size: 8pt;
+    margin: 10px 0 0 0;
+    padding: 0 0 0 15px;
+    background: transparent url('../images/expand.png') no-repeat center left; 
+    display: block;
+    float: left;
+    clear: left;
+}
+
+.collapse {
+    background: transparent url('../images/collapse.png') no-repeat center left; 
+}
+
+.hideandshow {
+    display: block;
+    margin: 20px 0px 10px 0;
+    padding: 0;
+    float: left;
+    clear: left;
+}
+
+
+
+
+

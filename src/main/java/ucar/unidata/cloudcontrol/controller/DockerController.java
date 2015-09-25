@@ -35,6 +35,7 @@ import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.SearchItem;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.NewContainer;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
@@ -52,10 +53,10 @@ public class DockerController implements HandlerExceptionResolver {
 
     @Resource(name="imageManager")
     private ImageManager imageManager;
-	
+    
     @Resource(name="containerManager")
     private ContainerManager containerManager;
-	
+    
     @Autowired
     private NewContainerValidator newContainerValidator;
 
@@ -63,12 +64,12 @@ public class DockerController implements HandlerExceptionResolver {
     public void initBinder(WebDataBinder binder) {
         binder.setValidator(newContainerValidator);  
     }   
-	
+    
     /**
      * Accepts a GET request for a List of com.github.dockerjava.api.model.Image objects.
      *
      * View is a list of all Image objects from the given host. The
-	 * view can handle an empty list of Images if none are found.
+     * view can handle an empty list of Images if none are found.
      * 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
@@ -79,12 +80,12 @@ public class DockerController implements HandlerExceptionResolver {
         model.addAttribute("images", images);    
         return "docker/listImages";
     }
-	
+    
     /**
      * Accepts a GET request for a com.github.dockerjava.api.command.InspectImageResponse object.
      *
      * View is the requested InspectImageResponse (details corresponding to an Image), 
-	 * or a list of all Image objects if unable to find the requested InspectImageResponse.
+     * or a list of all Image objects if unable to find the requested InspectImageResponse.
      * 
      * @param id  The Image ID as provided by @PathVariable.
      * @param model  The Model used by the View.
@@ -94,13 +95,22 @@ public class DockerController implements HandlerExceptionResolver {
     public String inspectImage(@PathVariable String id, Model model) { 
         try {
             InspectImageResponse inspectImageResponse = imageManager.inspectImage(id);         
-            model.addAttribute("inspectImageResponse", inspectImageResponse);       
+            model.addAttribute("inspectImageResponse", inspectImageResponse);     
+            Image image = imageManager.getImage(id); 
+            if (image != null) {
+                model.addAttribute("image", image);  
+            } else {
+                List<Image> images = imageManager.getImageList();     
+                model.addAttribute("error", "Unable to load Image information.");            
+                model.addAttribute("images", images); 
+                return "docker/listImages";   
+            }
             return "docker/inspectImage";
         } catch (NotFoundException e) {
             model.addAttribute("error", e.getMessage());    
-	        List<Image> images = imageManager.getImageList();           
-	        model.addAttribute("images", images);    
-	        return "docker/listImages";
+            List<Image> images = imageManager.getImageList();           
+            model.addAttribute("images", images);    
+            return "docker/listImages";
         }
     }
 
@@ -108,7 +118,7 @@ public class DockerController implements HandlerExceptionResolver {
      * Accepts a GET request for a List of com.github.dockerjava.api.model.Container objects.
      *
      * View is a list of all Container objects. The view can
-	 * handle an empty list of Containers if none are found.
+     * handle an empty list of Containers if none are found.
      * 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
@@ -124,7 +134,7 @@ public class DockerController implements HandlerExceptionResolver {
      * Accepts a GET request for the creation of a com.github.dockerjava.api.model.Container object.
      *
      * View is the requested InspectContainerResponse (details corresponding to an Container), 
-	 * or a list of all Container objects if unable to find the requested InspectContainerResponse.
+     * or a list of all Container objects if unable to find the requested InspectContainerResponse.
      * 
      * @param id  The Container ID as provided by @PathVariable.
      * @param model  The Model used by the View.
@@ -134,14 +144,57 @@ public class DockerController implements HandlerExceptionResolver {
     public String inspectContainer(@PathVariable String id, Model model) { 
         try {
             InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
-            model.addAttribute("inspectContainerResponse", inspectContainerResponse);       
+            model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
+            Container container = containerManager.getContainer(id); 
+            if (container != null) {
+                model.addAttribute("container", container);  
+            } else {
+                List<Container> containers = containerManager.getContainerList();           
+                model.addAttribute("error", "Unable to load Container information.");            
+                model.addAttribute("containers", containers);  
+                return "docker/listContainers";  
+            }
             return "docker/inspectContainer";
         } catch (NotFoundException e) {
             model.addAttribute("error", e.getMessage());    
-	        List<Container> containers = containerManager.getContainerList();           
-	        model.addAttribute("containers", containers);    
-	        return "docker/listContainers";
+            List<Container> containers = containerManager.getContainerList();           
+            model.addAttribute("containers", containers);    
+            return "docker/listContainers";
         }
+    }
+    
+    /**
+     * Accepts a GET request to start a specific Container.
+     *
+     * View is a web form to collect attributes use to create a Container.
+     * 
+     * @param id  The Container ID as provided by @PathVariable.
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+    @RequestMapping(value="/docker/container/{id}/start", method=RequestMethod.GET)
+    public String startContainer(@PathVariable String id, Model model) { 
+        Container container = containerManager.getContainer(id); 
+        if (container != null) {
+            try {
+                containerManager.startContainer(container);   
+                InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
+                model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
+                model.addAttribute("container", container);  
+		    } catch (Exception e) {
+	            model.addAttribute("error", e.getMessage());    
+	            List<Container> containers = containerManager.getContainerList();           
+	            model.addAttribute("containers", containers);    
+	            return "docker/listContainers";
+	        }
+				
+        } else {
+            List<Container> containers = containerManager.getContainerList();           
+            model.addAttribute("error", "Unable to load Container information.");            
+            model.addAttribute("containers", containers);  
+            return "docker/listContainers";  
+        }
+        return "docker/inspectContainer";
     }
 
     /**
@@ -155,10 +208,10 @@ public class DockerController implements HandlerExceptionResolver {
     @RequestMapping(value="/docker/container/create", method=RequestMethod.GET)
     public String createContainer(Model model) { 
         model.addAttribute("newContainer", new NewContainer());       
-		return "docker/createContainer";
+        return "docker/createContainer";
     }
-	
-	
+    
+    
     /**
      * Accepts a POST request to create a new com.github.dockerjava.api.command.InspectContainerResponse object.
      *
@@ -173,7 +226,7 @@ public class DockerController implements HandlerExceptionResolver {
      * @return  The redirect to the needed View. 
      */
     @RequestMapping(value="/docker/container/create", method=RequestMethod.POST)
-    public ModelAndView createUser(@Valid NewContainer newContainer, BindingResult result, Model model) {  
+    public ModelAndView createContainer(@Valid NewContainer newContainer, BindingResult result, Model model) {  
         if (result.hasErrors()) {
            return new ModelAndView("docker/createContainer"); 
         } else {

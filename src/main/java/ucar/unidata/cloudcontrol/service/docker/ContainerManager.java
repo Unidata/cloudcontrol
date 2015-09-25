@@ -20,6 +20,14 @@ public interface ContainerManager {
      * @return  A List of available Containers.   
      */
     public List<Container> getContainerList();
+	
+    /**
+     * Requests a single Container.
+     * 
+	 * @param id  The Container ID.
+     * @return  The Container.   
+     */
+	public Container getContainer(String id);
 
     /**
      * Returns a requested InspectContainerResponse.
@@ -28,7 +36,6 @@ public interface ContainerManager {
      * @return  The requested InspectContainerResponse.  
      */
     public InspectContainerResponse inspectContainer(String id);
-	
 	
     /**
      * Returns a requested InspectContainerResponse.

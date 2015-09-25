@@ -12,7 +12,7 @@
    </appender>
 
    <logger name="edu.ucar.unidata.cloudcontrol">
-     <level value="debug" />
+     <level value="DEBUG" />
      <appender-ref ref="cloudcontrolLogger"/>
    </logger>
 

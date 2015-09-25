@@ -27,7 +27,6 @@ public class ContainerManagerImpl implements ContainerManager {
     public DockerClient initializeDockerClient() {
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
             .withVersion("1.17")
-            .withDockerCertPath("/Users/oxelson/.docker/machine/machines/default")
             .build();
         return DockerClientBuilder.getInstance(config).build();
     }
@@ -41,6 +40,25 @@ public class ContainerManagerImpl implements ContainerManager {
     public List<Container> getContainerList() {
         DockerClient dockerClient = initializeDockerClient();
         return dockerClient.listContainersCmd().withShowAll(true).exec();
+    }
+	
+    /**
+     * Requests a single Container.
+     * 
+	 * @param id  The Container ID.
+     * @return  The Container.   
+     */
+    public Container getContainer(String id) {
+        DockerClient dockerClient = initializeDockerClient();
+		List<Container> containers = getContainerList();   
+		Container container = null;
+		for (Container c : containers) {
+			if (id.equals(c.getId())) {
+				container = c; 
+		        break;
+			}
+		} 
+        return container;
     }
    
     /**

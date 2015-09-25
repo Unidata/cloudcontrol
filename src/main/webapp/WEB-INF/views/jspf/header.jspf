@@ -10,28 +10,7 @@
       </c:otherwise>
      </c:choose>
 	</h1>   
-    <nav>
-     <ul class="nav"> 
-      <c:choose>
-      <c:when test="${baseUrl == ''}">
-       <li><a href="/">Home</a></li>
-       </c:when>
-       <c:otherwise>
-       <li><a href="${baseUrl}">Home</a></li>
-       </c:otherwise>
-      </c:choose>
-      <li><a href="${baseUrl}/docker/image/list">View Docker Images</a></li>
-      <li><a href="${baseUrl}/docker/container/list">View Docker Containers</a></li> 
-      <c:choose>
-       <c:when test="${loggedIn}">
-        <sec:authorize access="hasRole('ROLE_ADMIN')">
-         <li><a href="${baseUrl}/user"><spring:message code="link.user.list.title"/></a></li>  
-         <li><a href="${baseUrl}/user/create"><spring:message code="link.user.create.title"/></a></li>
-        </sec:authorize>
-       </c:when>
-      </c:choose>  
-     </ul>
- 
+    <nav> 
      <ul class="account"> 
       <c:choose>
        <c:when test="${loggedIn}">
