@@ -1,0 +1,77 @@
+#####
+# Dockerfile for creating a custom cloudcontrol service
+# that will perform aggregation for a directory mapped
+# from the host to the docker image.
+#####
+
+FROM ubuntu:utopic
+USER root
+ENV HOME /root
+WORKDIR /root
+
+###
+# Bring the system up to speed.
+###
+
+RUN apt-get update
+
+RUN apt-get install -y openjdk-8-jre openjdk-8-jdk
+#RUN apt-get install -y default-jre
+RUN apt-get install -y wget
+
+###
+# Pre-download files so that we don't have to repeat
+# this with downstream changes.
+###
+
+ENV TC_VERSION 8.0.26
+ENV TC_NAME apache-tomcat-${TC_VERSION}
+ENV TC_FILENAME ${TC_NAME}.tar.gz
+
+RUN wget http://apache.mirrors.tds.net/tomcat/tomcat-8/v${TC_VERSION}/bin/${TC_FILENAME}
+
+###
+# Download/install tomcat
+###
+
+RUN mv ${TC_FILENAME} /usr/local
+RUN cd /usr/local && tar -zxf ${TC_FILENAME}
+RUN ln -s /usr/local/${TC_NAME} /usr/local/tomcat
+
+###
+# Copy over configuration files.
+###
+
+
+
+# Tomcat users configuration.
+COPY docker/tomcat-users.xml /usr/local/${TC_NAME}/conf/
+
+# Set up the tomcat user
+RUN useradd tomcat
+RUN chown -R tomcat /usr/local/${TC_NAME}
+
+# Tomcat init script.
+COPY docker/tomcat /etc/init.d/
+RUN chmod 755 /etc/init.d/tomcat
+RUN update-rc.d tomcat defaults
+
+# Start Tomcat so that it can install CloudControl.
+RUN /etc/init.d/tomcat start
+
+###
+# Install cloudcontrol.
+###
+
+COPY ./build/libs/cloudcontrol.war /root/
+RUN chown tomcat /root/cloudcontrol.war
+RUN mv cloudcontrol.war /usr/local/${TC_NAME}/webapps/cloudcontrol.war
+
+###
+# Final Items
+###
+COPY docker/bootstrap_tomcat.sh /root/
+COPY docker/Dockerfile.cloudcontrol /root/
+EXPOSE 8080
+
+CMD /root/bootstrap_tomcat.sh
