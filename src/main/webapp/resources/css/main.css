@@ -360,6 +360,7 @@ table tbody td {
  padding: 5px;
  vertical-align: top;
  border: 1px solid #BCC4D0;
+ word-wrap: break-word;
 }
 table.nodec tbody td {
  border: none !important;

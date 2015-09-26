@@ -752,7 +752,7 @@
      </i>
     </h5>
     <ul>
-     <li><spring:message code="docker.container.inspect.option.start"/></li>
+     <li><a href="${baseUrl}/docker/container/<c:out value="${container.id}" />/start"><spring:message code="docker.container.inspect.option.start"/></a></li>
      <li><spring:message code="docker.container.inspect.option.stop"/></li>
      <li><spring:message code="docker.container.inspect.option.delete"/></li>
     </ul>

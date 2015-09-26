@@ -177,28 +177,30 @@ public class DockerController implements HandlerExceptionResolver {
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/docker/container/{id}/start", method=RequestMethod.GET)
-    public String startContainer(@PathVariable String id, Model model) { 
+    public ModelAndView startContainer(@PathVariable String id, Model model) { 
         Container container = containerManager.getContainer(id); 
         if (container != null) {
             try {
                 containerManager.startContainer(container);   
-                InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
+                InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
+                if (!inspectContainerResponse.getState().isRunning()) {
+                    logger.info(String.valueOf(inspectContainerResponse.getState().getExitCode()));
+                }        
                 model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
                 model.addAttribute("container", container);  
-		    } catch (Exception e) {
-	            model.addAttribute("error", e.getMessage());    
-	            List<Container> containers = containerManager.getContainerList();           
-	            model.addAttribute("containers", containers);    
-	            return "docker/listContainers";
-	        }
-				
+            } catch (Exception e) {
+                model.addAttribute("error", e.getMessage());    
+                List<Container> containers = containerManager.getContainerList();           
+                model.addAttribute("containers", containers);    
+                return new ModelAndView("docker/listContainers");
+            }
         } else {
             List<Container> containers = containerManager.getContainerList();           
             model.addAttribute("error", "Unable to load Container information.");            
             model.addAttribute("containers", containers);  
-            return "docker/listContainers";  
+            return new ModelAndView("docker/listContainers");  
         }
-        return "docker/inspectContainer";
+        return new ModelAndView("docker/inspectContainer");
     }
 
     /**
@@ -212,23 +214,23 @@ public class DockerController implements HandlerExceptionResolver {
     @RequestMapping(value="/docker/container/create", method=RequestMethod.GET)
     public String createContainer(@RequestParam(value = "id", required = false) String id, Model model) { 
         model.addAttribute("newContainer", new NewContainer());     
-		if (!StringUtils.isEmpty(id) ) {
-	        Image image = imageManager.getImage(id);
-			String repository = imageManager.getImageRepository(image);
-			NewContainer c = new NewContainer();
-			c.setImageRepository(repository);
-	        model.addAttribute("newContainer", c);        
-		}
-		Map<String,String> imageMap = imageManager.getRepositoryMap();
-		model.addAttribute("imageMap", imageMap);    
+        if (!StringUtils.isEmpty(id) ) {
+            Image image = imageManager.getImage(id);
+            String repository = imageManager.getImageRepository(image);
+            NewContainer c = new NewContainer();
+            c.setImageRepository(repository);
+            model.addAttribute("newContainer", c);        
+        }
+        Map<String,String> imageMap = imageManager.getRepositoryMap();
+        model.addAttribute("imageMap", imageMap);    
         return "docker/createContainer";
     }
-	
+    
     /**
      * Accepts a POST request to create a new com.github.dockerjava.api.command.InspectContainerResponse object.
      *
      * View is either inspectContainer for successful Container  
-	 * creation, or the web form to create a new Container.
+     * creation, or the web form to create a new Container.
      * 
      * @param newContainer  The NewContainer object. 
      * @param result  The BindingResult for error handling.
@@ -241,26 +243,26 @@ public class DockerController implements HandlerExceptionResolver {
            return new ModelAndView("docker/createContainer"); 
         } else {
             CreateContainerResponse createContainerResponse = containerManager.createContainer(newContainer);   
-			String id = createContainerResponse.getId();
-	        try {
-	            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
-	            model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
-	            Container container = containerManager.getContainer(id); 
-	            if (container != null) {
-	                model.addAttribute("container", container);  
-	            } else {
-	                List<Container> containers = containerManager.getContainerList();           
-	                model.addAttribute("error", "Unable to load Container information.");            
-	                model.addAttribute("containers", containers);  
-	                return new ModelAndView("docker/listContainers");  
-	            }
-	            return new ModelAndView("docker/inspectContainer");
-	        } catch (NotFoundException e) {
-	            model.addAttribute("error", e.getMessage());    
-	            List<Container> containers = containerManager.getContainerList();           
-	            model.addAttribute("containers", containers);    
-	            return new ModelAndView("docker/listContainers");
-	        } 
+            String id = createContainerResponse.getId();
+            try {
+                InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
+                model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
+                Container container = containerManager.getContainer(id); 
+                if (container != null) {
+                    model.addAttribute("container", container);  
+                } else {
+                    List<Container> containers = containerManager.getContainerList();           
+                    model.addAttribute("error", "Unable to load Container information.");            
+                    model.addAttribute("containers", containers);  
+                    return new ModelAndView("docker/listContainers");  
+                }
+                return new ModelAndView("docker/inspectContainer");
+            } catch (NotFoundException e) {
+                model.addAttribute("error", e.getMessage());    
+                List<Container> containers = containerManager.getContainerList();           
+                model.addAttribute("containers", containers);    
+                return new ModelAndView("docker/listContainers");
+            } 
         }         
     }
 
