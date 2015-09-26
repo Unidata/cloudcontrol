@@ -598,7 +598,7 @@
      <li><spring:message code="docker.image.inspect.option.history"/></li>
      <li><spring:message code="docker.image.inspect.option.registry"/></li>
      <li><spring:message code="docker.image.inspect.option.tag"/></li>
-     <li><a href="${baseUrl}/docker/container/create"><spring:message code="docker.image.inspect.option.createContainer"/></a></li>
+     <li><a href="${baseUrl}/docker/container/create?id=<c:out value="${image.id}" />"><spring:message code="docker.image.inspect.option.createContainer"/></a></li>
      <li><spring:message code="docker.image.inspect.option.delete"/></li>
      </ul>
    </div><!-- /.right -->

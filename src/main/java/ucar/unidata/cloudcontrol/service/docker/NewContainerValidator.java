@@ -40,6 +40,7 @@ public class NewContainerValidator implements Validator  {
         validateName(newContainer.getName(), errors);  
         validatePortNumber(newContainer.getPortNumber(), errors); 
         validateHostName(newContainer.getHostName(), errors);
+		validateImageRepository(newContainer.getImageRepository(), errors);
     }
 
     /**
@@ -67,6 +68,15 @@ public class NewContainerValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateHostName(String input, Errors errors) {
+    }    
+	
+    /**
+     * Validates the user input for the image id field.
+     * 
+     * @param input  The NewContainer input to validate.
+     * @param error  Object in which to store any validation errors.
+     */
+    public void validateImageRepository(String input, Errors errors) {
     }    
 	
     /**

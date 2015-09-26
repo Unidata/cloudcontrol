@@ -1,6 +1,8 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectImageResponse;
@@ -56,6 +58,44 @@ public class ImageManagerImpl implements ImageManager {
         } 
         return image;
     }
+     
+    /**
+     * Requests an Image's repository.
+     * 
+     * @param image  The Image.
+     * @return  The Image repository (String).  
+     */
+    public String getImageRepository(Image image) {
+        DockerClient dockerClient = initializeDockerClient();
+        String id = image.getId();
+        String repository = null;
+        List<Image> images = getImageList();   
+        for (Image i : images) {
+            if (id.equals(i.getId())) {
+                String[] repoTags = i.getRepoTags();
+                String[] splitString = repoTags[0].split(":");     
+                repository = splitString[0];
+                break;
+            }
+        } 
+        return repository;
+    }
+     
+    /**
+     * Requests a Map of the Image's repositories (for form dropdown selection).
+     * 
+     * @return  The repository Map<String,String>.
+     */
+    public Map<String,String> getRepositoryMap() {
+        DockerClient dockerClient = initializeDockerClient();
+        Map<String,String> imageMap = new LinkedHashMap<String,String>();
+        List<Image> imageList = getImageList();
+        for (Image i : imageList) {
+            String repo = getImageRepository(i);
+            imageMap.put(repo, repo);
+	    }
+		return imageMap;
+    }   
     
     /**
      * Requests a search of the available Images with a given query.

@@ -1,9 +1,12 @@
 package edu.ucar.unidata.cloudcontrol.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -206,19 +210,25 @@ public class DockerController implements HandlerExceptionResolver {
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/docker/container/create", method=RequestMethod.GET)
-    public String createContainer(Model model) { 
-        model.addAttribute("newContainer", new NewContainer());       
+    public String createContainer(@RequestParam(value = "id", required = false) String id, Model model) { 
+        model.addAttribute("newContainer", new NewContainer());     
+		if (!StringUtils.isEmpty(id) ) {
+	        Image image = imageManager.getImage(id);
+			String repository = imageManager.getImageRepository(image);
+			NewContainer c = new NewContainer();
+			c.setImageRepository(repository);
+	        model.addAttribute("newContainer", c);        
+		}
+		Map<String,String> imageMap = imageManager.getRepositoryMap();
+		model.addAttribute("imageMap", imageMap);    
         return "docker/createContainer";
     }
-    
-    
+	
     /**
      * Accepts a POST request to create a new com.github.dockerjava.api.command.InspectContainerResponse object.
      *
-     * View is either the newly created User object, or the web form to create a 
-     * new User if: 
-     * 1) a User of the same user name has already exists in the database, 
-     * 2) or if there are validation errors with the user input. 
+     * View is either inspectContainer for successful Container  
+	 * creation, or the web form to create a new Container.
      * 
      * @param newContainer  The NewContainer object. 
      * @param result  The BindingResult for error handling.
@@ -230,11 +240,30 @@ public class DockerController implements HandlerExceptionResolver {
         if (result.hasErrors()) {
            return new ModelAndView("docker/createContainer"); 
         } else {
-            CreateContainerResponse createContainerResponse = containerManager.createContainer(newContainer);      
-            model.addAttribute("createContainerResponse", createContainerResponse);       
-            return new ModelAndView("docker/inspectContainer");
+            CreateContainerResponse createContainerResponse = containerManager.createContainer(newContainer);   
+			String id = createContainerResponse.getId();
+	        try {
+	            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
+	            model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
+	            Container container = containerManager.getContainer(id); 
+	            if (container != null) {
+	                model.addAttribute("container", container);  
+	            } else {
+	                List<Container> containers = containerManager.getContainerList();           
+	                model.addAttribute("error", "Unable to load Container information.");            
+	                model.addAttribute("containers", containers);  
+	                return new ModelAndView("docker/listContainers");  
+	            }
+	            return new ModelAndView("docker/inspectContainer");
+	        } catch (NotFoundException e) {
+	            model.addAttribute("error", e.getMessage());    
+	            List<Container> containers = containerManager.getContainerList();           
+	            model.addAttribute("containers", containers);    
+	            return new ModelAndView("docker/listContainers");
+	        } 
         }         
     }
+
 
     /**
      * This method gracefully handles any uncaught exception that are fatal 

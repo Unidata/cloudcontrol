@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.List;
+import java.util.Map;
 
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.Image;
@@ -25,7 +26,22 @@ public interface ImageManager {
 	 * @param id  The Image ID.
      * @return  The Image.   
      */
-    public Image getImage(String id); 
+    public Image getImage(String id);
+	
+    /**
+     * Requests an Image's repository.
+     * 
+     * @param image  The Image.
+     * @return  The Image repository (String).  
+     */
+	public String getImageRepository(Image image);
+	
+    /**
+     * Requests a Map of the Image's repositories (for form dropdown selection).
+     * 
+     * @return  The repository Map<String,String>.
+     */
+    public Map<String,String> getRepositoryMap();
 	
     /**
      * Requests a search of the available Images with a given query.

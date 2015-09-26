@@ -79,11 +79,11 @@ h5 {
  display: block;
 }
 pre {
- white-space: pre-wrap;      
+ white-space: pre-wrap;   
  white-space: -moz-pre-wrap;  
- white-space: -pre-wrap;      
- white-space: -o-pre-wrap;    
- word-wrap: break-word;       
+ white-space: -pre-wrap;   
+ white-space: -o-pre-wrap; 
+ word-wrap: break-word;    
 }
 
 
@@ -115,31 +115,60 @@ header ul {
  padding:0;
 }
 
-header ul.account {
+header ul.nav {
  float: right;
- margin: 5px 10px 0 0;
+ margin: 5px 50px 0 0;
  padding: 0;
 }
-header ul.account a:link {
+header ul.nav a:link {
  color: #FFFFFF;
  text-decoration: none;
 }
-header ul.account a:visited {
+header ul.nav a:visited {
   color: #FFFFFF;
   text-decoration: none;
 }
-header ul.account a:active,
-header ul.account a:hover {
+header ul.nav a:active,
+header ul.nav a:hover {
   color: #FFFFFF;
   text-decoration: underline;
 }
-header ul li {
+header ul.nav li {
  display:inline;
  margin: 0;
- padding: 0 8px 0 8px;
+ padding: 0 20px;
+ border: 1px solid #0D345E;
 }
 
-header nav ul.account li form {
+/* dropdown submenu */
+header ul.nav ul {
+ display: none; 
+}
+
+header ul.nav ul.dropit-submenu {
+ background-color: #0D345E;
+ padding: 6px 0;
+ margin: 3px 0 0 1px;
+}   
+
+header ul.nav ul.dropit-submenu li {
+ white-space: nowrap;
+ margin: 5px;
+ display: block;
+ padding:0;
+}
+
+header ul.nav ul.dropit-submenu li a {
+ line-height: 25px;
+ color: #FFFFFF;
+}
+
+header ul.nav  ul.dropit-submenu a:hover {
+ text-decoration: underline;
+}
+
+
+header nav ul.nav li form {
  padding:0;
  margin: 0;
  display:inline;
@@ -147,15 +176,15 @@ header nav ul.account li form {
  top: 8px;
 }
 
-header nav ul.account li form.logout {
+header nav ul.nav li form.logout {
  right: 10px;
 }
 
-header nav ul.account li form.loggedInAs {
+header nav ul.nav li form.loggedInAs {
  right: 70px;
 }
 
-header nav ul.account li input {
+header nav ul.nav li input {
  color: #FFFFFF;
  text-decoration: none;
  font-weight: bold;
@@ -165,13 +194,14 @@ header nav ul.account li input {
  cursor:pointer;
 }
 
-header nav ul.account li input:active,
-header nav ul.account li input:hover {
+header nav ul.nav li input:active,
+header nav ul.nav li input:hover {
   text-decoration: underline;
 }
 
-
-
+.dropit .dropit-submenu {
+ min-width: 250px;
+}
 
 /* content */
 #content {

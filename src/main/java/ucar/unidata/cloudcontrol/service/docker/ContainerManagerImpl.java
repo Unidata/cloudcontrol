@@ -84,7 +84,7 @@ public class ContainerManagerImpl implements ContainerManager {
         Ports portBindings = new Ports();
         portBindings.bind(port, Ports.Binding(11000 + newContainer.getPortNumber()));
 
-        return dockerClient.createContainerCmd("hello-world")
+        return dockerClient.createContainerCmd(newContainer.getImageRepository())
            .withTty(true)
            .withPublishAllPorts(true)
            .withName(newContainer.getName())

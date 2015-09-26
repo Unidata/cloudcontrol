@@ -5,10 +5,18 @@ $(document).ready(function() {
     $(document).tooltip({ items: "img[alt]",
         content: function() { return $(this).attr("alt") } 
     });
-*/
-	
-	toggleTheThings();
-	
+    
+    */
+    
+ 
+    $('ul.nav').dropit({ action: 'mouseenter' });
+
+
+    
+
+    
+    toggleTheThings();
+    
     $("table tbody tr:nth-child(odd)").addClass("odd");
     $("table.list").tablesorter();
     $("table.list").bind("sortEnd",function() { 
@@ -18,9 +26,10 @@ $(document).ready(function() {
 });
 
 function toggleTheThings () {
-        $(".hideandshow").hide();
+	
+    $(".hideandshow").hide();
 
-	function runEffect(item){ 
+    function runEffect(item){ 
             var corresponding = $(item).attr('id') + "Section";            
             $("#"+ corresponding).toggle();
             $(item).toggleClass("collapse");
@@ -32,9 +41,9 @@ function toggleTheThings () {
             }
         };    
 
-	$(".toggle").click(function () {  
-            runEffect($(this));
-	    return false;
+    $(".toggle").click(function () {  
+        runEffect($(this));
+        return false;
     });   
 } 
 

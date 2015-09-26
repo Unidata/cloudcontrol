@@ -10,6 +10,9 @@ ext {
 group = "edu.ucar.unidata"
 version = "0.1-SNAPSHOT"
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 repositories {
     mavenCentral()
     flatDir {
@@ -19,7 +22,7 @@ repositories {
 
 war {
     extension = "war"
-    archiveName = 'cloudcontrol.war'
+    archiveName = 'ROOT.war'
     manifest {
         attributes "Implementation-Version": project.version,
                    "Implementation-Title": project.name,
