@@ -93,6 +93,16 @@ public class ContainerManagerImpl implements ContainerManager {
            .withHostName(newContainer.getHostName())
            .exec();
     }
+	
+    /**
+     * Removes a Container.
+     *
+     * @param container  The Container object to remove.
+     */
+    public void removeContainer(Container container) {
+        DockerClient dockerClient = initializeDockerClient();
+		dockerClient.removeContainerCmd(container.getId()).exec();
+	}
 
     /**
      * Starts a Container.
@@ -124,5 +134,6 @@ public class ContainerManagerImpl implements ContainerManager {
         DockerClient dockerClient = initializeDockerClient();
         dockerClient.stopContainerCmd(container.getId()).withTimeout(timeout).exec();
     }
+	
 
 }

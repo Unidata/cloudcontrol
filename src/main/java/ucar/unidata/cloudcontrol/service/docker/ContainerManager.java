@@ -46,6 +46,13 @@ public interface ContainerManager {
     public CreateContainerResponse createContainer(NewContainer newContainer) ;
 	
     /**
+     * Removes a Container.
+     *
+     * @param container  The Container object to remove.
+     */
+	public void removeContainer(Container container);
+	
+    /**
      * Starts a Container.
      * 
      * @param container  The Container to start.

@@ -66,7 +66,8 @@
         <spring:message code="docker.image.created"/>
        </td>
        <td>
-        <c:out value="${image.created}" />    
+        <c:set target="${myDate}" property="time" value="${image.created * 1000}"/>    
+        <fmt:formatDate type="both" value="${myDate}" /> 
        </td>
       </tr>
       <tr>      
@@ -74,7 +75,19 @@
         <spring:message code="docker.image.virtualSize"/> 
        </td>
        <td>
-        <c:out value="${image.virtualSize}" />    
+        <c:choose>
+         <c:when test="${image.virtualSize > 1000000}">
+          <c:set var="vSize" value="${image.virtualSize / 1000000}"/>              
+          <fmt:formatNumber value="${vSize}" type="number"/> MB
+         </c:when>
+		 <c:when test="${image.virtualSize > 1000}">
+          <c:set var="vSize" value="${image.virtualSize / 1000}"/>              
+          <fmt:formatNumber value="${vSize}" type="number"/> KB
+         </c:when>
+         <c:otherwise>
+          <c:out value="${image.virtualSize}" />  B
+         </c:otherwise>
+		</c:choose>
        </td>
       </tr>
       <tr>      
@@ -82,7 +95,19 @@
         <spring:message code="docker.image.size"/> 
        </td>
        <td>
-        <c:out value="${image.size}" />     
+        <c:choose>
+         <c:when test="${image.size > 1000000}">
+          <c:set var="size" value="${image.size / 1000000}"/>              
+          <fmt:formatNumber value="${size}" type="number"/> MB
+         </c:when>
+   		 <c:when test="${image.size > 1000}">
+          <c:set var="size" value="${image.size / 1000}"/>              
+          <fmt:formatNumber value="${size}" type="number"/> KB
+         </c:when>
+         <c:otherwise>
+          <c:out value="${image.size}" />  B
+         </c:otherwise>
+   		</c:choose>  
        </td>
       </tr>
      </tbody>

@@ -34,6 +34,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.github.dockerjava.api.NotFoundException;
+import com.github.dockerjava.api.NotModifiedException;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.InspectImageResponse;
@@ -124,11 +125,13 @@ public class DockerController implements HandlerExceptionResolver {
      * View is a list of all Container objects. The view can
      * handle an empty list of Containers if none are found.
      * 
+     * @param error An error (if provided).
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/docker/container/list", method=RequestMethod.GET)
-    public String listContainers(Model model) { 
+    public String listContainers(@RequestParam(value = "error", required = false) String error, Model model) { 
+		model.addAttribute("error", error);
         List<Container> containers = containerManager.getContainerList();           
         model.addAttribute("containers", containers);    
         return "docker/listContainers";
@@ -140,12 +143,14 @@ public class DockerController implements HandlerExceptionResolver {
      * View is the requested InspectContainerResponse (details corresponding to an Container), 
      * or a list of all Container objects if unable to find the requested InspectContainerResponse.
      * 
+     * @param error An error (if provided).
      * @param id  The Container ID as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/docker/container/{id}", method=RequestMethod.GET)
-    public String inspectContainer(@PathVariable String id, Model model) { 
+    public String inspectContainer(@RequestParam(value = "error", required = false) String error, @PathVariable String id, Model model) {
+        model.addAttribute("error", error);
         try {
             InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id);         
             model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
@@ -170,37 +175,88 @@ public class DockerController implements HandlerExceptionResolver {
     /**
      * Accepts a GET request to start a specific Container.
      *
-     * View is a web form to collect attributes use to create a Container.
-     * 
+     * View is one of the following: 
+     * 1) the inspectContainer view with the updated Container status if successful;
+     * 2) the inspectContainer view if Container state is shown as not running (unsuccessful);
+     * 3) the listContainers view if unable to find the Container or some exception.
+     *    
      * @param id  The Container ID as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/docker/container/{id}/start", method=RequestMethod.GET)
-    public ModelAndView startContainer(@PathVariable String id, Model model) { 
+    public String startContainer(@PathVariable String id, Model model) { 
         Container container = containerManager.getContainer(id); 
         if (container != null) {
             try {
-                containerManager.startContainer(container);   
-                InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
-                if (!inspectContainerResponse.getState().isRunning()) {
-                    logger.info(String.valueOf(inspectContainerResponse.getState().getExitCode()));
-                }        
-                model.addAttribute("inspectContainerResponse", inspectContainerResponse);    
-                model.addAttribute("container", container);  
-            } catch (Exception e) {
-                model.addAttribute("error", e.getMessage());    
+                containerManager.startContainer(container);  
+            } catch (NotModifiedException e) {
+                model.addAttribute("error", "Container is already running.");    
+            } catch (NotFoundException e) {
+                logger.error("Unable to find and start container: " + e.getMessage());
+                model.addAttribute("error", "Unable to find and start container.");    
                 List<Container> containers = containerManager.getContainerList();           
                 model.addAttribute("containers", containers);    
-                return new ModelAndView("docker/listContainers");
+                return "redirect:/docker/container/list";  
             }
+            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
+            if (!inspectContainerResponse.getState().isRunning()) {
+                logger.error(String.valueOf(inspectContainerResponse.getState().getExitCode()));
+                model.addAttribute("error", "Unable to start container.  Container state is listed as not running.");    
+            }        
+            model.addAttribute("inspectContainerResponse", inspectContainerResponse); 
+            model.addAttribute("container", container);  
+            return "redirect:/docker/container/{id}";
         } else {
             List<Container> containers = containerManager.getContainerList();           
-            model.addAttribute("error", "Unable to load Container information.");            
+            model.addAttribute("error", "Unable to start container. Container with ID: " + id + " not found.");            
             model.addAttribute("containers", containers);  
-            return new ModelAndView("docker/listContainers");  
+            return "redirect:/docker/container/list";  
         }
-        return new ModelAndView("docker/inspectContainer");
+    }
+    
+    
+    /**
+     * Accepts a GET request to stop a specific Container.
+     *
+     * View is one of the following: 
+     * 1) the inspectContainer view with the updated Container status if successful;
+     * 2) the inspectContainer view if Container state is shown as running (unsuccessful);
+     * 3) the listContainers view if unable to find the Container or some exception occurs.
+     * 
+     * @param id  The Container ID as provided by @PathVariable.
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+    @RequestMapping(value="/docker/container/{id}/stop", method=RequestMethod.GET)
+    public String stopContainer(@PathVariable String id, Model model) { 
+        Container container = containerManager.getContainer(id); 
+        if (container != null) {
+            try {
+                containerManager.stopContainer(container);  
+            } catch (NotModifiedException e) {
+                model.addAttribute("error", "Container is not running.");    
+            } catch (NotFoundException e) {
+                logger.error("Unable to find and stop container: " + e.getMessage());
+                model.addAttribute("error", "Unable to find and stop container.");    
+                List<Container> containers = containerManager.getContainerList();           
+                model.addAttribute("containers", containers);    
+                return "redirect:/docker/container/list";  
+            }
+            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
+            if (inspectContainerResponse.getState().isRunning()) {
+                logger.error(String.valueOf(inspectContainerResponse.getState().getExitCode()));
+                model.addAttribute("error", "Unable to stop container.  Container state is listed as still running.");    
+            }        
+            model.addAttribute("inspectContainerResponse", inspectContainerResponse); 
+            model.addAttribute("container", container);  
+            return "redirect:/docker/container/{id}";
+        } else {
+            List<Container> containers = containerManager.getContainerList();           
+            model.addAttribute("error", "Unable to stop container. Container with ID: " + id + " not found.");            
+            model.addAttribute("containers", containers);  
+            return "redirect:/docker/container/list";  
+        }
     }
 
     /**

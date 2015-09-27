@@ -27,11 +27,11 @@
          <th>
           <spring:message code="docker.container.command"/>
          </th>
-		 <!--
+         <!--
          <th>
           <spring:message code="docker.container.id"/>
          </th>
-			 -->
+             -->
          <th> 
           <spring:message code="docker.container.created"/>
          </th>
@@ -56,53 +56,55 @@
         <c:forEach items="${containers}" var="container">    
          <tr>
           <td>
-   		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+              <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
             <c:out value="${container.command}" />
-   		   </a> 
+              </a> 
           </td>
-		  <!--
+          <!--
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
             <c:out value="${container.id}" />
-		   </a>
-          </td>		  
-			  -->
+           </a>
+          </td>          
+              -->
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
-            <c:out value="${container.created}" />	
-	       </a> 		      
-          </td>	  
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+            <c:set target="${myDate}" property="time" value="${container.created * 1000}"/>    
+            <fmt:formatDate type="both" value="${myDate}" />    
+           </a>               
+          </td>      
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
             <c:out value="${container.image}" />
-		   </a> 
-          </td>		  
+           </a> 
+          </td>          
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
-		    <c:forEach var="name" items="${container.names}">   
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+            <c:forEach var="name" items="${container.names}">   
              <c:out value="${name}" /><br/>
-		    </c:forEach>
-	       </a>
+            </c:forEach>
+           </a>
           </td>
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
-		    <c:forEach var="port" items="${container.ports}">   
-             <c:out value="${port}" /><br/>
-		    </c:forEach>
-	       </a>
+           <c:forEach var="port" items="${container.ports}">   
+            <spring:message code="docker.container.port.ip"/> : <c:out value="${port.ip}" /><br/>
+            <spring:message code="docker.container.port.privatePort"/> : <c:out value="${port.privatePort}" /><br/>
+            <spring:message code="docker.container.port.publicPort"/> : <c:out value="${port.publicPort}" /><br/>
+            <spring:message code="docker.container.port.type"/> : <c:out value="${port.type}" /><br/><br/>
+           </c:forEach>
           </td>
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
-		    <c:forEach var="label" items="${container.labels}">   
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+            <c:forEach var="label" items="${container.labels}">   
              <c:out value="${label.key}" /> : 
-			 <c:out value="${label.value}" /><br/>
-		    </c:forEach>
-	       </a>
+             <c:out value="${label.value}" /><br/>
+            </c:forEach>
+           </a>
           </td>
           <td>
-		   <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
-            <c:out value="${container.status}" />	  
-	       </a> 
+           <a href="${baseUrl}/docker/container/<c:out value="${container.id}" />">
+            <c:out value="${container.status}" />      
+           </a> 
           </td>
          </tr>
         </c:forEach>

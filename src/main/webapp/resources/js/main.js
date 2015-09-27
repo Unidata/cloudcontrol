@@ -14,15 +14,18 @@ $(document).ready(function() {
 
     
 
-    
+    /* toggle */
     toggleTheThings();
     
+	/* zebra stripes */
     $("table tbody tr:nth-child(odd)").addClass("odd");
     $("table.list").tablesorter();
     $("table.list").bind("sortEnd",function() { 
         $("table tbody tr").removeClass("odd");
         $("table tbody tr:nth-child(odd)").addClass("odd");
     }); 
+	
+
 });
 
 function toggleTheThings () {

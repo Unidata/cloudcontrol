@@ -342,6 +342,7 @@ table.nodec tbody tr {
  background-color: transparent !important;
  border-bottom: 1px solid #BCC4D0;
 }
+
 table tbody tr.odd {
  background-color: #EDF4FF;
 }
