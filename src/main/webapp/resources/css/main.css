@@ -123,6 +123,7 @@ header ul.nav {
 header ul.nav a:link {
  color: #FFFFFF;
  text-decoration: none;
+ 
 }
 header ul.nav a:visited {
   color: #FFFFFF;
@@ -137,7 +138,10 @@ header ul.nav li {
  display:inline;
  margin: 0;
  padding: 0 20px;
- border: 1px solid #0D345E;
+}
+
+header ul.nav li.dropit-trigger a.dd {
+ padding-bottom: 10px;
 }
 
 /* dropdown submenu */
@@ -147,7 +151,7 @@ header ul.nav ul {
 
 header ul.nav ul.dropit-submenu {
  background-color: #0D345E;
- padding: 6px 0;
+ padding: 10px 0;
  margin: 3px 0 0 1px;
 }   
 
