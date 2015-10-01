@@ -39,13 +39,13 @@
         <c:choose>
          <c:when test="${user.userName eq authUserName}">
           <th>
-           <spring:message code="form.action.title"/>
+           
           </th>
          </c:when>
          <c:otherwise>
           <sec:authorize access="hasRole('ROLE_ADMIN')">
            <th>
-            <spring:message code="form.action.title"/>
+            
            </th>
           </sec:authorize>
          </c:otherwise>

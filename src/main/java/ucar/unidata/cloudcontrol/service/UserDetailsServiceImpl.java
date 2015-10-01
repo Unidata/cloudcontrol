@@ -48,7 +48,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException, DataAccessException {
         UserDetails userDetails = null;
-        edu.ucar.unidata.cloudcontrol.domain.User user = userDao.lookupUser(userName);
+		edu.ucar.unidata.cloudcontrol.domain.User user;
+		try {
+			 user = userDao.lookupUser(userName);
+		} catch (DataAccessException e) {
+			throw new UsernameNotFoundException("FOO: " + e.toString());
+		}
+        
         // org.springframework.security.core.userdetails.User
         String username =  user.getUserName();
         logger.info("username: "+ username);

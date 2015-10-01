@@ -9,7 +9,7 @@ $(document).ready(function() {
     */
     
  
-    $('ul.nav').dropit({ action: 'mouseenter' });
+    $('ul.nav').dropit({ action: 'mouseenter', triggerEl: 'b' });
 
 
     

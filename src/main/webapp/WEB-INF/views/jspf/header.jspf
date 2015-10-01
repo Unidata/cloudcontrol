@@ -10,51 +10,63 @@
       </c:otherwise>
      </c:choose>
     </h1>   
+    
     <nav> 
      <ul class="nav"> 
       <li>
-       <a href="#" class="dd"><spring:message code="link.docker.menu.title"/></a>
+       <b><spring:message code="link.gettingstarted.title"/></b>
        <ul>
-        <li><spring:message code="docker.option.info"/></li>
-        <li><spring:message code="docker.option.auth"/></li>
-        <li><spring:message code="docker.option.ping"/></li>
-        <li><spring:message code="docker.option.version"/></li>
-       </ul>
+        <li><spring:message code="link.register.title"/></li>
+       </ul>	 
       </li>
-
-      <li>
-       <a href="#" class="dd"><spring:message code="link.image.menu.title"/></a>
-       <ul>
-        <li><a href="${baseUrl}/docker/image/list"><spring:message code="docker.list.images.option.list"/></a></li>
-        <li><a href="${baseUrl}/docker/image/search"><spring:message code="docker.list.images.option.search"/></a></li>
-        <li><spring:message code="docker.list.images.option.create"/></li>
-        <li><spring:message code="docker.list.images.option.build"/></li>
-        <li><spring:message code="docker.list.images.option.pull"/></li>
-       </ul>
-      </li>
-      <li>
-       <a href="#" class="dd"><spring:message code="link.container.menu.title"/></a>
-       <ul>
-        <li><a href="${baseUrl}/docker/container/list"><spring:message code="docker.list.containers.option.list"/></a></li>
-        <li><a href="${baseUrl}/docker/container/create"><spring:message code="docker.list.containers.option.create"/></a></li>
-        <li><spring:message code="docker.list.containers.option.build"/></li>
-       </ul>
-      </li>
-
+	  
       <c:choose>
        <c:when test="${loggedIn}">
         <li>
-         <form action="${baseUrl}/user/${authUserName}" method="GET" class="loggedInAs">
-          <input type="submit" value="<spring:message code='link.account.title'/> ${authUserName}" />
-         </form>
+         <b><spring:message code="link.docker.menu.title"/></b>
+         <ul>
+          <li><spring:message code="docker.option.info"/></li>
+          <li><spring:message code="docker.option.auth"/></li>
+          <li><spring:message code="docker.option.ping"/></li>
+          <li><spring:message code="docker.option.version"/></li>
+         </ul>
         </li>
 
-        <c:url var="logoutUrl" value="/j_spring_security_logout" />
         <li>
-         <form action="${logoutUrl}" method="POST" class="logout">
-          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-          <input type="submit" value="<spring:message code='link.logout.title'/>" />
-         </form>
+         <b><spring:message code="link.image.menu.title"/></b>
+         <ul>
+          <li><a href="${baseUrl}/docker/image/list"><spring:message code="docker.list.images.option.list"/></a></li>
+          <li><a href="${baseUrl}/docker/image/search"><spring:message code="docker.list.images.option.search"/></a></li>
+          <li><spring:message code="docker.list.images.option.create"/></li>
+          <li><spring:message code="docker.list.images.option.build"/></li>
+          <li><spring:message code="docker.list.images.option.pull"/></li>
+         </ul>
+        </li>
+        <li>
+         <b><spring:message code="link.container.menu.title"/></b>
+         <ul>
+          <li><a href="${baseUrl}/docker/container/list"><spring:message code="docker.list.containers.option.list"/></a></li>
+          <li><a href="${baseUrl}/docker/container/create"><spring:message code="docker.list.containers.option.create"/></a></li>
+          <li><spring:message code="docker.list.containers.option.build"/></li>
+         </ul>
+        </li>
+
+        <li>
+         <b>${authUserName}</b>
+         <c:url var="logoutUrl" value="/j_spring_security_logout" />
+         <ul>
+          <li>
+           <form action="${baseUrl}/user/${authUserName}" method="GET">
+            <input type="submit" value="<spring:message code='link.account.title'/>" />
+           </form>
+          </li>
+          <li>
+           <form action="${logoutUrl}" method="POST">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <input type="submit" value="<spring:message code='link.logout.title'/>" />
+           </form>
+          </li>
+		 </ul>
         </li>
        </c:when>
        <c:otherwise>

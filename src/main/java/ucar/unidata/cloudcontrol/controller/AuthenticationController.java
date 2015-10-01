@@ -32,15 +32,27 @@ public class AuthenticationController {
      * Accepts a GET request for the login page.
      * View is the login page.
      *
-     * @param error An error (if provided).
+     * @param error The authentication error.
+     * @param model The Model used by the View.
+     * @return The 'login' path for the ViewResolver.
+     */
+    @RequestMapping(value = "/login/{error}", method = RequestMethod.GET)
+    public String getLoginPage(@PathVariable String error, Model model) {
+        if (error != null) {
+			model.addAttribute("error", error);
+        }
+        return "login";
+    }
+	
+    /**
+     * Accepts a GET request for the login page.
+     * View is the login page.
+     *
      * @param model The Model used by the View.
      * @return The 'login' path for the ViewResolver.
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginPage(@RequestParam(value = "error", required = false) boolean error, Model model) {
-        if (error == true) {
-            model.addAttribute("error", "You have entered an invalid useName or password.  Please try again.");
-        }
+    public String getLoginPage(Model model) {
         return "login";
     }
 

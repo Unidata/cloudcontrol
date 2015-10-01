@@ -7,12 +7,13 @@
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <c:choose>
-    <c:when test="${loggedIn}">
-     <p><a href="${baseUrl}/user/${authUserName}"><spring:message code="link.account.title"/> ${authUserName}</a></p>
-    </c:when>
-   </c:choose>
-
+   <h3><spring:message code="global.title"/></h3> 
+   <!-- left -->
+   <div class="left">
+   </div> <!-- /.left -->
+   <!-- right -->
+   <div class="right">
+   </div><!-- /.right -->
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>
  </html>

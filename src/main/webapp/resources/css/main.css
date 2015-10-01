@@ -100,19 +100,15 @@ pre {
 
 /* header */
 header {
- float: left;
  width: 100%;
  height: 30px;
  display: block; 
  margin: 0;
  padding: 0;
- background: transparent url('../images/header_bg.png') repeat-x 0 0;
-}
-header ul {
+ background-color: #0D345E;
  font-weight: bold;
  list-style: none;
- margin: 0 15px 0 2px;
- padding:0;
+ color: #FFFFFF;
 }
 
 header ul.nav {
@@ -120,6 +116,7 @@ header ul.nav {
  margin: 5px 50px 0 0;
  padding: 0;
 }
+
 header ul.nav a:link {
  color: #FFFFFF;
  text-decoration: none;
@@ -140,8 +137,15 @@ header ul.nav li {
  padding: 0 20px;
 }
 
-header ul.nav li.dropit-trigger a.dd {
+header ul.nav li.dropit-trigger b {
  padding-bottom: 10px;
+ padding-right: 20px;
+ background: transparent url('../images/dd.png') no-repeat right 6px;
+}
+
+header ul.nav li.dropit-trigger b:active, 
+header ul.nav li.dropit-trigger b:hover {
+	text-decoration: none;
 }
 
 /* dropdown submenu */
@@ -159,53 +163,42 @@ header ul.nav ul.dropit-submenu li {
  white-space: nowrap;
  margin: 5px;
  display: block;
- padding:0;
+ padding: 0;
 }
 
 header ul.nav ul.dropit-submenu li a {
  line-height: 25px;
- color: #FFFFFF;
-}
-
-header ul.nav  ul.dropit-submenu a:hover {
- text-decoration: underline;
-}
-
-
-header nav ul.nav li form {
- padding:0;
- margin: 0;
- display:inline;
- position: absolute;
- top: 8px;
-}
-
-header nav ul.nav li form.logout {
- right: 10px;
-}
-
-header nav ul.nav li form.loggedInAs {
- right: 70px;
-}
-
-header nav ul.nav li input {
- color: #FFFFFF;
- text-decoration: none;
- font-weight: bold;
- background: none !important;
- padding:0;
- border: none !important;
- cursor:pointer;
-}
-
-header nav ul.nav li input:active,
-header nav ul.nav li input:hover {
-  text-decoration: underline;
 }
 
 .dropit .dropit-submenu {
  min-width: 250px;
 }
+
+
+/* logout links */
+header nav ul.nav li form {
+ padding:0;
+ margin: 0;
+ display:inline;
+ position: relative;
+}
+
+header nav ul.nav li input {
+ color: #FFFFFF;
+ font-size: 10pt;
+ background: none !important;
+ padding:0;
+ border: none !important;
+ cursor:pointer;
+ font-family: verdana, arial, helvetica, sans-serif;
+ font-weight: bold;
+}
+
+header nav ul.nav ul.dropit-submenu li input:active,
+header nav ul.nav ul.dropit-submenu li input:hover {
+  text-decoration: none;
+}
+
 
 /* content */
 #content {
