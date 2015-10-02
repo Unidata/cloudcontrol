@@ -10,6 +10,14 @@
    <h3><spring:message code="global.title"/></h3> 
    <!-- left -->
    <div class="left">
+    <c:choose>
+     <c:when test="${loggedIn}">
+      <sec:authorize access="hasRole('ROLE_ADMIN')">
+		  admin stuff:
+		<a href="${baseUrl}/user"><spring:message code="user.list.title"/></a>
+      </sec:authorize>
+     </c:when>
+    </c:choose>    
    </div> <!-- /.left -->
    <!-- right -->
    <div class="right">

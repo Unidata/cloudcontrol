@@ -1,5 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.controller;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -60,10 +64,13 @@ public class UserController implements HandlerExceptionResolver {
      * View is a list of all Users in the database. The view can
      * handle an empty list of Users if no User objects have been
      * persisted in the database yet.
+	 *
+	 * Only Users with the role of 'ROLE_ADMIN' can view the list of Users.
      * 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/user", method=RequestMethod.GET)
     public String listUsers(Model model) { 
         List<User> users = userManager.getUserList();           
@@ -72,26 +79,40 @@ public class UserController implements HandlerExceptionResolver {
     }
 
     /**
-     * Accepts a GET request for a specific User object.
+     * Accepts a GET request to retrieve a specific User object.
      *
      * View is the requested User, or a list of all User objects
-     * if unable to find the requested User in the database.
+     * if unable to find the requested User in the database (ROLE_ADMIN).
+	 * This method is called when someone wants to view their own account details.
+	 *	
+     * Only the User/owner and Users with a role of 'ROLE_ADMIN' are 
+     * allowed to view the User account.
      * 
+     * @param authentication  The authentication token of the current User.
      * @param userName  The 'userName' as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/user/{userName}", method=RequestMethod.GET)
-    public String viewUser(@PathVariable String userName, Model model) { 
+    public String viewUser(Authentication authentication, @PathVariable String userName, Model model) { 
         try {
             User user = userManager.lookupUser(userName);           
             model.addAttribute("user", user);       
             return "viewUser";
         } catch (RecoverableDataAccessException e) {
-            model.addAttribute("error", e.getMessage());    
-            List<User> users = userManager.getUserList();           
-            model.addAttribute("users", users);    
-            return "listUsers";
+			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+			boolean isAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+			if (isAdmin) {
+	            model.addAttribute("error", e.getMessage());    
+	            List<User> users = userManager.getUserList();           
+	            model.addAttribute("users", users);    
+	            return "listUsers";
+			} else {
+	            model.addAttribute("error", e.getMessage());            
+	            model.addAttribute("user", new User());    
+	            return "viewUser";
+			}
         }
     }
 
@@ -148,47 +169,46 @@ public class UserController implements HandlerExceptionResolver {
 
 
     /**
-     * Accepts a GET request to update an existing User object. 
+     * Accepts a GET request to edit an existing User object. 
      * 
-     * View is a web form to update an existing User.
+     * View is a web form to edit an existing User.
      *
      * Only the User/owner and Users with a role of 'ROLE_ADMIN' are 
-     * allowed to update the User account.
+     * allowed to edit the User account.
      * 
      * @param userName  The 'userName' as provided by @PathVariable. 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
-    @RequestMapping(value="/user/update/{userName}", method=RequestMethod.GET)
-    public String updateUser(@PathVariable String userName, Model model) {   
+    @RequestMapping(value="/user/edit/{userName}", method=RequestMethod.GET)
+    public String editUser(@PathVariable String userName, Model model) {   
         User user = userManager.lookupUser(userName);   
         model.addAttribute("user", user);   
-        model.addAttribute("formAction", "update");      
-        return "createUser";
+        return "editUser";
     }
 
     /**
-     * Accepts a POST request to update an existing User object.
+     * Accepts a POST request to edit an existing User object.
      *
-     * View is either the updated User object, or the web form to update
+     * View is either the view to edit User object, or the web form to edit
      * the User if:
      * 1) unable to locate the User in the database,
      * 2) or if there are validation errors with the user input.
      *
      * Only the User/owner and Users with a role of 'ROLE_ADMIN' are 
-     * allowed to update the User account.
+     * allowed to edit the User account.
      * 
-     * @param user  The User to update. 
+     * @param user  The User to edit. 
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') or #user.userName == authentication.name")
-    @RequestMapping(value="/user/update", method=RequestMethod.POST)
-    public ModelAndView updateUser(@Valid User user, BindingResult result, Model model) {
+    @RequestMapping(value="/user/edit", method=RequestMethod.POST)
+    public ModelAndView editUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("formAction", "update");  
+           model.addAttribute("formAction", "edit");  
            return new ModelAndView("createUser"); 
         } else {   
             try {
@@ -197,7 +217,7 @@ public class UserController implements HandlerExceptionResolver {
                 return new ModelAndView(new RedirectView("/user/" + user.getUserName(), true));   
             } catch (RecoverableDataAccessException e) {
                 model.addAttribute("error", e.getMessage());  
-                model.addAttribute("formAction", "update");  
+                model.addAttribute("formAction", "edit");  
                 return new ModelAndView("createUser"); 
             }
         }    

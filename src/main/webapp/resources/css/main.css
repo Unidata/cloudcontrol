@@ -83,7 +83,7 @@ pre {
  white-space: -moz-pre-wrap;  
  white-space: -pre-wrap;   
  white-space: -o-pre-wrap; 
- word-wrap: break-word;    
+ word-wrap: break-word;  
 }
 
 
@@ -145,7 +145,7 @@ header ul.nav li.dropit-trigger b {
 
 header ul.nav li.dropit-trigger b:active, 
 header ul.nav li.dropit-trigger b:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 /* dropdown submenu */
@@ -231,23 +231,30 @@ header nav ul.nav ul.dropit-submenu li input:hover {
  text-align:left;
 }
 
-
+.fullWidth {
+  padding:0;
+  margin: 30px 0 0 0;
+  width: 98%; 
+  float: left;
+  top: 0;
+  height: 100%;
+}
 
 .left, .right {
-	padding:0;
-	margin: 30px 0 0 0;
-	width: 63%; /*56%; */
-	float: left;
-	top: 0;
-	height: 100%;
+  padding:0;
+  margin: 30px 0 0 0;
+  width: 63%; /*56%; */
+  float: left;
+  top: 0;
+  height: 100%;
 }
 
 .right {
-	padding: 10px;
-	margin: 60px 10px 0 0;
-	width: 28%;
-	float: right;
-	clear: right;
+  padding: 10px;
+  margin: 60px 10px 0 0;
+  width: 28%;
+  float: right;
+  clear: right;
 }
 
 
@@ -278,15 +285,21 @@ select {
 }
 
 .edit {
- background: transparent url('../images/edit.png') no-repeat 0 0;
+ padding-left: 20px;
+ cursor:pointer;
+ background: #CFCFCF url('../images/edit.png') no-repeat 0 0;
 }
 .view {
- background: transparent url('../images/view.png') no-repeat 0 0;
+ padding-left: 20px;
+ cursor:pointer;
+ background: #CFCFCF url('../images/view.png') no-repeat 0 0;
 }
 .hide,
 .delete {
+ padding-left: 20px;
  margin-left: 10px !important;
- background: transparent url('../images/delete.png') no-repeat 2px 0;
+ cursor:pointer;
+ background: #CFCFCF url('../images/delete.png') no-repeat 2px 0;
 }
 
 
@@ -354,6 +367,7 @@ table.nodec tbody tr:hover {
  background-color: transparent !important;
 }
 table tbody td {
+ cursor:default;
  margin: 0;
  padding: 5px;
  vertical-align: top;

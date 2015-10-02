@@ -245,13 +245,25 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement(insertAdminUserSQL);
-            preparedStatement.setString(1, "test");
+            preparedStatement.setString(1, "disabled");
             preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, 0);
             preparedStatement.setString(5, "plaza@unidata.ucar.edu");
-            preparedStatement.setString(6, "test");
-            preparedStatement.setString(7, "user");
+            preparedStatement.setString(6, "Account Disabled");
+            preparedStatement.setString(7, "User");
+            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.executeUpdate();
+			
+            preparedStatement = connection.prepareStatement(insertAdminUserSQL);
+            preparedStatement.setString(1, "genericUser");
+            preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
+            preparedStatement.setInt(3, 1);
+            preparedStatement.setInt(4, 1);
+            preparedStatement.setString(5, "plaza@unidata.ucar.edu");
+            preparedStatement.setString(6, "Generic");
+            preparedStatement.setString(7, "User");
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();

@@ -52,12 +52,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		try {
 			 user = userDao.lookupUser(userName);
 		} catch (DataAccessException e) {
-			throw new UsernameNotFoundException("FOO: " + e.toString());
+			throw new UsernameNotFoundException(e.toString());
 		}
         
         // org.springframework.security.core.userdetails.User
         String username =  user.getUserName();
-        logger.info("username: "+ username);
         String password = user.getPassword();
         boolean enabled = true;
         if (user.getAccountStatus() == 0) {
