@@ -185,6 +185,14 @@ public class UserController implements HandlerExceptionResolver {
     public String editUser(@PathVariable String userName, Model model) {   
         User user = userManager.lookupUser(userName);   
         model.addAttribute("user", user);   
+		Map<String,String> accessLevel = new HashMap<String,String>();
+		accessLevel.put("1", "User");
+	    accessLevel.put("2", "Administrator");
+		model.addAttribute("accessLevel", accessLevel);   
+		Map<String,String> accountStatus = new HashMap<String,String>();
+		accountStatus.put("1", "Active");
+	    accountStatus.put("0", "Disable");
+		model.addAttribute("accountStatus", accountStatus);   
         return "editUser";
     }
 
