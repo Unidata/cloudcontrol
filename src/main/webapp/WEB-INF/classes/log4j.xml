@@ -10,22 +10,21 @@
          <param name="ConversionPattern" value="[%d{yyyy-MM-dd' 'HH:mm:ss Z}] %-5p [%c:%L] - %m%n"/>
       </layout>
    </appender>
-
-   <logger name="edu.ucar.unidata.cloudcontrol">
-     <level value="DEBUG" />
+   
+   <logger name="edu.ucar.unidata.cloudcontrol" additivity="false">
+     <level value="INFO" />
      <appender-ref ref="cloudcontrolLogger"/>
    </logger>
 
-  <logger name="org.springframework">
-    <level value="WARN" />
-    <appender-ref ref="cloudcontrolLogger"/>
-  </logger>
+   <logger name="org.springframework" additivity="false">
+     <level value="WARN" />
+     <appender-ref ref="cloudcontrolLogger"/>
+   </logger>
 
-  <!-- below alternate between debug and info -->
-  <root>
-    <level value="DEBUG, file, stdout"/>
-    <appender-ref ref="cloudcontrolLogger"/>
-  </root>
+   <root>
+     <level value="ERROR, file, stdout"/>
+     <appender-ref ref="cloudcontrolLogger"/>
+   </root>
 
 
 </log4j:configuration>
