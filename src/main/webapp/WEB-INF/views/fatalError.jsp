@@ -2,13 +2,13 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : <spring:message code="fatal.error.title"/></title>
+   <title><spring:message code="global.title"/> : Oh Dear! Looks like we encountered a problem!</title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3><spring:message code="fatal.error.title"/></h3>
-   <p><spring:message code="fatal.error.message"/></p>
+   <h3>Oh Dear! Looks like we encountered a problem!</h3>
+   <p>Please contact the administrator of this site for help.</p>
    <pre>
    <c:out value="${message}" />
    </pre>

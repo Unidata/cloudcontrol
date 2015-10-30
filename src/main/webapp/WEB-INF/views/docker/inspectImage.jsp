@@ -2,14 +2,14 @@
 <!DOCTYPE HTML>
 <html>
  <head>
-  <title><spring:message code="global.title"/> : <spring:message code="docker.image.inspect.title"/></title>
+  <title><spring:message code="global.title"/> : Image Inspection Details</title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
  </head>
  <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
 
    <h3>
-    <spring:message code="docker.image.inspect.title"/> 
+    Inspection Details for Image
     <i>
      <c:forEach var="tag" items="${image.repoTags}">    
        <c:out value="${tag}" />
@@ -17,27 +17,20 @@
     </i>
    </h3>
     
-   <!-- left -->
-   <div class="left">
+   <!-- fullWidth -->
+   <div class="fullWidth">
     <c:choose>
      <c:when test="${error != null}">
       <p class="error"><b><c:out value="${error}" /></b></p>
      </c:when>
     </c:choose>
     
-    <p>
-     <spring:message code="docker.image.inspect.message"/> 
-     <i>
-      <c:forEach var="tag" items="${image.repoTags}">    
-       <c:out value="${tag}" />
-      </c:forEach>
-     </i>
-    </p>
+
     <table> 
      <tbody>
       <tr>
        <td>
-        <spring:message code="docker.image.repoTags"/>
+        Repository/Tags
        </td>
        <td>
        <c:forEach var="tag" items="${image.repoTags}">    
@@ -47,7 +40,7 @@
       </tr>
       <tr>      
        <td>
-        <spring:message code="docker.image.id"/>
+        ID
        </td>
        <td>
         <c:out value="${image.id}" />
@@ -55,7 +48,7 @@
       </tr>
       <tr>      
        <td>
-        <spring:message code="docker.image.parentId"/>
+        Parent ID
        </td>
        <td>
         <c:out value="${image.parentId}" />
@@ -63,7 +56,7 @@
       </tr>
       <tr>      
        <td> 
-        <spring:message code="docker.image.created"/>
+       Date Created
        </td>
        <td>
         <c:set target="${myDate}" property="time" value="${image.created * 1000}"/>    
@@ -72,7 +65,7 @@
       </tr>
       <tr>      
        <td>
-        <spring:message code="docker.image.virtualSize"/> 
+        Virtual Size
        </td>
        <td>
         <c:choose>
@@ -80,47 +73,49 @@
           <c:set var="vSize" value="${image.virtualSize / 1000000}"/>              
           <fmt:formatNumber value="${vSize}" type="number"/> MB
          </c:when>
-		 <c:when test="${image.virtualSize > 1000}">
+         <c:when test="${image.virtualSize > 1000}">
           <c:set var="vSize" value="${image.virtualSize / 1000}"/>              
           <fmt:formatNumber value="${vSize}" type="number"/> KB
          </c:when>
          <c:otherwise>
           <c:out value="${image.virtualSize}" />  B
          </c:otherwise>
-		</c:choose>
+        </c:choose>
        </td>
       </tr>
-      <tr>      
-       <td>
-        <spring:message code="docker.image.size"/> 
-       </td>
-       <td>
-        <c:choose>
-         <c:when test="${image.size > 1000000}">
-          <c:set var="size" value="${image.size / 1000000}"/>              
-          <fmt:formatNumber value="${size}" type="number"/> MB
-         </c:when>
-   		 <c:when test="${image.size > 1000}">
-          <c:set var="size" value="${image.size / 1000}"/>              
-          <fmt:formatNumber value="${size}" type="number"/> KB
-         </c:when>
-         <c:otherwise>
-          <c:out value="${image.size}" />  B
-         </c:otherwise>
-   		</c:choose>  
-       </td>
-      </tr>
-     </tbody>
-    </table>
-
-
-    <h5><a href="#" id="inspectToggle" class="toggle"><spring:message code="docker.image.inspect.option.inspect"/></a></h5>
-    <div id="inspectToggleSection" class="hideandshow">
-     <table> 
-      <tbody>
+      <c:if test="${inspectImageResponse.size > 0}">
        <tr>
         <td>
-         <spring:message code="docker.image.inspect.author"/> 
+         Size
+        </td>
+        <td>
+         <c:choose>
+          <c:when test="${inspectImageResponse.size > 1000000}">
+           <c:set var="size" value="${inspectImageResponse.size / 1000000}"/>              
+           <fmt:formatNumber value="${size}" type="number"/> MB
+          </c:when>
+          <c:when test="${inspectImageResponse.size > 1000}">
+           <c:set var="size" value="${inspectImageResponse.size / 1000}"/>              
+           <fmt:formatNumber value="${size}" type="number"/> KB
+          </c:when>
+          <c:otherwise>
+           <c:out value="${inspectImageResponse.size}" />  B
+          </c:otherwise>
+         </c:choose>  
+        </td>
+       </tr>
+      </c:if>
+      <tr>
+       <td>
+        Docker Version
+       </td>
+       <td>
+        <c:out value="${inspectImageResponse.dockerVersion}" />
+       </td>
+      </tr>
+       <tr>
+        <td>
+         Author
         </td>
         <td>
          <c:out value="${inspectImageResponse.author}" />
@@ -128,7 +123,7 @@
        </tr> 
        <tr>
         <td>
-         <spring:message code="docker.image.inspect.arch"/>
+         Architecture
         </td>
         <td>
          <c:out value="${inspectImageResponse.arch}" />
@@ -136,7 +131,7 @@
        </tr>
        <tr>
         <td> 
-         <spring:message code="docker.image.inspect.os"/>
+         Operating System
         </td>             
         <td>
          <c:out value="${inspectImageResponse.os}" />
@@ -144,7 +139,7 @@
        </tr>
        <tr>
         <td>
-         <spring:message code="docker.image.inspect.comment"/> 
+         Comment
         </td>
         <td>
          <c:out value="${inspectImageResponse.comment}" />
@@ -152,16 +147,15 @@
        </tr>
        <tr>
         <td>
-         <spring:message code="docker.image.inspect.config"/> 
+         Configuration
         </td>
         <td>
-
          <c:catch var="containerConfigError">    
           <table class="nodec">
            <tbody>
             <tr>
              <td>
-              <spring:message code="docker.container.config.attachStderr"/>
+              Attach STDERR
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStderr}" />
@@ -169,7 +163,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.attachStdin"/>
+              Attach STDIN
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStdin}" />
@@ -177,7 +171,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.attachStdout"/>
+              Attach STDOUT
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStdout}" />
@@ -185,7 +179,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.cmd"/>
+              Command
              </td>
              <td>
               <c:forEach var="command" items="${inspectImageResponse.config.cmd}">    
@@ -195,7 +189,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.domainname"/>
+              Domain Name
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.domainName}" />
@@ -203,7 +197,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.entrypoint"/>
+              Entry Point
              </td>
              <td>
               <c:forEach var="ep" items="${inspectImageResponse.config.entrypoint}">    
@@ -213,7 +207,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.env"/>
+              Environment Variables
              </td>
              <td>
               <c:forEach var="environ" items="${inspectImageResponse.config.env}">    
@@ -223,7 +217,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.exposedPorts"/>
+              Exposed Ports
              </td>
              <td>
               <c:catch var="exposedPortsError">
@@ -235,7 +229,7 @@
             </tr>      
             <tr>
              <td>
-              <spring:message code="docker.container.config.hostname"/>
+              Host Name
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.hostName}" />
@@ -243,7 +237,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.image"/>
+              Image
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.image}" />
@@ -251,7 +245,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.labels"/>
+              Labels
              </td>
              <td>
               <c:forEach var="lab" items="${inspectImageResponse.config.labels}">    
@@ -262,7 +256,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.macAddress"/>
+              Mac Address
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.macAddress}" />
@@ -270,7 +264,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.networkDisabled"/>
+              Network Disabled
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.networkDisabled}" />
@@ -278,7 +272,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.onBuild"/>
+              On Build
              </td>
              <td>
               <c:forEach var="onb" items="${inspectImageResponse.config.onBuild}">    
@@ -288,7 +282,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.openStdin"/>
+              Open STDIN
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.stdinOpen}" />
@@ -296,7 +290,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.portSpecs"/>
+              Port Specifications
              </td>
              <td>
               <c:forEach var="ps" items="${inspectImageResponse.config.portSpecs}">    
@@ -306,7 +300,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.stdinOnce"/>
+              STDIN Once
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.stdInOnce}" />
@@ -314,7 +308,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.tty"/>
+              TTY
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.tty}" />
@@ -322,7 +316,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.user"/>
+              User
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.user}" />
@@ -330,7 +324,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.volumes"/>
+              Volumes
              </td>
              <td>
               <c:forEach var="vol" items="${inspectImageResponse.config.volumes}">    
@@ -341,7 +335,7 @@
             </tr>
             <tr>
              <td>
-              <spring:message code="docker.container.config.workingDir"/>
+              Working Directory
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.workingDir}" />
@@ -350,283 +344,13 @@
            </tbody>
           </table>
          </c:catch>
-
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.container"/> 
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.container}" />
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.containerConfig"/> 
-        </td>
-        <td>             
-             
-         <c:catch var="containerConfigError">    
-          <table class="nodec">
-           <tbody>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.attachStderr"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.attachStderr}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.attachStdin"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.attachStdin}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.attachStdout"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.attachStdout}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.cmd"/>
-             </td>
-             <td>
-              <c:forEach var="command" items="${inspectImageResponse.containerConfig.cmd}">    
-               <c:out value="${command}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.domainname"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.domainName}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.entrypoint"/>
-             </td>
-             <td>
-              <c:forEach var="ep" items="${inspectImageResponse.containerConfig.entrypoint}">    
-               <c:out value="${ep}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.env"/>
-             </td>
-             <td>
-              <c:forEach var="environ" items="${inspectImageResponse.containerConfig.env}">    
-               <c:out value="${environ}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.exposedPorts"/>
-             </td>
-             <td>
-              <c:catch var="exposedPortsError">
-               <c:forEach var="port" items="${inspectImageResponse.containerConfig.exposedPorts}">  
-                <c:out value="${port}" /><br/>
-               </c:forEach>
-              </c:catch>                  
-             </td>
-            </tr>              
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.hostname"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.hostName}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.image"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.image}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.labels"/>
-             </td>
-             <td>
-              <c:forEach var="lab" items="${inspectImageResponse.containerConfig.labels}">    
-               <c:out value="${lab.key}" /> :
-               <c:out value="${lab.value}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.macAddress"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.macAddress}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.networkDisabled"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.networkDisabled}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.onBuild"/>
-             </td>
-             <td>
-              <c:forEach var="onb" items="${inspectImageResponse.containerConfig.onBuild}">    
-               <c:out value="${onb}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.openStdin"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.stdinOpen}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.portSpecs"/>
-             </td>
-             <td>
-              <c:forEach var="ps" items="${inspectImageResponse.containerConfig.portSpecs}">    
-               <c:out value="${ps}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.stdinOnce"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.stdInOnce}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.tty"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.tty}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.user"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.user}" />
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.volumes"/>
-             </td>
-             <td>
-              <c:forEach var="vol" items="${inspectImageResponse.containerConfig.volumes}">    
-               <c:out value="${vol.key}" /> :
-               <c:out value="${vol.value}" /><br/>
-              </c:forEach>
-             </td>
-            </tr>
-            <tr>
-             <td>
-              <spring:message code="docker.container.config.workingDir"/>
-             </td>
-             <td>
-              <c:out value="${inspectImageResponse.containerConfig.workingDir}" />
-             </td>
-            </tr>
-           </tbody>
-          </table>
-         </c:catch>
-            
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.created"/> 
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.created}" />
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.dockerVersion"/> 
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.dockerVersion}" />
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.id"/>
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.id}" />
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.parent"/> 
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.parent}" />
-        </td>
-       </tr>
-       <tr>
-        <td>
-         <spring:message code="docker.image.inspect.size"/> 
-        </td>
-        <td>
-         <c:out value="${inspectImageResponse.size}" />
         </td>
        </tr>
       </tbody>
      </table>       
-    </div><!--./hideandshow-->
+
     
-   </div> <!-- /.left -->
-   <!-- right -->
-   <div class="right">
-    <h5>
-     <spring:message code="docker.image.inspect.option.title"/>
-     <i>
-      <c:forEach var="tag" items="${image.repoTags}">    
-       <c:out value="${tag}" />
-      </c:forEach>
-     </i>
-    </h5>
-    <ul>
-     <li><spring:message code="docker.image.inspect.option.history"/></li>
-     <li><spring:message code="docker.image.inspect.option.registry"/></li>
-     <li><spring:message code="docker.image.inspect.option.tag"/></li>
-     <li><a href="${baseUrl}/docker/container/create?id=<c:out value="${image.id}" />"><spring:message code="docker.image.inspect.option.createContainer"/></a></li>
-     <li><spring:message code="docker.image.inspect.option.delete"/></li>
-     </ul>
-   </div><!-- /.right -->
+   </div> <!-- /.fullWidth -->
 
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>

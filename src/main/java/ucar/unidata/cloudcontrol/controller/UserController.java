@@ -34,8 +34,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.UserManager;
-import edu.ucar.unidata.cloudcontrol.service.UserValidator;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.UserValidator;
 
 /**
  * Controller to handle and modify a User. 
@@ -75,7 +75,7 @@ public class UserController implements HandlerExceptionResolver {
     public String listUsers(Model model) { 
         List<User> users = userManager.getUserList();           
         model.addAttribute("users", users);    
-        return "listUsers";
+        return "user/listUsers";
     }
 
     /**
@@ -99,7 +99,7 @@ public class UserController implements HandlerExceptionResolver {
         try {
             User user = userManager.lookupUser(userName);           
             model.addAttribute("user", user);       
-            return "viewUser";
+            return "user/viewUser";
         } catch (RecoverableDataAccessException e) {
 			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 			boolean isAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
@@ -107,11 +107,11 @@ public class UserController implements HandlerExceptionResolver {
 	            model.addAttribute("error", e.getMessage());    
 	            List<User> users = userManager.getUserList();           
 	            model.addAttribute("users", users);    
-	            return "listUsers";
+	            return "user/listUsers";
 			} else {
 	            model.addAttribute("error", e.getMessage());            
 	            model.addAttribute("user", new User());    
-	            return "viewUser";
+	            return "user/viewUser";
 			}
         }
     }
@@ -130,7 +130,7 @@ public class UserController implements HandlerExceptionResolver {
     public String createUser(Model model) {   
         model.addAttribute("formAction", "create");  
         model.addAttribute("user", new User());  
-        return "createUser";
+        return "user/createUser";
     }
 
 
@@ -151,7 +151,7 @@ public class UserController implements HandlerExceptionResolver {
     public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {  
         if (result.hasErrors()) {
            model.addAttribute("formAction", "create");  
-           return new ModelAndView("createUser"); 
+           return new ModelAndView("user/createUser"); 
         } else {
             try {
                 user.setPassword("changeme");
@@ -162,7 +162,7 @@ public class UserController implements HandlerExceptionResolver {
             } catch (RecoverableDataAccessException e) {
                 result.rejectValue("userName", "user.error", e.getMessage());
                 model.addAttribute("formAction", "create");  
-                return new ModelAndView("createUser"); 
+                return new ModelAndView("user/createUser"); 
             }
         }         
     }
@@ -193,7 +193,7 @@ public class UserController implements HandlerExceptionResolver {
 		accountStatus.put("1", "Active");
 	    accountStatus.put("0", "Disable");
 		model.addAttribute("accountStatus", accountStatus);   
-        return "editUser";
+        return "user/editUser";
     }
 
     /**
@@ -216,17 +216,30 @@ public class UserController implements HandlerExceptionResolver {
     @RequestMapping(value="/user/edit", method=RequestMethod.POST)
     public ModelAndView editUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("formAction", "edit");  
-           return new ModelAndView("createUser"); 
+			Map<String,String> accessLevel = new HashMap<String,String>();
+			accessLevel.put("1", "User");
+		    accessLevel.put("2", "Administrator");
+			model.addAttribute("accessLevel", accessLevel);   
+			Map<String,String> accountStatus = new HashMap<String,String>();
+			accountStatus.put("1", "Active");
+		    accountStatus.put("0", "Disable");
+			model.addAttribute("accountStatus", accountStatus);   
+            return new ModelAndView("user/editUser"); 
         } else {   
             try {
                 userManager.updateUser(user);
                 model.addAttribute("user", user);     
                 return new ModelAndView(new RedirectView("/user/" + user.getUserName(), true));   
             } catch (RecoverableDataAccessException e) {
-                model.addAttribute("error", e.getMessage());  
-                model.addAttribute("formAction", "edit");  
-                return new ModelAndView("createUser"); 
+				Map<String,String> accessLevel = new HashMap<String,String>();
+				accessLevel.put("1", "User");
+			    accessLevel.put("2", "Administrator");
+				model.addAttribute("accessLevel", accessLevel);   
+				Map<String,String> accountStatus = new HashMap<String,String>();
+				accountStatus.put("1", "Active");
+			    accountStatus.put("0", "Disable");
+				model.addAttribute("accountStatus", accountStatus);   
+                return new ModelAndView("user/editUser"); 
             }
         }    
     }

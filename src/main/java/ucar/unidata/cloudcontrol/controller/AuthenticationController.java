@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.ui.Model;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 /**
  * Controller to handle User authentication.
@@ -78,5 +78,17 @@ public class AuthenticationController {
     @RequestMapping(value = "/denied", method = RequestMethod.GET)
     public String getDeniedPage() {
         return "denied";
+    }
+	
+    /**
+     * Accepts a GET request for the welcome page.
+     * View is the welcome page.
+     *
+     * @param model The Model used by the View.
+     * @return The 'welcome' path for the ViewResolver.
+     */
+    @RequestMapping(value = "/welcome", method = RequestMethod.GET)
+    public String getWelcomePage(Model model) {
+        return "welcome";
     }
 }

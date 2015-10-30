@@ -14,6 +14,10 @@
    <div class="fullWidth">        
     <p><spring:message code="user.edit.message"/></p>
 
+    <sec:authorize access="hasRole('ROLE_ADMIN')"> 
+	 <p><a href="${baseUrl}/user"><spring:message code="user.list.title"/></a></p>  
+    </sec:authorize>
+
     <c:choose>
      <c:when test="${error != null}">
       <p class="error"><b><c:out value="${error}" /></b></p>

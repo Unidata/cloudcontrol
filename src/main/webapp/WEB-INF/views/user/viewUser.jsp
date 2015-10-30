@@ -13,6 +13,10 @@
    <!-- fullWidth -->
    <div class="fullWidth">        
     <p><spring:message code="user.view.message"/></p>
+	
+    <sec:authorize access="hasRole('ROLE_ADMIN')"> 
+	 <p><a href="${baseUrl}/user"><spring:message code="user.list.title"/></a></p>  
+    </sec:authorize>
 
     <c:choose>
      <c:when test="${error != null}">

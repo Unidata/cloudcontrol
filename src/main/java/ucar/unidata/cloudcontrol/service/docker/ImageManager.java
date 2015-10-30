@@ -37,6 +37,14 @@ public interface ImageManager {
 	public String getImageRepository(Image image);
 	
     /**
+     * Requests an Image's Container ID.
+     * 
+     * @param image  The Image.
+     * @return  The Image Container ID (String).  
+     */
+    public String getImageContainerId(Image image);
+	
+    /**
      * Requests a Map of the Image's repositories (for form dropdown selection).
      * 
      * @return  The repository Map<String,String>.

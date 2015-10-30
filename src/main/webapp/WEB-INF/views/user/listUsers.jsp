@@ -2,16 +2,15 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : <spring:message code="user.list.title"/></title>
+   <title><spring:message code="global.title"/> : Manage Cloud Control Users</title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3><spring:message code="user.list.title"/></h3>
+   <h3>Manage Cloud Control Users</h3>
 
    <!-- fullWidth -->
    <div class="fullWidth">        
-    <p><spring:message code="user.list.message"/></p>
     <c:choose>
      <c:when test="${error != null}">
       <p class="error"><b><c:out value="${error}" /></b></p>
@@ -24,25 +23,25 @@
        <thead>
         <tr>
          <th>
-          <spring:message code="user.userName"/>
+          User/Login Name
          </th>
          <th>
-          <spring:message code="user.firstName"/>
+          First Name
          </th>
          <th>
-          <spring:message code="user.lastName"/>
+          Last Name
          </th>
          <th>
-          <spring:message code="user.emailAddress"/>
+          Email Address
          </th>
          <th>
-          <spring:message code="user.accessLevel"/>
+          Access Level 
          </th>
          <th>
-          <spring:message code="user.accountStatus"/>
+          Account Status
          </th>
          <th>
-          <spring:message code="user.dateCreated"/> 
+          Date Created
          </th>
          <th>
          </th>
@@ -88,13 +87,13 @@
           </td>
           <td>
            <form action="${baseUrl}/user/edit/<c:out value="${user.userName}" />" method="GET">
-            <input class="action edit" type="submit" value="<spring:message code="user.edit.form.title"/>" />        
+            <input class="action" type="submit" value="Edit" />        
            </form>
            <c:choose>
             <c:when test="${user.userName ne authUserName}">
              <form action="${baseUrl}/user/delete" method="POST">
               <input type="hidden" name="userId" value="<c:out value="${user.userId}" />"/>
-              <input class="action delete" type="submit" value="<spring:message code="user.delete.form.title"/>"/>        
+              <input class="action" type="submit" value="Delete"/>        
              </form>
 			</c:when>
 		   </c:choose>
@@ -106,7 +105,7 @@
       <c:otherwise>
        <tr>
         <td>
-         <spring:message code="user.list.none"/>
+         No users have been created yet.
         </td>
        </tr>
       </c:otherwise>

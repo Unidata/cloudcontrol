@@ -22,6 +22,14 @@ public interface ContainerManager {
     public List<Container> getContainerList();
 	
     /**
+     * Requests a List of all available Containers corresponding to an Image.
+     *
+	 * @param image  The Container's Image.
+     * @return  A List of available Containers corresponding to an Image.
+     */
+    public List<Container> getContainerListByImage(String image);
+	
+    /**
      * Requests a single Container.
      * 
 	 * @param id  The Container ID.

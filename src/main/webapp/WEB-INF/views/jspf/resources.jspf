@@ -1,3 +1,6 @@
+    <link rel="shortcut icon" href="${baseUrl}/resources/images/favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
    <!-- css -->
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/ui/jquery-ui.min.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/ui/jquery-ui.structure.min.css" />

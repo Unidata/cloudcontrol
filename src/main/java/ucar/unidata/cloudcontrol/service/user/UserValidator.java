@@ -1,4 +1,4 @@
-package edu.ucar.unidata.cloudcontrol.service;
+package edu.ucar.unidata.cloudcontrol.service.user;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.BasicConfigurator;
@@ -27,7 +27,7 @@ public class UserValidator implements Validator  {
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                                                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    private static final String USER_NAME_PATTERN = "^[a-zA-Z0-9_-]{6,50}$";
+    private static final String USER_NAME_PATTERN = "^[a-zA-Z0-9_-]{2,}$";
 
 
     public boolean supports(Class clazz) {
@@ -59,8 +59,8 @@ public class UserValidator implements Validator  {
             errors.rejectValue("userName", "user.error", "User name is required!");
             return;
         }
-        if ((StringUtils.length(input) < 6) || (StringUtils.length(input) > 50)) {
-            errors.rejectValue("userName", "user.error", "The userName must be between 6 and 50 characters in length.");
+        if ((StringUtils.length(input) < 2) || (StringUtils.length(input) > 50)) {
+            errors.rejectValue("userName", "user.error", "The userName must be between 2 and 50 characters in length.");
             return;
         }        
         pattern = Pattern.compile(USER_NAME_PATTERN);
@@ -83,8 +83,8 @@ public class UserValidator implements Validator  {
             errors.rejectValue(formField, "user.error", formField + " is required!");
             return;
         }
-        if ((StringUtils.length(input) < 6) || (StringUtils.length(input) > 75)) {
-            errors.rejectValue(formField, "user.error", formField + " must be between 6 and 75 characters in length.");
+        if ((StringUtils.length(input) < 2) || (StringUtils.length(input) > 75)) {
+            errors.rejectValue(formField, "user.error", formField + " must be between 2 and 75 characters in length.");
             return;
         }  
         validateInput(formField, input, errors); 

@@ -118,6 +118,88 @@ public class DockerController implements HandlerExceptionResolver {
             return "docker/listImages";
         }
     }
+	
+	
+    /**
+     * Accepts a GET request to start a specific Image.
+     *
+     * View is one of the following a list of all Image objects.
+     *    
+     * @param id  The Image ID as provided by @PathVariable.
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+		/*
+    @RequestMapping(value="/docker/image/{id}/start", method=RequestMethod.GET)
+    public String startImage(@PathVariable String id, Model model) { 
+        Image image = imageManager.getImage(id);
+        String repository = imageManager.getImageRepository(image);
+	    List<Container> containers = containerManager.getContainerListByImage(repository);
+		if (containers.isEmpty()) {
+	        List<Image> images = imageManager.getImageList();    
+			model.addAttribute("error", "Unable to start image. No containers found for image with repository: " + repository + ".");       
+	        model.addAttribute("images", images);    
+	        return "docker/listImages";
+		} else {
+		    if (containers.size() > 1) {
+			    logger.info("more than one container in image: " + image.toString());
+			}
+			Container container = containers.get(0); 
+            try {
+                containerManager.startContainer(container);  
+            } catch (NotModifiedException e) {
+                model.addAttribute("error", "Container is already running.");    
+            } catch (NotFoundException e) {
+                logger.error("Unable to find and start container: " + e.getMessage()); 
+				model.addAttribute("error", "Unable to start image. Unable to find and start container for image with repository: " + repository + ".");    
+            }
+            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
+            if (!inspectContainerResponse.getState().isRunning()) {
+                logger.error(String.valueOf(inspectContainerResponse.getState().getExitCode()));
+                model.addAttribute("error", "Unable to start Image.  Container state is listed as not running.");    
+            }    
+			List<Image> images = imageManager.getImageList();       
+		        model.addAttribute("images", images);      
+                return "redirect:/docker/image/list";  
+        }
+    }	
+	
+	*/
+			
+		    @RequestMapping(value="/docker/image/{id}/start", method=RequestMethod.GET)
+		    public String startImage(@PathVariable String id, Model model) { 
+		        Image image = imageManager.getImage(id);
+		        String containerId = imageManager.getImageContainerId(image);
+			    Container container = containerManager.getContainer(containerId);
+				if (container != null) {
+		            try {
+		                containerManager.startContainer(container);  
+		            } catch (NotModifiedException e) {
+		                model.addAttribute("error", "Container is already running.");    
+		            } catch (NotFoundException e) {
+		                logger.error("Unable to find and start container: " + e.getMessage()); 
+						model.addAttribute("error", "Unable to start image. Unable to find and start container for image: " + containerId + ".");    
+		            }
+		            InspectContainerResponse inspectContainerResponse = containerManager.inspectContainer(id); 
+		            if (!inspectContainerResponse.getState().isRunning()) {
+		                logger.error(String.valueOf(inspectContainerResponse.getState().getExitCode()));
+		                model.addAttribute("error", "Unable to start Image.  Container state is listed as not running.");    
+		            }    
+					List<Image> images = imageManager.getImageList();       
+				        model.addAttribute("images", images);      
+		                return "redirect:/docker/image/list"; 
+				} else {
+					
+				  
+				        List<Image> images = imageManager.getImageList();    
+						model.addAttribute("error", "Unable to start image. No containers found for image: " + containerId + ".");       
+				        model.addAttribute("images", images);    
+				        return "docker/listImages";
+		        }
+		    }	
+	
+	
+	
 
     /**
      * Accepts a GET request for a List of com.github.dockerjava.api.model.Container objects.

@@ -1,5 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.dockerjava.api.DockerClient;
@@ -7,6 +8,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -41,6 +43,25 @@ public class ContainerManagerImpl implements ContainerManager {
         DockerClient dockerClient = initializeDockerClient();
         return dockerClient.listContainersCmd().withShowAll(true).exec();
     }
+	
+    /**
+     * Requests a List of all available Containers corresponding to an Image.
+     *
+	 * @param image  The Container's Image.
+     * @return  A List of available Containers corresponding to an Image.
+     */
+    public List<Container> getContainerListByImage(String image) {
+        List<Container> containers = getContainerList();   
+        Container container = null;
+		ArrayList<Container> list = new ArrayList<Container>();
+        for (Container c : containers) {
+            if (image.equals(c.getImage())) {
+                container = c; 
+				list.add(container);
+            }
+        } 
+		return list;
+    }
     
     /**
      * Requests a single Container.
@@ -49,7 +70,6 @@ public class ContainerManagerImpl implements ContainerManager {
      * @return  The Container.   
      */
     public Container getContainer(String id) {
-        DockerClient dockerClient = initializeDockerClient();
         List<Container> containers = getContainerList();   
         Container container = null;
         for (Container c : containers) {

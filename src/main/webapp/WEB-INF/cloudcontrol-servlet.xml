@@ -35,10 +35,11 @@
 
   <!-- Configure Spring-Security  -->
   <security:global-method-security pre-post-annotations="enabled" proxy-target-class="true"/>
+  <security:http pattern="/resources/**" security="none"/>
   <security:http auto-config="true" use-expressions="true">
 
     <security:access-denied-handler error-page="/denied" />  
- 
+
     <security:form-login
       login-processing-url="/j_spring_security_check"
       login-page="/login"
@@ -50,8 +51,15 @@
       invalidate-session="true"
       logout-success-url="/login"
       logout-url="/j_spring_security_logout"/>
-
-    <!-- enable csrf protection -->
+	  
+	<security:intercept-url pattern="/index.jsp" access="permitAll" />
+	<security:intercept-url pattern="/welcome" access="permitAll" />
+  	<security:intercept-url pattern="/register" access="permitAll" />
+	<security:intercept-url pattern="/login/**" access="permitAll" />
+    <security:intercept-url pattern="/denied" access="permitAll" />
+	<security:intercept-url pattern="/**" access="isAuthenticated()" />
+	
+	<!-- enable csrf protection -->
     <security:csrf/>
   </security:http>
   
@@ -91,11 +99,11 @@
   
   <!-- DAO injection -->
 
-  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.UserDetailsServiceImpl">
+  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.user.UserDetailsServiceImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 
-  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.UserManagerImpl">
+  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.user.UserManagerImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 

@@ -2,32 +2,30 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : <spring:message code="login.title"/></title>
+   <title><spring:message code="global.title"/> : Login</title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3><spring:message code="login.title"/></h3> 
+   <h3>Login to Cloud Control</h3> 
    
    <!-- left -->
    <div class="left">
-    <h5><spring:message code="login.title"/></h5>
-       
     <c:choose>
      <c:when test="${error != null}">
       <p class="error">
        <b>
-		<spring:message code="login.error"/> 
+		Authentication Error:
         <c:choose>
          <c:when test="${error == 'badCredentials'}">
-          <spring:message code="login.error.badCredentials"/>
+          Bad credentials provided.  Please Try again.
          </c:when>
          <c:when test="${error == 'accountDisabled'}">
-          <spring:message code="login.error.accountDisabled"/>
-		  <spring:message code="login.error.contactAdmin"/>
+          This account has been disabled.
+		  Please contact the administrator of this site for help.
          </c:when>
          <c:otherwise>
-          <spring:message code="login.error.contactAdmin"/>
+          Please contact the administrator of this site for help.
          </c:otherwise>
         </c:choose>
        </b>

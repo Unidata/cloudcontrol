@@ -1,4 +1,4 @@
-package edu.ucar.unidata.cloudcontrol.service;
+package edu.ucar.unidata.cloudcontrol.service.user;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
