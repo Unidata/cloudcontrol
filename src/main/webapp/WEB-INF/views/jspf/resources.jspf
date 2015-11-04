@@ -5,9 +5,11 @@
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/ui/jquery-ui.min.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/ui/jquery-ui.structure.min.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/ui/jquery-ui.theme.min.css" />
-   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/jquery.tablesorter.pager.css" />
-   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/themes/blue/style.css" />
+   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tablesorter/jquery.tablesorter.pager.css" />
+   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tablesorter/themes/blue/style.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/dropit.css" />
+   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tooltipster/tooltipster.css" />
+   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tooltipster/themes/tooltipster-light.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/main.css" />
 
    <!-- js -->
@@ -17,5 +19,6 @@
    <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/jquery.tablesorter.min.js"></script>
    <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/jquery.tablesorter.pager.js"></script>
    <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/dropit.js"></script>
+   <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/jquery.tooltipster.min.js"></script>
    <script type="text/javascript" src="${baseUrl}/resources/js/main.js"></script>
 

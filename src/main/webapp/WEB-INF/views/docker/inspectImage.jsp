@@ -30,7 +30,9 @@
      <tbody>
       <tr>
        <td>
-        Repository/Tags
+        <div class="tooltip" class="tooltip" title="The <b>repository</b> can be a combination of a <b>Docker Hub account name</b> and an <b>image name</b>.  The <b>tag</b> is typically a <b>version name</b> or an <b>identifying implementation</b> of the image.">
+         Repository/Tag
+        </div>
        </td>
        <td>
        <c:forEach var="tag" items="${image.repoTags}">    
@@ -40,7 +42,9 @@
       </tr>
       <tr>      
        <td>
-        ID
+		<div class="tooltip" class="tooltip" title="This is the <b>unique identifier</b> of the image.">
+         ID
+	    </div>
        </td>
        <td>
         <c:out value="${image.id}" />
@@ -48,15 +52,19 @@
       </tr>
       <tr>      
        <td>
-        Parent ID
+		<div class="tooltip" class="tooltip" title="A link to the <b>identifier</b> of the <b>parent image</b>. It is very common for an image to have a defined parent.">
+         Parent ID
+	    </div>
        </td>
        <td>
         <c:out value="${image.parentId}" />
        </td>
       </tr>
       <tr>      
-       <td> 
-       Date Created
+       <td>
+		<div class="tooltip" class="tooltip" title="The <b>date and time</b> the image was created.">
+         Date Created
+	    </div>
        </td>
        <td>
         <c:set target="${myDate}" property="time" value="${image.created * 1000}"/>    
@@ -65,17 +73,19 @@
       </tr>
       <tr>      
        <td>
-        Virtual Size
+		<div class="tooltip" class="tooltip" title="The <b>size</b> of the image.">
+         Virtual Size
+	    </div>
        </td>
        <td>
         <c:choose>
          <c:when test="${image.virtualSize > 1000000}">
           <c:set var="vSize" value="${image.virtualSize / 1000000}"/>              
-          <fmt:formatNumber value="${vSize}" type="number"/> MB
+          <fmt:formatNumber value="${vSize}" type="number" maxFractionDigits="0" /> MB
          </c:when>
          <c:when test="${image.virtualSize > 1000}">
           <c:set var="vSize" value="${image.virtualSize / 1000}"/>              
-          <fmt:formatNumber value="${vSize}" type="number"/> KB
+          <fmt:formatNumber value="${vSize}" type="number" maxFractionDigits="0" /> KB
          </c:when>
          <c:otherwise>
           <c:out value="${image.virtualSize}" />  B
@@ -86,17 +96,19 @@
       <c:if test="${inspectImageResponse.size > 0}">
        <tr>
         <td>
+		 <div class="tooltip" class="tooltip" title="The <b>size</b> of the image.">
          Size
+	     </div>
         </td>
         <td>
          <c:choose>
           <c:when test="${inspectImageResponse.size > 1000000}">
            <c:set var="size" value="${inspectImageResponse.size / 1000000}"/>              
-           <fmt:formatNumber value="${size}" type="number"/> MB
+           <fmt:formatNumber value="${size}" type="number" maxFractionDigits="0" /> MB
           </c:when>
           <c:when test="${inspectImageResponse.size > 1000}">
            <c:set var="size" value="${inspectImageResponse.size / 1000}"/>              
-           <fmt:formatNumber value="${size}" type="number"/> KB
+           <fmt:formatNumber value="${size}" type="number" maxFractionDigits="0" /> KB
           </c:when>
           <c:otherwise>
            <c:out value="${inspectImageResponse.size}" />  B
@@ -107,7 +119,9 @@
       </c:if>
       <tr>
        <td>
-        Docker Version
+        <div class="tooltip" class="tooltip" title="The version of Docker <b>used to create the image</b> is stored in this value.">
+         Docker Version
+        </div>
        </td>
        <td>
         <c:out value="${inspectImageResponse.dockerVersion}" />
@@ -115,7 +129,9 @@
       </tr>
        <tr>
         <td>
-         Author
+		 <div class="tooltip" class="tooltip" title="The <b>person or organization</b> who authored the image.">
+          Author
+	     </div>
         </td>
         <td>
          <c:out value="${inspectImageResponse.author}" />
@@ -123,7 +139,9 @@
        </tr> 
        <tr>
         <td>
-         Architecture
+		 <div class="tooltip" class="tooltip" title="Type of <b>system</b> of the server the image runs on (e.g.: 64-bit, x64, or x86_64).">
+          Architecture
+	     </div>
         </td>
         <td>
          <c:out value="${inspectImageResponse.arch}" />
@@ -131,7 +149,9 @@
        </tr>
        <tr>
         <td> 
-         Operating System
+		 <div class="tooltip" class="tooltip" title="Type of <b>operating system</b> of the server the image uses (e.g: linux).">
+          Operating System
+	     </div>
         </td>             
         <td>
          <c:out value="${inspectImageResponse.os}" />
@@ -139,7 +159,9 @@
        </tr>
        <tr>
         <td>
-         Comment
+         <div class="tooltip" class="tooltip" title="Any  <b>comments</b> about the image provided by the author."> 
+          Comment
+	     </div>
         </td>
         <td>
          <c:out value="${inspectImageResponse.comment}" />
@@ -147,7 +169,19 @@
        </tr>
        <tr>
         <td>
-         Configuration
+         <div class="tooltip" class="tooltip" title="A container identifier is for an image not a container. This container identifier is a <b>temporary container created when the image was built</b>. Docker will create a container during the image construction process, and this identifier is stored in the image data."> 
+          Container
+	     </div>
+        </td>
+        <td>
+         <c:out value="${inspectImageResponse.container}" />
+        </td>
+       </tr>
+       <tr>
+        <td>
+		 <div class="tooltip" class="tooltip" title="This data again is referring to the <b>configuration of the temporary container</b> created when the Docker build command was executed."> 
+          Configuration
+	     </div>
         </td>
         <td>
          <c:catch var="containerConfigError">    
@@ -155,7 +189,9 @@
            <tbody>
             <tr>
              <td>
-              Attach STDERR
+              <div class="tooltip" class="tooltip" title="Whether the image is configured to attach the <b>process standard error</b> to the console.">
+               Attach STDERR 
+              </div>
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStderr}" />
@@ -163,7 +199,9 @@
             </tr>
             <tr>
              <td>
-              Attach STDIN
+              <div class="tooltip" class="tooltip" title="Whether the image is configured to attach the <b>process standard input</b> to the console.">
+                Attach STDIN
+              </div>
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStdin}" />
@@ -171,7 +209,9 @@
             </tr>
             <tr>
              <td>
-              Attach STDOUT
+              <div class="tooltip" class="tooltip" title="Whether the image is configured to attach the <b>process standard output</b> to the console.">
+               Attach STDOUT
+              </div>
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.attachStdout}" />
@@ -179,7 +219,9 @@
             </tr>
             <tr>
              <td>
+			  <div class="tooltip" class="tooltip" title="Default <b>commands</b> provided by the author for <b>execution</b>. ">
               Command
+		      </div>
              </td>
              <td>
               <c:forEach var="command" items="${inspectImageResponse.config.cmd}">    
@@ -189,7 +231,9 @@
             </tr>
             <tr>
              <td>
-              Domain Name
+			  <div class="tooltip" class="tooltip" title="Default <b>commands</b> provided by the author for <b>execution</b>. ">
+               Domain Name
+		      </div>
              </td>
              <td>
               <c:out value="${inspectImageResponse.config.domainName}" />

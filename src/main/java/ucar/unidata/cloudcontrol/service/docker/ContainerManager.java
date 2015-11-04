@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.List;
+import java.util.Map;
 
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
@@ -29,6 +30,10 @@ public interface ContainerManager {
      */
     public List<Container> getContainerListByImage(String image);
 	
+	    public List<Container> getRunningContainerListByImage(String image);
+	
+	    public Map<String, String> getContainerStatusMap();
+	
     /**
      * Requests a single Container.
      * 
@@ -52,6 +57,8 @@ public interface ContainerManager {
      * @return  The requested InspectContainerResponse.  
      */
     public CreateContainerResponse createContainer(NewContainer newContainer) ;
+	
+	    public CreateContainerResponse createContainer(String image);
 	
     /**
      * Removes a Container.

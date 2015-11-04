@@ -1,12 +1,16 @@
 $(document).ready(function() {
 
-    // automagically make any image alt a tooltip
-    /*
-    $(document).tooltip({ items: "img[alt]",
-        content: function() { return $(this).attr("alt") } 
+
+
+    $('.tooltip').tooltipster({
+        delay: 0,
+        theme: 'tooltipster-light',
+        trigger: 'hover',
+		position: 'top-left',
+		contentAsHTML: 'true'
     });
-    
-    */
+       
+
     
  
     $('ul.nav').dropit({ action: 'mouseenter', triggerEl: 'b' });

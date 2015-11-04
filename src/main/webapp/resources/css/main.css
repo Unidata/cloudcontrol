@@ -278,6 +278,7 @@ input[type=hidden] {
 input,
 textarea,
 select {
+ height: 25px;
  border: 1px solid #CFCFCF;
  border-top-left-radius: 4px;
  border-top-right-radius: 4px;
@@ -299,49 +300,50 @@ select {
 .pull,
 .hide,
 .delete {
- padding-left: 20px;
+ padding-left: 25px;
+ padding-right: 2px;
  margin-left: 10px !important;
  cursor:pointer;
 }
 
 .edit {
- background: #CFCFCF url('../images/edit.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/edit.png') no-repeat 2px 2px;
 }
 .view,
 .inspect {
- background: #CFCFCF url('../images/view.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/view.png') no-repeat 2px 2px;
 }
 
 .container {
- background: #CFCFCF url('../images/container.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/container.png') no-repeat 2px 2px;
 }
 
 .start {
- background: #CFCFCF url('../images/start.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/start.png') no-repeat 2px 2px;
 }
 
 .stop {
- background: #CFCFCF url('../images/stop.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/stop.png') no-repeat 2px 2px;
 }
 
 .tag {
- background: #CFCFCF url('../images/tag.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/tag.png') no-repeat 2px 2px;
 }
 
 .history {
- background: #CFCFCF url('../images/history.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/history.png') no-repeat 2px 2px;
 }
 
 .push {
- background: #CFCFCF url('../images/push.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/push.png') no-repeat 2px 2px;
 }
 
 .pull {
- background: #CFCFCF url('../images/pull.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/pull.png') no-repeat 2px 2px;
 }
 
 .attach {
- background: #CFCFCF url('../images/attach.png') no-repeat 0 0;
+ background: #CFCFCF url('../images/attach.png') no-repeat 2px 2px;
 }
 
 .hide,
@@ -387,8 +389,9 @@ table.list thead tr .headerSortDown {
 }
 table thead tr th {
  margin: 0;
- padding: 5px;
+ padding: 5px 20px 5px 5px;
  border: 1px solid #BCC4D0;
+ white-space: nowrap;
 }
 table thead tr th img {
  margin: 0;
@@ -456,13 +459,9 @@ footer img {
 }
 
 
-/* j@uery tooltip */
-body .ui-tooltip {
- font-size: 8pt;
- border: 1px solid #696969;
- background-color: #CFCFCF !important;
- margin: 0;
- padding: 5px;
- max-width: 200px;
- overflow: hidden;
+/* tooltips */
+.tooltip {
+ display: inline;
+ padding-right: 20px;
+ background: transparent url('../images/question.png') no-repeat right center;
 }

@@ -55,9 +55,6 @@
      </ul>
     </form>
    </div> <!-- /.left -->
-   <!-- right -->
-   <div class="right">
-   </div><!-- /.right -->
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>
  </html>

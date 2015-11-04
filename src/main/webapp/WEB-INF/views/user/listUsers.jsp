@@ -23,7 +23,7 @@
        <thead>
         <tr>
          <th>
-          User/Login Name
+          User Name
          </th>
          <th>
           First Name

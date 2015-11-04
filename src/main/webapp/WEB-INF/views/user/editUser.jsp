@@ -2,21 +2,16 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : <spring:message code="user.edit.title"/> : <c:out value="${user.userName}" /></title>
+   <title><spring:message code="global.title"/> : Edit User : <c:out value="${user.userName}" /></title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3><spring:message code="user.edit.title"/>: <c:out value="${user.userName}" /></h3>
+   <h3>Edit User: <c:out value="${user.userName}" /></h3>
    
 
    <!-- fullWidth -->
    <div class="fullWidth">        
-    <p><spring:message code="user.edit.message"/></p>
-
-    <sec:authorize access="hasRole('ROLE_ADMIN')"> 
-	 <p><a href="${baseUrl}/user"><spring:message code="user.list.title"/></a></p>  
-    </sec:authorize>
 
     <c:choose>
      <c:when test="${error != null}">
@@ -29,27 +24,27 @@
       <thead>
        <tr>
         <th>
-         <spring:message code="user.userName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.userName.description"/>"/>
+         User Name
         </th>
         <th>
-         <spring:message code="user.firstName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.firstName.description"/>"/>
+         First Name
         </th>
         <th>
-         <spring:message code="user.lastName"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.lastName.description"/>"/>
+         Last Name
         </th>
         <th>
-         <spring:message code="user.emailAddress"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.emailAddress.description"/>"/>
+         Email Address
         </th>
         <sec:authorize access="hasRole('ROLE_ADMIN')">     
          <th>
-          <spring:message code="user.accessLevel"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.accessLevel.description"/>"/>
+		  Access Level
          </th>
          <th>
-          <spring:message code="user.accountStatus"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.accountStatus.description"/>"/>
+          Account Status
          </th>
         </sec:authorize>
         <th>
-         <spring:message code="user.dateCreated"/> <img src="${baseUrl}/<spring:message code="help.path"/>" alt="<spring:message code="user.dateCreated.description"/>"/>
+         Date Created
         </th>
         <th>
         </th>
@@ -122,7 +117,7 @@
 		 <input type="hidden" name="dateCreated" value="<c:out value="${user.dateCreated}" />"/>
         </td>
         <td>
-         <input type="submit" value="<spring:message code="user.save.changes"/>" />
+         <input type="submit" value="Save Changes" />
         </td>
        </tr>
       </tbody>

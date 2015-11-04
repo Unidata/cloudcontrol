@@ -1,7 +1,11 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -62,6 +66,36 @@ public class ContainerManagerImpl implements ContainerManager {
         } 
 		return list;
     }
+	
+    public List<Container> getRunningContainerListByImage(String image) {
+        List<Container> containers = getContainerList();   
+        Container container = null;
+		ArrayList<Container> list = new ArrayList<Container>();
+        for (Container c : containers) {
+            if (image.equals(c.getImage())) {
+				if (!StringUtils.contains(c.getStatus(), "Exited")) {
+                    container = c; 
+				    list.add(container);
+			    }
+            }
+        } 
+		return list;
+    }
+	
+    
+    public Map<String, String> getContainerStatusMap() {
+        List<Container> containers = getContainerList();   
+		HashMap<String, String> statusMap = new HashMap<String, String>();
+        for (Container c : containers) {
+            if (!StringUtils.contains(c.getStatus(), "Exited")) {
+                statusMap.put(c.getImage(), c.getStatus());
+            }
+        } 
+		return statusMap;
+    }
+	
+	
+
     
     /**
      * Requests a single Container.
@@ -102,7 +136,7 @@ public class ContainerManagerImpl implements ContainerManager {
         DockerClient dockerClient = initializeDockerClient();
         ExposedPort port = ExposedPort.tcp(newContainer.getPortNumber());
         Ports portBindings = new Ports();
-        portBindings.bind(port, Ports.Binding(11000 + newContainer.getPortNumber()));
+        portBindings.bind(port, Ports.Binding(newContainer.getPortNumber()));
 
         return dockerClient.createContainerCmd(newContainer.getImageRepository())
            .withTty(true)
@@ -113,6 +147,25 @@ public class ContainerManagerImpl implements ContainerManager {
            .withHostName(newContainer.getHostName())
            .exec();
     }
+
+   /**
+    * Returns a requested InspectContainerResponse.
+    *
+    * @param image  The NewContainer object that has the user-specified values.
+    * @return  The requested InspectContainerResponse.
+    */
+    public CreateContainerResponse createContainer(String image) {
+        DockerClient dockerClient = initializeDockerClient();
+        ExposedPort port = ExposedPort.tcp(6080);
+        Ports portBindings = new Ports();
+        portBindings.bind(port, Ports.Binding(6080));
+        return dockerClient.createContainerCmd(image)
+           .withTty(true)
+           .withExposedPorts(port)
+           .withPortBindings(portBindings)
+           .exec();
+    }
+	
 	
     /**
      * Removes a Container.
@@ -154,6 +207,5 @@ public class ContainerManagerImpl implements ContainerManager {
         DockerClient dockerClient = initializeDockerClient();
         dockerClient.stopContainerCmd(container.getId()).withTimeout(timeout).exec();
     }
-	
-
+		
 }
