@@ -1,4 +1,4 @@
-# Cloud Control^1
+# Cloud Control
 
 > The future home of the Unidata *cloud control* project.  
 
@@ -12,7 +12,11 @@
 * Change password encryption
 * Add image annotation interface for admin
 * Add descriptive text for inspect output
-* Add instructions/documentation for docker configuration for admins
-*
+* Add instructions/documentation for docker configuration for admin
+* Doug-ify web interface design
+* Investigate alternative for derby
+* Refactor database init pre-population
+* Add version/build info to footer
+* Delay appearance of start results output until image/container has fully loaded
 
 
