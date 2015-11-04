@@ -18,5 +18,9 @@
 * Refactor database init pre-population
 * Add version/build info to footer
 * Delay appearance of start results output until image/container has fully loaded
+* Abstract out docker-java code from controller to service layer (duh)
+* Unit testing!!!!
+* Auto refresh of pages with status info
+* Coverity and Travis - ize
 
 
