@@ -42,8 +42,6 @@ RUN ln -s /usr/local/${TC_NAME} /usr/local/tomcat
 # Copy over configuration files.
 ###
 
-
-
 # Tomcat users configuration.
 COPY docker/tomcat-users.xml /usr/local/${TC_NAME}/conf/
 
