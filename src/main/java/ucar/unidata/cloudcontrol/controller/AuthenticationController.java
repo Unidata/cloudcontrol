@@ -15,7 +15,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.ui.Model;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.UserManager;
 
 /**
  * Controller to handle User authentication.
