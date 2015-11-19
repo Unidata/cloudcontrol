@@ -1,6 +1,10 @@
 apply plugin: "java"
 apply plugin: "war"
 
+compileJava {
+     options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
+}
+
 ext {
     springVersion = "4.2.0.RELEASE"
     springSecurityVersion = "4.0.2.RELEASE"
