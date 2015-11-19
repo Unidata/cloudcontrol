@@ -47,6 +47,7 @@
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
 
+  <!-- This one needs to be loaded after the Spring ContextLoaderListener-->
   <listener>
     <listener-class>edu.ucar.unidata.cloudcontrol.init.ApplicationInitialization</listener-class>
   </listener>
