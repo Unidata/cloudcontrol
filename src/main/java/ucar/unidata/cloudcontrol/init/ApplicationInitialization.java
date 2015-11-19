@@ -38,7 +38,7 @@ import javax.servlet.ServletException;
 
 /**
  * Done at application initialization.
- * Loads the cloudcontrol.properties information.
+ * Loads the application.properties information.
  */
 public class ApplicationInitialization implements ServletContextListener {
     protected static Logger logger = Logger.getLogger(ApplicationInitialization.class);
@@ -61,7 +61,7 @@ public class ApplicationInitialization implements ServletContextListener {
         ServletContext servletContext = servletContextEvent.getServletContext();
 		logger.info("Application context initialization..."); 
         try {
-            File configFile = new File(servletContext.getRealPath("") + "/WEB-INF/classes/cloudcontrol.properties");
+            File configFile = new File(servletContext.getRealPath("") + "/WEB-INF/classes/application.properties");
             if (!configFile.exists()) {
                 logger.info("Configuration file not provided.");  
                 logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);    

@@ -3,11 +3,11 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-	   xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-						   http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+                           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
 
   <!-- Static resources since we are handling all requests -->
@@ -22,17 +22,17 @@
 
   <!-- Configures the @Controller programming model -->
   <mvc:annotation-driven />
-
-  <bean id="propertyConfigurer" 
+  
+  <!-- Properties injection -->
+  <bean id="applicationProperties" 
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
     <property name="locations">
       <list>
-        <value>classpath:cloudcontrol.properties</value>
+        <value>classpath:application.properties</value>
       </list>
     </property>
   </bean>     
   
-
   <!-- Configure Spring-Security  -->
   <security:global-method-security pre-post-annotations="enabled" proxy-target-class="true"/>
   <security:http pattern="/resources/**" security="none"/>
@@ -51,15 +51,15 @@
       invalidate-session="true"
       logout-success-url="/login"
       logout-url="/j_spring_security_logout"/>
-	  
-	<security:intercept-url pattern="/index.jsp" access="permitAll" />
-	<security:intercept-url pattern="/welcome" access="permitAll" />
-  	<security:intercept-url pattern="/register" access="permitAll" />
-	<security:intercept-url pattern="/login/**" access="permitAll" />
+      
+    <security:intercept-url pattern="/index.jsp" access="permitAll" />
+    <security:intercept-url pattern="/welcome" access="permitAll" />
+    <security:intercept-url pattern="/register" access="permitAll" />
+    <security:intercept-url pattern="/login/**" access="permitAll" />
     <security:intercept-url pattern="/denied" access="permitAll" />
-	<security:intercept-url pattern="/**" access="isAuthenticated()" />
-	
-	<!-- enable csrf protection -->
+    <security:intercept-url pattern="/**" access="isAuthenticated()" />
+    
+    <!-- enable csrf protection -->
     <security:csrf/>
   </security:http>
   
@@ -83,8 +83,7 @@
           </props>
       </property>
   </bean>
-  
-
+ 
   <!-- Message source resolver to use messages.properties file in the 'war/WEB-INF/classes' directory -->
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
     <property name="basename" value="messages"/>
@@ -96,14 +95,12 @@
     <property name="suffix" value=".jsp"></property>        
   </bean>
 
-  
   <!-- DAO injection -->
-
-  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.user.UserDetailsServiceImpl">
+  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.UserDetailsServiceImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 
-  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.user.UserManagerImpl">
+  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.UserManagerImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 
