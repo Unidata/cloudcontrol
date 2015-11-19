@@ -35,7 +35,7 @@ small.deemph {
  font-weight: normal;
 }
 h1 {
- font-size: 16pt;
+ font-size: 18pt;
  margin: 30px 0 0 70px;
  float:left;
  color: #FFFFFF;
@@ -52,24 +52,29 @@ h1 a:hover {
 }
 
 h2 {
- font-size: 14pt; 
+ font-size: 16pt; 
  margin: 0 0 10px 0;
  padding: 0;
 }
 h3 {
  color: #828282;
- font-size: 13pt; 
+ font-size: 14pt; 
  position: relative;
  left: 400px;
  margin: 0 0 30px 0;
  padding: 0;
 }
 h4 {
- font-size: 12pt; 
+ font-size: 13pt; 
  margin: 0 0 10px 0;
  padding: 0;
 }
 h5 {
+ font-size: 12pt; 
+ margin: 0 0 10px 0;
+ padding: 0;
+}
+h6 {
  font-size: 11pt; 
  margin: 0 0 10px 0;
  padding: 0;
@@ -261,11 +266,10 @@ header nav ul.nav ul.dropit-submenu li input:hover {
 
 
 /* form elements */
-#input[type=submit].action {
+input[type=submit]{
  font-size: 9px;
- margin: 0;
- padding: 0 0 0 20px;
- height: 18px;
+ margin-right: 4px;
+ padding: 2px 4px;
  cursor:pointer;
  border: none !important;
 }
@@ -278,7 +282,7 @@ input[type=hidden] {
 input,
 textarea,
 select {
- height: 25px;
+ height: 22px;
  border: 1px solid #CFCFCF;
  border-top-left-radius: 4px;
  border-top-right-radius: 4px;
@@ -303,7 +307,6 @@ select {
  padding-left: 25px;
  padding-right: 2px;
  margin-left: 10px !important;
- cursor:pointer;
 }
 
 .edit {
