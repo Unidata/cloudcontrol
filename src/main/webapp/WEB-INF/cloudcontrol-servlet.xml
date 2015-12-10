@@ -45,6 +45,7 @@
       login-page="/login"
       username-parameter="userName"
       password-parameter="password"
+	  authentication-success-handler-ref="customAuthenticationSuccessHandler"
       authentication-failure-handler-ref="authenticationFailureHandler"/>
     
     <security:logout
@@ -54,7 +55,7 @@
       
     <security:intercept-url pattern="/index.jsp" access="permitAll" />
     <security:intercept-url pattern="/welcome" access="permitAll" />
-    <security:intercept-url pattern="/register" access="permitAll" />
+    <security:intercept-url pattern="/user/register" access="permitAll" />
     <security:intercept-url pattern="/login/**" access="permitAll" />
     <security:intercept-url pattern="/denied" access="permitAll" />
     <security:intercept-url pattern="/**" access="isAuthenticated()" />
@@ -70,8 +71,10 @@
     </security:authentication-provider>
   </security:authentication-manager>
   
-  <!-- Use a Md5 encoder since the user's passwords are stored as Md5 in the database -->
-  <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+  <!-- Use a password encoder since the user's passwords are stored encrypted in the database -->
+  <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+  
+  <bean id="customAuthenticationSuccessHandler" class="edu.ucar.unidata.cloudcontrol.service.CustomAuthenticationSuccessHandler"/>
   
   <bean id="authenticationFailureHandler"
       class="org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler">
@@ -94,8 +97,8 @@
     <property name="prefix" value="/WEB-INF/views/"></property>
     <property name="suffix" value=".jsp"></property>        
   </bean>
-
-  <!-- DAO injection -->
+  
+  <!-- DAO injection -->  
   <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.UserDetailsServiceImpl">
     <property name="userDao" ref="userDao"/>
   </bean>

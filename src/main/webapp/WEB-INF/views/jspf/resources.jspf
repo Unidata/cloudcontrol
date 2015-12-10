@@ -9,7 +9,6 @@
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tablesorter/themes/blue/style.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/dropit.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tooltipster/tooltipster.css" />
-   <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/jQuery/plugins/tooltipster/themes/tooltipster-light.css" />
    <link type="text/css" rel="stylesheet" href="${baseUrl}/resources/css/main.css" />
 
    <!-- js -->

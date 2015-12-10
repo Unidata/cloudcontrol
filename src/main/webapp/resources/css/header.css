@@ -1,0 +1,135 @@
+/*
+ * Header CSS
+ */
+
+header {
+ color: #23538A;
+ margin:0;
+ padding:0;
+ width:100%;
+ height:36px;
+ border-bottom:5px solid #23538A;
+}
+
+/* title */ 
+header .title {
+ position:relative;
+ top:4px;
+ margin:0;
+ padding:11px 0 0 72px;
+ height:36px;
+ background:transparent url('../images/header.png') no-repeat 0 0;
+ font-size:16pt;
+ float:left;
+}
+
+header .title a:link,
+header .title a:visited,
+header .title a:active,
+header .title a:hover {
+ color:#000000;
+ text-decoration:none;
+}
+
+/* horizontal navigation */
+header ul.nav {
+ float:right;
+ margin-top:10px;
+ margin-right:15px;
+ padding:0;
+ height:22px;
+}
+
+header ul.nav li {
+ display:inline-block;
+ margin:0;
+ padding:0 10px;
+}
+
+header ul.nav li.dropit-trigger b {
+ line-height:22px;
+ font-weight:normal;
+ cursor:pointer;
+ padding-right:20px;
+ background: transparent url('../images/dd.png') no-repeat right 0px;
+}
+
+header ul.nav li.dropit-trigger.help {
+ padding-left: 1px;
+ border-left: 1px solid #BCC4D0;
+ background: transparent url('../images/question.png') no-repeat right 0px;
+}
+
+header ul.nav li.dropit-trigger.help b {
+ background: none;
+}
+
+header ul.nav li.dropit-trigger b:active, 
+header ul.nav li.dropit-trigger b:hover {
+ text-decoration:none;
+}
+
+/* dropdown submenu */
+header ul.nav ul.dropit-submenu {
+ left:auto;
+ right:0;
+ background: #FFFFFF;
+ color: #23538A;
+ padding:5px 0;
+ margin:3px 0 0 1px;
+ border: 1px solid #23538A;
+ font-size:9pt;
+ -moz-box-shadow:5px 5px 5px rgba(0,0,0,0.3);
+ -webkit-box-shadow:5px 5px 5px rgba(0,0,0,0.3);
+ box-shadow:5px 5px 5px rgba(0,0,0,0.3);
+} 
+
+header ul.nav ul.dropit-submenu li {
+ white-space:nowrap;
+ margin:5px;
+ display:block;
+ padding:0;
+}
+
+header ul.nav ul.dropit-submenu li a {
+ line-height:20px;
+}
+
+.dropit .dropit-submenu {
+ min-width:150px;
+}
+
+
+/* logout links */
+header nav ul.nav li form {
+ padding:0;
+ margin:0;
+ display:inline;
+ position:relative;
+}
+
+header nav ul.nav li input {
+ color:#0088B5;
+ font-size:9pt;
+ background:none !important;
+ padding:0;
+ border:none !important;
+ cursor:pointer;
+ font-family:verdana, arial, helvetica, sans-serif;
+}
+
+header nav ul.nav ul.dropit-submenu li input:active,
+header nav ul.nav ul.dropit-submenu li input:hover {
+ color:#0088B5;
+ text-decoration:none;
+}
+
+header nav ul.nav ul.dropit-submenu li input[type=submit]{
+ margin:0;
+ padding:0;
+ cursor:pointer;
+ height: 20px;
+ width: auto;
+ border:none !important;
+ background-color: none;
+}

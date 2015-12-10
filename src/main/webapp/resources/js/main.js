@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     
  
-    $('ul.nav').dropit({ action: 'mouseenter', triggerEl: 'b' });
+    $('ul.nav').dropit({ action: 'click', triggerEl: 'b' });
 
 
     

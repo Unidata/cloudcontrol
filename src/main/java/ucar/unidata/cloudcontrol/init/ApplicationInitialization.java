@@ -35,6 +35,8 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 /**
  * Done at application initialization.
@@ -101,7 +103,7 @@ public class ApplicationInitialization implements ServletContextListener {
             logger.error(e.getMessage());   
             throw new RuntimeException(e.getMessage());  
         }
-
+		
         try {
             createDatabase(cloudcontrolHome, databaseSelected, servletContext);
         } catch (Exception e) {            
@@ -213,19 +215,18 @@ public class ApplicationInitialization implements ServletContextListener {
                                      "(" +
                                      "userId INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                                      "userName VARCHAR(50) not null, " +
-                                     "password CHAR(32) not null, " +
+                                     "password VARCHAR(80) not null, " +
                                      "accessLevel INTEGER not null, " +
                                      "accountStatus INTEGER not null, " +
                                      "emailAddress VARCHAR(75) not null, " +
-                                     "firstName VARCHAR(75) not null, " +
-                                     "lastName VARCHAR(75) not null, " +
+                                     "fullName VARCHAR(75) not null, " +
                                      "dateCreated TIMESTAMP not null, " +
                                      "dateModified TIMESTAMP not null" +
                                      ")";
 
         String insertAdminUserSQL = "INSERT INTO users " +
-                                    "(userName, password, accessLevel, accountStatus, emailAddress, firstName, lastName, dateCreated, dateModified) VALUES " +
-                                    "(?,?,?,?,?,?,?,?,?)"; 
+                                    "(userName, password, accessLevel, accountStatus, emailAddress, fullName, dateCreated, dateModified) VALUES " +
+                                    "(?,?,?,?,?,?,?,?)"; 
 
      
         try {
@@ -233,39 +234,36 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement = connection.prepareStatement(createUsersTableSQL);
             preparedStatement.executeUpdate();
             preparedStatement = connection.prepareStatement(insertAdminUserSQL);
-            preparedStatement.setString(1, "sbutz");
-            preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
+            preparedStatement.setString(1, "wfisher");
+            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
             preparedStatement.setInt(3, 2);
             preparedStatement.setInt(4, 1);
-            preparedStatement.setString(5, "sbutz@domianz.edu");
-            preparedStatement.setString(6, "Seymour");
-            preparedStatement.setString(7, "Butz");
+            preparedStatement.setString(5, "wfisher@ucar.edu");
+            preparedStatement.setString(6, "Ward Fisher");
+            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement(insertAdminUserSQL);
             preparedStatement.setString(1, "bobr");
-            preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
+            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, 0);
             preparedStatement.setString(5, "bobr@somewhere.org");
-            preparedStatement.setString(6, "Bob");
-            preparedStatement.setString(7, "Rickenfrick");
+            preparedStatement.setString(6, "Bob RickenFrick");
+            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 			
             preparedStatement = connection.prepareStatement(insertAdminUserSQL);
             preparedStatement.setString(1, "tfurg");
-            preparedStatement.setString(2, "4cb9c8a8048fd02294477fcb1a41191a");
+            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, 1);
             preparedStatement.setString(5, "tfurg@someplace.com");
-            preparedStatement.setString(6, "Turd");
-            preparedStatement.setString(7, "Ferguson");
+            preparedStatement.setString(6, "Turd Ferguson");
+            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(9, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) { 

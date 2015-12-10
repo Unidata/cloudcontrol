@@ -2,30 +2,28 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : Login</title>
+   <title><spring:message code="global.title"/> : <spring:message code="login"/></title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3>Login to Cloud Control</h3> 
    
-   <!-- left -->
-   <div class="left">
+    <h1><spring:message code="login"/></h1> 
     <c:choose>
      <c:when test="${error != null}">
       <p class="error">
        <b>
-		Authentication Error:
+        <spring:message code="authError"/>
         <c:choose>
          <c:when test="${error == 'badCredentials'}">
-          Bad credentials provided.  Please Try again.
+          <spring:message code="badCredentials"/>
          </c:when>
          <c:when test="${error == 'accountDisabled'}">
-          This account has been disabled.
-		  Please contact the administrator of this site for help.
+          <spring:message code="accountDisabled"/>
+          <spring:message code="help.message"/>
          </c:when>
          <c:otherwise>
-          Please contact the administrator of this site for help.
+          <spring:message code="help.message"/>
          </c:otherwise>
         </c:choose>
        </b>
@@ -33,28 +31,30 @@
      </c:when>
     </c:choose>
     
-    <c:url var="loginUrl" value="/j_spring_security_check" />
-    <form action="${loginUrl}" method="POST">
+    <form action="/j_spring_security_check" method="POST">
      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
      <ul class="format">   
       <li>
-       <label>
-        User Name:<br />
-        <input type="text" name="userName" value="" />
+       <label for="userName">
+        <spring:message code="userName"/>
        </label>
+       <input type="text" id="userName" name="userName" value="" />
       </li>
       <li>
-       <label>
-        Password:<br />
-        <input type="password" name="password" value="" />
+       <label for="password">
+        <spring:message code="password"/>
        </label>
+       <input type="password" id="password" name="password" value="" />
       </li>
       <li>
-       <input type="submit" value="Login" />
+       <input type="submit" value="Login" /> 
+       <a href="">
+        <spring:message code="forgot"/>
+       </a>
       </li> 
      </ul>
     </form>
-   </div> <!-- /.left -->
+
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>
  </html>

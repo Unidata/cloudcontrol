@@ -2,15 +2,14 @@
 <!DOCTYPE HTML>
  <html>
   <head>
-   <title><spring:message code="global.title"/> : Manage Cloud Control Users</title>
+   <title><spring:message code="global.title"/> : <spring:message code="user.list.title"/></title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
   </head>
   <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-   <h3>Manage Cloud Control Users</h3>
 
-   <!-- fullWidth -->
-   <div class="fullWidth">        
+   <h1><spring:message code="user.list.title"/></h1>
+
     <c:choose>
      <c:when test="${error != null}">
       <p class="error"><b><c:out value="${error}" /></b></p>
@@ -23,27 +22,21 @@
        <thead>
         <tr>
          <th>
-          User Name
+          <spring:message code="userName"/>
          </th>
          <th>
-          First Name
+          <spring:message code="fullName"/>
          </th>
          <th>
-          Last Name
+          <spring:message code="emailAddress"/>
          </th>
          <th>
-          Email Address
+          <spring:message code="accessLevel"/>
          </th>
          <th>
-          Access Level 
+          <spring:message code="accountStatus"/>
          </th>
-         <th>
-          Account Status
-         </th>
-         <th>
-          Date Created
-         </th>
-         <th>
+         <th class="hidebg">
          </th>
         </tr>
        </thead>
@@ -51,16 +44,19 @@
         <c:forEach items="${users}" var="user">    
          <tr>
           <td>
-           <c:out value="${user.userName}" />
+           <a href="${baseUrl}/user/view/<c:out value="${user.userName}" />"> 
+            <c:out value="${user.userName}" />
+           </a>
           </td>
           <td>
-           <c:out value="${user.firstName}" />
+           <a href="${baseUrl}/user/view/<c:out value="${user.userName}" />"> 
+            <c:out value="${user.fullName}" />
+           </a>
           </td>
           <td>
-           <c:out value="${user.lastName}" />
-          </td>
-          <td>
-           <c:out value="${user.emailAddress}" />
+           <a href="${baseUrl}/user/view/<c:out value="${user.userName}" />"> 
+            <c:out value="${user.emailAddress}" />
+           </a>
           </td>
           <td>
            <c:choose>
@@ -83,20 +79,19 @@
            </c:choose>
           </td>
           <td>
-           <fmt:formatDate value="${user.dateCreated}" type="BOTH" dateStyle="default"/>
-          </td>
-          <td>
            <form action="${baseUrl}/user/edit/<c:out value="${user.userName}" />" method="GET">
-            <input class="action" type="submit" value="Edit" />        
+            <input type="submit" value="<spring:message code="crud.edit"/>" />        
+           </form>
+           <form action="${baseUrl}/user/password/<c:out value="${user.userName}" />" method="GET">
+            <input type="submit" value="<spring:message code="user.password.title"/>" />        
            </form>
            <c:choose>
             <c:when test="${user.userName ne authUserName}">
-             <form action="${baseUrl}/user/delete" method="POST">
-              <input type="hidden" name="userId" value="<c:out value="${user.userId}" />"/>
-              <input class="action" type="submit" value="Delete"/>        
+             <form action="${baseUrl}/user/delete/<c:out value="${user.userName}" />" method="GET">
+              <input type="submit" value="<spring:message code="crud.delete"/>"/>        
              </form>
-			</c:when>
-		   </c:choose>
+            </c:when>
+           </c:choose>
           </td>
          </tr>
         </c:forEach>
@@ -105,13 +100,13 @@
       <c:otherwise>
        <tr>
         <td>
-         No users have been created yet.
+         <spring:message code="user.list.none"/>
         </td>
        </tr>
       </c:otherwise>
      </c:choose>
     </table> 
-   </div> <!-- /.fullWidth -->
+
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
   </body>
  </html>

@@ -6,20 +6,20 @@ import java.io.Serializable;
 /**
  * Object representing a User.  
  *
- * A User is person with an account in the cloudcontrol web app. 
- * The User attributes correspond to database columns.
+ * A User is person with an account in the web app. 
+ * User attributes, with the exception of the confirmPassword 
+ * attribute, correspond to database columns.
  */
-
 public class User implements Serializable {
 
     private int userId;
     private String userName;
+    private String fullName;
     private String password;
-    private int accessLevel;
-    private int accountStatus;
+    private String confirmPassword;
+    private int accessLevel = 1; // default access level is User
+    private int accountStatus = 1; // default account status is enabled
     private String emailAddress;
-    private String firstName;
-    private String lastName;
     private Date dateCreated;
     private Date dateModified;
 
@@ -42,18 +42,18 @@ public class User implements Serializable {
     }
 
     /**
-     * Returns the userName of the User (immutable/unique to each User).
+     * Returns the username of the User (immutable/unique to each User).
      * 
-     * @return  The User's userName.  
+     * @return  The User's username.  
      */
     public String getUserName() {
         return userName;
     }
 
     /**
-     * Sets the userName of the User (immutable/unique to each User).
+     * Sets the username of the User (immutable/unique to each User).
      * 
-     * @param userName  The User's userName. 
+     * @param userName  The User's username. 
      */
     public void setUserName(String userName) {
         this.userName = userName;
@@ -75,6 +75,24 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    /**
+     * Returns the User's confirmation of the password.
+     * 
+     * @return  The User's confirmation of the password.  
+     */
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    /**
+     * Sets the User's confirmation of the password.
+     * 
+     * @param confirmPassword  The Users's confirmation of the password. 
+     */
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     /**
@@ -115,7 +133,7 @@ public class User implements Serializable {
 
 
     /**
-     * Returns the email address of the User (mutable/unique to each User).
+     * Returns the email address of the User.
      * 
      * @return  The User's email address.  
      */ 
@@ -133,39 +151,21 @@ public class User implements Serializable {
     }
 
     /**
-     * Returns the first name of the User.
+     * Returns the full name of the User.
      * 
-     * @return  The User's first name.  
+     * @return  The User's full name.  
      */
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
     /**
-     * Sets the first name of the User.
+     * Sets the full name of the User.
      * 
-     * @param firstName  The User's first name. 
+     * @param fullName  The User's full name. 
      */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    /**
-     * Returns the last name of the User.
-     * 
-     * @return  The User's last name.  
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * Sets the last name of the User.
-     * 
-     * @param lastName  The User's last name. 
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     /**
@@ -213,15 +213,15 @@ public class User implements Serializable {
         StringBuffer buffer = new StringBuffer();
         buffer.append("userId: " + userId + "\n ");
         buffer.append("userName: " + userName + "\n ");
+        buffer.append("fullName: " + fullName + "\n ");
         buffer.append("password: " + password + "\n ");
+        buffer.append("confirmPassword: " + confirmPassword + "\n ");
         buffer.append("accessLevel: " + String.valueOf(accessLevel) + "\n ");
         buffer.append("accountStatus: " + String.valueOf(accountStatus) + "\n ");
         buffer.append("emailAddress: " + emailAddress + "\n ");
-        buffer.append("firstName: " + firstName + "\n ");
-        buffer.append("lastName: " + lastName + "\n ");
         buffer.append("dateCreated: " + dateCreated + "\n ");
         buffer.append("dateModified: " + dateModified + "\n ");        
-       return buffer.toString();
+        return buffer.toString();
     }
 
 

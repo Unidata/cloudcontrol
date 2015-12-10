@@ -25,6 +25,14 @@ public interface UserManager {
      * @return  The User.   
      */
     public User lookupUser(String userName);
+	
+    /**
+     * Looks up and retrieves a User using the emailAddress.
+     * 
+     * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
+     * @return  The User.   
+     */
+	public User lookupUserByEmailAddress(String emailAddress);
 
     /**
      * Requests a List of all Users.

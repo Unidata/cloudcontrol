@@ -1,0 +1,49 @@
+/*
+ * Breadcrumbs CSS
+ */
+
+ul#breadcrumbs {
+ text-align: left;
+ list-style: none; 
+ padding: 0; 
+ font-size:0.85em; 
+ color: #696969;
+ margin:0 0 30px 0;
+ float: right;
+}
+ul#breadcrumbs li {
+ margin: 0;
+ padding: 0 8px 0 0; 
+ display: inline; 
+ background: none;
+ border: none;
+}
+
+ul#breadcrumbs li a {
+ margin: 0;
+ padding: 0; 
+ display: inline; 
+ color: #696969;
+ text-decoration: none;
+}
+
+ul#breadcrumbs li a:active,
+ul#breadcrumbs li a:hover {
+ text-decoration: underline;
+}
+
+ul#breadcrumbs li:before  {
+ content: "\00BB";
+ margin: 0 6px 0 0;
+ padding: 0; 
+ font-family: "UbuntuRegular";
+ font-size: 1.2em;
+ color: #696969;
+ font-weight: normal;
+}
+
+ul#breadcrumbs li.first:before {
+ content: "" !important;
+ margin: 0;
+ padding: 0; 
+}

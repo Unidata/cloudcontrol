@@ -32,7 +32,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * 
      * @param userId  The userId of the User to locate (will be unique for each User). 
      * @return  The User.  
-     * @throws RecoverableDataAccessException  If unable to lookup table with the given userId.
+     * @throws RecoverableDataAccessException  If unable to lookup User with the given userId.
      */
     public User lookupUser(int userId) {
         String sql = "SELECT * FROM users WHERE userId = ?";
@@ -48,13 +48,29 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * 
      * @param userName  The userName of the User to locate (will be unique for each User). 
      * @return  The User.
-     * @throws RecoverableDataAccessException  If unable to lookup table with the given userName. 
+     * @throws RecoverableDataAccessException  If unable to lookup User with the given userName. 
      */
     public User lookupUser(String userName) {
         String sql = "SELECT * FROM users WHERE userName = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);        
         if (users.isEmpty()) {
             throw new RecoverableDataAccessException("Unable to find User with userName: " + userName);
+        }   
+        return users.get(0);
+    }
+	
+    /**
+     * Looks up and retrieves a User from the persistence mechanism using the emailAddress.
+     * 
+     * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
+     * @return  The User.   
+	 * @throws RecoverableDataAccessException  If unable to lookup User with the given emailAddress. 
+     */
+    public User lookupUserByEmailAddress(String emailAddress) {
+        String sql = "SELECT * FROM users WHERE emailAddress = ?";
+        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);        
+        if (users.isEmpty()) {
+            throw new RecoverableDataAccessException("Unable to find User with emailAddress: " + emailAddress);
         }   
         return users.get(0);
     }
@@ -154,17 +170,16 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws RecoverableDataAccessException  If unable to find the User to update. 
      */
     public void updateUser(User user)  {
-        String sql = "UPDATE users SET emailAddress = ?, firstName = ?, lastName = ?, dateModified = ? WHERE userId = ?";
+        String sql = "UPDATE users SET emailAddress = ?, fullName = ?, dateModified = ? WHERE userId = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
             user.getEmailAddress(), 
-            user.getFirstName(),
-            user.getLastName(),
+            user.getFullName(),
             user.getDateModified(),
             user.getUserId()
         });
         if (rowsAffected  <= 0) {
-            throw new RecoverableDataAccessException("Unable to update User.  No User for with userName: " + user.getUserName());
+            throw new RecoverableDataAccessException("Unable to update User.  No User with userName: " + user.getUserName() + " found.");
         }     
     } 
 
@@ -208,8 +223,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.setAccessLevel(rs.getInt("accessLevel"));
             user.setAccountStatus(rs.getInt("accountStatus"));
             user.setEmailAddress(rs.getString("emailAddress"));
-            user.setFirstName(rs.getString("firstName"));
-            user.setLastName(rs.getString("lastName"));
+            user.setFullName(rs.getString("fullName"));
             user.setDateCreated(rs.getTimestamp("dateCreated"));
             user.setDateModified(rs.getTimestamp("dateModified"));
             return user;

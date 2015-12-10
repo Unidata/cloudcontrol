@@ -1,9 +1,9 @@
 package edu.ucar.unidata.cloudcontrol.service;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
 import edu.ucar.unidata.cloudcontrol.repository.UserDao;
@@ -44,7 +44,17 @@ public class UserManagerImpl implements UserManager {
     public User lookupUser(String userName){
         return userDao.lookupUser(userName);
     }
-   
+	
+    /**
+     * Looks up and retrieves a User using the emailAddress.
+     * 
+     * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
+     * @return  The User.   
+     */
+    public User lookupUserByEmailAddress(String emailAddress) {
+        return userDao.lookupUserByEmailAddress(emailAddress);
+    }
+	
     /**
      * Requests a List of all Users.
      * 
@@ -98,9 +108,8 @@ public class UserManagerImpl implements UserManager {
      * @param user  The User to be created. 
      */
     public void createUser(User user) {
-        String password = DigestUtils.md5Hex(user.getPassword());
+        String password = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
-        user.setAccessLevel(1);
         Date now = new Date(System.currentTimeMillis());
         user.setDateCreated(now);
         user.setDateModified(now);
@@ -124,7 +133,7 @@ public class UserManagerImpl implements UserManager {
      * @param user  The User to whose password we need to update. 
      */
     public void updatePassword(User user) {
-        String password = DigestUtils.md5Hex(user.getPassword());
+        String password = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
         Date now = new Date(System.currentTimeMillis());
         user.setDateModified(now);

@@ -7,20 +7,18 @@
  <!DOCTYPE HTML>
   <html>
    <head>
-    <title><spring:message code="global.title"/> : Welcome!</title>
+    <title><spring:message code="global.title"/> : <spring:message code="welcome"/></title>
 <%@ include file="/WEB-INF/views/jspf/resources.jspf" %>
    </head>
    <body> 
 <%@ include file="/WEB-INF/views/jspf/header.jspf" %>
-    <h3>Welcome!</h3> 
-    <!-- left -->
-    <div class="left">
-     <h5>Getting Started</h5>
-    </div> <!-- /.left -->
-    <!-- right -->
-    <div class="right">
-     <h5>About Cloud Control</h5>
-    </div><!-- /.right -->
+    <h1><spring:message code="welcome"/></h1> 
+    <div id="doubleColumn">
+<%@ include file="/WEB-INF/views/jspf/gettingStarted.jspf" %>
+    </div><!-- /.doubleColumn -->
+    <div id="rightColumn" class="dec">
+<%@ include file="/WEB-INF/views/jspf/about.jspf" %>
+    </div><!-- /.rightColumn -->
 <%@ include file="/WEB-INF/views/jspf/footer.jspf" %>
    </body>
   </html>

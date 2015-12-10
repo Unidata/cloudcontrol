@@ -96,16 +96,17 @@
                <c:forEach var="status" items="${statusMap}"> 
                 <c:choose>
                  <c:when test="${image.id == status.key}">
-                  <form action="${baseUrl}/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
-                   <input class="action start" type="submit" value="Stop" />        
-                  </form>
-                  <a href="http://192.168.99.100:6080/" target="_blank">
-                   Launch       
+                  <a href="http://192.168.99.100:6080/" target="_blank" class="open">
+                   View      
                   </a>
+                  <form action="${baseUrl}/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
+                   <input class="action" type="submit" value="Stop" />        
+                  </form>
+
                  </c:when>
                  <c:otherwise>
                   <form action="${baseUrl}/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-                   <input class="action start" type="submit" value="Start" />        
+                   <input class="action" type="submit" value="Start" />        
                   </form>
                  </c:otherwise>
                 </c:choose> 
@@ -113,30 +114,14 @@
               </c:when>
               <c:otherwise>
                 <form action="${baseUrl}/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-                 <input class="action start" type="submit" value="Start" />        
+                 <input class="action" type="submit" value="Start" />        
                 </form>
               </c:otherwise>
              </c:choose>
-
              <sec:authorize access="hasRole('ROLE_ADMIN')">           
               <form action="${baseUrl}/docker/image/<c:out value="${image.id}" />" method="GET">
-               <input class="action inspect" type="submit" value="Inspect" />        
+               <input class="action" type="submit" value="Inspect" />        
               </form>
-              <form action="${baseUrl}/docker/image/<c:out value="${image.id}/history" />/" method="GET">
-               <input class="action history" type="submit" value="History" />        
-              </form>
-              <form action="${baseUrl}/docker/image/<c:out value="${image.id}/container" />/" method="GET">
-               <input class="action container" type="submit" value="Container" />        
-              </form>
-              <form action="${baseUrl}/docker/image/<c:out value="${image.id}/tag" />/" method="GET">
-               <input class="action tag" type="submit" value="Tag" />        
-              </form>
-              <form action="${baseUrl}/docker/image/<c:out value="${image.id}/push" />/" method="GET">
-               <input class="action push" type="submit" value="Push" />        
-              </form>
-              <form action="${baseUrl}/docker/image/<c:out value="${image.id}/delete" />/"  method="POST">
-               <input class="action delete" type="submit" value="Delete"/>        
-              </form> 
              </sec:authorize>
             </td>
            </tr>

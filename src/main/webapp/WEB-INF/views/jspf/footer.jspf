@@ -1,7 +1,7 @@
-   </div> <!-- /#content -->
-
-   <footer>
-	<p><img src="${baseUrl}/resources/images/unidataLogo.png" alt="Unidata"/> This website is created and maintained by <a href="http://www.unidata.ucar.edu/">Unidata Program Center</a>.</p>
-   </footer>
-
-  </div> <!--/#container-->
+       </div><!-- /#content -->
+      </div> <!-- /#container -->   
+     <footer>
+      This website is created and maintained by the <a href="http://www.unidata.ucar.edu/">Unidata Program Center</a>.
+     </footer>
+	 
+    </div> <!-- /#wrap -->

@@ -1,83 +1,91 @@
-  <div id="container">
-   <header>
-    <h1>
-     <c:choose>
-      <c:when test="${baseUrl == ''}">
-       <a href="/"><spring:message code="global.title"/></a>
-      </c:when>
-      <c:otherwise>
-       <a href="${baseUrl}"><spring:message code="global.title"/></a>
-      </c:otherwise>
-     </c:choose>
-    </h1>   
-    
-    <nav> 
-     <ul class="nav"> 
-      <c:choose>
-       <c:when test="${loggedIn}">
-        <li>
-         Logged in as <b><i>${authUserName}</i></b>
-        </li>
-        <sec:authorize access="hasRole('ROLE_ADMIN')"> 
-         <li>
-          <b>Users</b>
-          <ul>
-           <li><a href="${baseUrl}/user">Manage Users</a></li>
-           <li><a href="${baseUrl}/create">Create New User</a></li>
-          </ul>
-         </li>
-         <li>
-          <b>Docker Server</b>
-          <ul>
-           <li>Server Information</li>
-           <li>Authentication Configuration</li>
-           <li>Ping Server</li>
-           <li>Server Version</li>
-          </ul>
-         </li>
-         <li>
-	      <b>Images</b>
-          <ul>
-           <li><a href="${baseUrl}/docker/image/list">Manage Images</a></li>
-           <li><a href="${baseUrl}/docker/image/search">Search Images</a></li>
-           <li><a href="${baseUrl}/docker/image/create">Create an Image</a></li>
-           <li><a href="${baseUrl}/docker/image/build">Build Image From DockerFile</a></li>
-           <li><a href="${baseUrl}/docker/image/pull">Pull Image From Repository</a></li>
-          </ul>
-         </li>
-	    </sec:authorize> 
-        <li>
-         <b>My Account</b>
-         <c:url var="logoutUrl" value="/j_spring_security_logout" />
-         <ul>
-          <li>
-           <form action="${baseUrl}/user/${authUserName}" method="GET">
-            <input type="submit" value="Manage Account" />
-           </form>
-          </li>
-          <li>
-           <form action="${baseUrl}/user/${authUserName}/password" method="GET">
-            <input type="submit" value="Change Password" />
-           </form>
-          </li>
-          <li>
-           <form action="${logoutUrl}" method="POST">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <input type="submit" value="Logout" />
-           </form>
-          </li>
-		 </ul>
-        </li>
-       </c:when>
-       <c:otherwise>
-	    <li><a href="${baseUrl}/register">Register</a></li>
-        <li><a href="${baseUrl}/login">Login</a></li>
-       </c:otherwise>
-      </c:choose>    
-     </ul>
-    </nav>
-   </header>
+    <div id="wrap">
+     <div id="container">
 
-   <div id="content">
+      <header>
+       <nav> 
+        <ul class="nav"> 
+         <c:choose>
+          <c:when test="${loggedIn}">
+           <sec:authorize access="hasRole('ROLE_ADMIN')"> 
+            <li>
+             <b>Users</b>
+             <ul>
+              <li><a href="${baseUrl}/user">Manage Users</a></li>
+              <li><a href="${baseUrl}/user/create">Create New User</a></li>
+             </ul>
+            </li>
+            <li>
+             <b>Docker Server</b>
+             <ul>
+              <li>Server Information</li>
+              <li>Authentication Configuration</li>
+              <li>Ping Server</li>
+              <li>Server Version</li>
+             </ul>
+            </li>
+            <li>
+             <b>Images</b>
+             <ul>
+              <li><a href="${baseUrl}/docker/image/list">Manage Images</a></li>
+              <li><a href="${baseUrl}/docker/image/search">Search Images</a></li>
+              <li><a href="${baseUrl}/docker/image/create">Create an Image</a></li>
+              <li><a href="${baseUrl}/docker/image/build">Build Image From DockerFile</a></li>
+              <li><a href="${baseUrl}/docker/image/pull">Pull Image From Repository</a></li>
+             </ul>
+            </li>
+           </sec:authorize> 
+           <li>
+            <b>${authUserName}</b>
+            <c:url var="logoutUrl" value="/j_spring_security_logout" />
+            <ul>
+             <li>
+              <form action="${baseUrl}/user/view/${authUserName}" method="GET">
+               <input type="submit" value="Manage Account" />
+              </form>
+             </li>
+             <li>
+              <form action="${baseUrl}/user/password/${authUserName}" method="GET">
+               <input type="submit" value="Change Password" />
+              </form>
+             </li>
+             <li>
+              <form action="${logoutUrl}" method="POST">
+               <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+               <input type="submit" value="Logout" />
+              </form>
+             </li>
+            </ul>
+           </li>
+          </c:when>
+          <c:otherwise>
+           <li><a href="${baseUrl}/user/register"><spring:message code="user.register.title"/></a></li>
+           <li><a href="${baseUrl}/login"><spring:message code="login"/></a></li>
+          </c:otherwise>
+         </c:choose>  
+         <li class="help">
+          <b>&nbsp;</b>
+          <ul>
+           <li><a href="${baseUrl}/gettingStarted"><spring:message code="gettingStarted"/></a></li>
+           <li><a href="${baseUrl}/about"><spring:message code="about"/></a></li>
+          </ul>
+         </li>  
+        </ul>
+       </nav>
+	  
+       <div class="title">
+        <c:choose>
+         <c:when test="${baseUrl == ''}">
+          <a href="/"><spring:message code="global.title"/></a>
+         </c:when>
+         <c:otherwise>
+          <a href="${baseUrl}"><spring:message code="global.title"/></a>
+         </c:otherwise>
+        </c:choose>
+       </div>   
+      </header>
+	  
+      <div id="content" class="clearfix">
+
+  
 
 

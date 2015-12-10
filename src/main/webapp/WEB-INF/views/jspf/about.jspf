@@ -1,0 +1,11 @@
+	 <h3>About Cloud Control</h3>
+	 <p>Cloud Control is a web application used to manage Docker local and remote platforms.  Using the Cloud Control interface, users can access, start, and stop images set up by Cloud Control administrators.  Cloud Control administrators can configure the web application to perform almost any docker command performed via a terminal.</p>
+	 
+ 	 <p>Cloud Control is built on/utilizes the following technologies:</p>
+ 	 <ul>
+ 	  <li><a href="http://www.docker.com/">Docker</a>, <a href="http://docs.docker.com/machine/install-machine/">Docker Machine</a>, <a href="http://docs.docker.com/engine/reference/api/docker_remote_api/">Docker Remote API</a></li>
+ 	  <li><a href="https://github.com/docker-java/docker-java">docker-java client</a></li>
+ 	  <li><a href="http://projects.spring.io/spring-framework/">Spring Framework</a>, <a href="http://projects.spring.io/spring-security/">Spring Security</a></li>
+ 	  <li><a href="https://db.apache.org/derby/">Apache Derby</a></li>
+ 	  <li><a href="https://jquery.com/">JQuery</a></li>
+     </ul>
