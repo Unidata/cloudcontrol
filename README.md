@@ -1,7 +1,5 @@
 # Cloud Control
 
-> The future home of the Unidata *cloud control* project.  
-
 ### TO DO List
 
 (In no particular order)

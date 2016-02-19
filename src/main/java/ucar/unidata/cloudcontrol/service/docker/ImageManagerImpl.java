@@ -24,8 +24,7 @@ public class ImageManagerImpl implements ImageManager {
      */
     public DockerClient initializeDockerClient() {
         DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
-        .withVersion("1.17")
-        .build();
+            .build();
         return DockerClientBuilder.getInstance(config).build();
     }
 
@@ -80,7 +79,7 @@ public class ImageManagerImpl implements ImageManager {
         } 
         return repository;
     }
-	
+    
     /**
      * Requests an Image's Container ID.
      * 
@@ -91,7 +90,7 @@ public class ImageManagerImpl implements ImageManager {
         InspectImageResponse inspectImageResponse = inspectImage(image.getId());
         return inspectImageResponse.getContainer();
     }
-	
+    
      
     /**
      * Requests a Map of the Image's repositories (for form dropdown selection).
@@ -105,8 +104,8 @@ public class ImageManagerImpl implements ImageManager {
         for (Image i : imageList) {
             String repo = getImageRepository(i);
             imageMap.put(repo, repo);
-	    }
-		return imageMap;
+        }
+        return imageMap;
     }   
     
     /**
