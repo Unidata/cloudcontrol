@@ -20,5 +20,3 @@
 * Unit testing!!!! (Jen)
 * Auto refresh of pages with status info (Jen)
 * Coverity and Travis - ize (Jen)
-
-

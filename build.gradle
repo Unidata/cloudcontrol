@@ -6,9 +6,10 @@ compileJava {
 }
 
 ext {
-    springVersion = "4.2.0.RELEASE"
-    springSecurityVersion = "4.0.2.RELEASE"
-    springShellVersion = "1.1.0.RELEASE"
+    springVersion = "4.2.4.RELEASE"
+    springSecurityVersion = "4.0.3.RELEASE"
+    dockerJavaVersion = "2.2.0"
+    glassFishVersion = "2.22.2"
 }
 
 group = "edu.ucar.unidata"
@@ -55,13 +56,13 @@ dependencies {
     // others
     compile "commons-codec:commons-codec:1.10"
     compile "commons-dbcp:commons-dbcp:1.4"
-	compile "commons-io:commons-io:2.4"
+    compile "commons-io:commons-io:2.4"
 
-	compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.0.1"
+    compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.7.1"
 
-	compile "com.google.guava:guava:r05"
+    compile "com.google.guava:guava:19.0"
 
-	compile "de.gesellix:unix-socket-factory:2014-11-16T14-41-27"
+    compile "de.gesellix:unix-socket-factory:2015-01-27T15-02-14"
 
     compile "javax.servlet:javax.servlet-api:3.1.0"
     compile "javax.validation:validation-api:1.1.0.Final"
@@ -70,21 +71,21 @@ dependencies {
 
     compile "log4j:log4j:1.2.17"
 
-	compile "org.apache.commons:commons-compress:1.10"
+    compile "org.apache.commons:commons-compress:1.10"
     compile "org.apache.commons:commons-lang3:3.4"
-    compile "org.apache.derby:derby:10.11.1.1"
-	compile "org.apache.httpcomponents:httpclient:4.5"
+    compile "org.apache.derby:derby:10.12.1.1"
+    compile "org.apache.httpcomponents:httpclient:4.5.1"
 
-	compile "org.bouncycastle:bcpkix-jdk15on:1.52"
+    compile "org.bouncycastle:bcpkix-jdk15on:1.54"
 
-	compile "org.glassfish.jersey.connectors:jersey-apache-connector:2.21"
-	compile "org.glassfish.jersey.core:jersey-client:2.21"
+    // glassfish
+    compile "org.glassfish.jersey.connectors:jersey-apache-connector:$glassFishVersion"
+    compile "org.glassfish.jersey.core:jersey-client:$glassFishVersion"
 
-	compile "org.slf4j:slf4j-api:1.7.12"
+    compile "org.slf4j:slf4j-api:1.7.16"
 
-	compile name: 'docker-java-2.1.1-SNAPSHOT'
-
-
+    // docker-java
+    compile "com.github.docker-java:docker-java:$dockerJavaVersion"
 }
 
 task wrapper(type: Wrapper) {
