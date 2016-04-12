@@ -1,0 +1,100 @@
+
+    <h3>
+     Docker Server Version
+    </h3>
+   
+    <table> 
+     <tbody>
+      <tr>
+       <td>
+        <div class="tooltip" class="tooltip" title="The <b>API version</b> of the Docker instance.">
+         API Version
+        </div>
+       </td>
+       <td>
+        <c:out value="${serverVersion.apiVersion}" />
+       </td>
+      </tr>
+      <tr>      
+       <td>
+		<div class="tooltip" class="tooltip" title="The <b>architecture</b> of the machine running the Docker instance.">
+         Architecture
+	    </div>
+       </td>
+       <td>
+        <c:out value="${serverVersion.arch}" />
+       </td>
+      </tr>
+      <tr>      
+       <td>
+		<div class="tooltip" class="tooltip" title="The <b>Git commit checksum</b> of the Docker instance.">
+         Git Commit Checksum
+	    </div>
+       </td>
+       <td>
+        <c:out value="${serverVersion.gitCommit}" />
+       </td>
+      </tr>
+      <tr>      
+       <td>
+		<div class="tooltip" class="tooltip" title="The <b>Go version</b> used to build the Docker instance.">
+         GO Version
+	    </div>
+       </td>
+       <td>
+		<c:out value="${serverVersion.goVersion}" />
+       </td>
+      </tr>
+      <tr>      
+       <td>
+		<div class="tooltip" class="tooltip" title="The <b>kernel version</b> of the machine running the Docker instance.">
+         Kernel Version
+	    </div>
+       </td>
+       <td>
+        <c:out value="${serverVersion.kernelVersion}" />
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <div class="tooltip" class="tooltip" title="The <b>operating system</b> of the machine running the Docker instance.">
+         Operating System
+        </div>
+       </td>
+       <td>
+        <c:out value="${serverVersion.operatingSystem}" />
+       </td>
+      </tr>
+       <tr>
+        <td>
+		 <div class="tooltip" class="tooltip" title="The <b>engine version</b> of the Docker instance">
+          Docker Engine Version
+	     </div>
+        </td>
+        <td>
+         <c:out value="${serverVersion.version}" />
+        </td>
+       </tr> 
+       <tr>
+        <td>
+         <div class="tooltip" class="tooltip" title=" The <b>build time/date</b> of the Docker instance."> 
+          Build Time
+	     </div>
+        </td>
+        <td>
+	     <c:out value="${serverVersion.buildTime}" />    
+        </td>
+       </tr>
+       <tr>
+        <td>
+         <div class="tooltip" class="tooltip" title="Denotes whether the Docker instance is an <b>experimental build</b>."> 
+          Experimental Build
+	     </div>
+        </td>
+        <td>
+         <c:out value="${serverVersion.experimental}" />
+        </td>
+       </tr>
+      </tbody>
+     </table>       
+

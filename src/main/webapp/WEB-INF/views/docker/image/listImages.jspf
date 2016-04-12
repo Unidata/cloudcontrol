@@ -1,0 +1,70 @@
+
+   <h3>Images Available in This Docker Instance</h3>
+
+     <table class="list"> 
+      <c:choose>
+        <c:when test="${fn:length(imageList) gt 0}">
+         <thead>
+          <tr>
+           <th>
+            Repository/Tags
+           </th>
+           <th> 
+            Date Created
+           </th>
+           <th>
+            Status
+           </th>
+           <th class="hidebg">
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+          <c:forEach items="${imageList}" var="image">     
+           <tr>
+            <td>  
+             <c:out value="${image.repoTags}" />
+            </td>
+            <td>
+             <c:out value="${image.created}"/>               
+            </td>
+            <td>
+             <c:out value="${image.status}" />
+            </td>
+            <td>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">           
+             <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />" method="GET">
+              <input class="action" type="submit" value="Manage" />        
+             </form>
+            </sec:authorize>
+            <c:choose>
+             <c:when test="${fn:contains(image.status, 'Inactive')}">
+              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
+               <input class="action" type="submit" value="Start" />        
+              </form>
+             </c:when>
+             <c:when test="${fn:contains(image.status, 'Exited')}">
+              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
+               <input class="action" type="submit" value="Start" />        
+              </form>
+             </c:when>
+             <c:otherwise>
+              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
+               <input class="action" type="submit" value="Stop" />        
+              </form>
+             </c:otherwise>
+            </c:choose>
+            </td>
+           </tr>
+          </c:forEach>
+         </tbody>
+        </c:when>
+        <c:otherwise>
+         <tr>
+          <td>
+           No images are available in this docker instance yet.
+          </td>
+         </tr>
+        </c:otherwise>
+      </c:choose>
+     </table> 
