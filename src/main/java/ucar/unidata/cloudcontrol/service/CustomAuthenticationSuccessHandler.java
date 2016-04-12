@@ -26,16 +26,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-		logger.info("HERE!!!");
-        
 		Cookie[] cookie = httpServletRequest.getCookies();
-
 
         HttpSession session = httpServletRequest.getSession();
         User authUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userName = authUser.getUsername();
 		
-
         //set our response to OK status
         httpServletResponse.setStatus(HttpServletResponse.SC_OK);
 
