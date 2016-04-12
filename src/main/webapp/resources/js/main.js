@@ -1,7 +1,5 @@
 $(document).ready(function() {
 
-
-
     $('.tooltip').tooltipster({
         delay: 0,
         theme: 'tooltipster-light',
@@ -11,10 +9,18 @@ $(document).ready(function() {
     });
        
 
-    
- 
     $('ul.nav').dropit({ action: 'click', triggerEl: 'b' });
 
+    $('.accordion h3').click(function() {
+       $(this).toggleClass('expand');
+	   $(this).next().toggle();
+       return false;
+    }).next().hide();	   
+
+    var $selected = $('.accordion a[href=\'' + window.location.pathname + '\']');
+    $selected.removeAttr('href');
+    $selected.parent('li').toggleClass('selected').parent('ul').toggle();
+	$selected.parents('ul').prev().toggleClass('expand');
 
     
 
