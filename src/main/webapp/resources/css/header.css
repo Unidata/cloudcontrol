@@ -51,7 +51,7 @@ header ul.nav li.dropit-trigger b {
  font-weight:normal;
  cursor:pointer;
  padding-right:20px;
- background: transparent url('../images/dd.png') no-repeat right 0px;
+ background: transparent url('../images/down.png') no-repeat right 0px;
 }
 
 header ul.nav li.dropit-trigger.help {

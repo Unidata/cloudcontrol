@@ -4,6 +4,7 @@
 
 @import url("./header.css") all;
 @import url("./footer.css") all;
+@import url("./accordion.css") all;
 @import url("./toggle.css") all;
 @import url("./tooltips.css") all;
 
@@ -118,6 +119,7 @@ h3 {
 #leftColumn {
  max-width: 32.5%;
  float: left;
+ margin-right:20px;
 }
 
 #centerColumn {
@@ -131,7 +133,7 @@ h3 {
 
 /* two column layout (use this with either the #leftColumn or #rightColumn) */
 #doubleColumn {
- max-width: 66.5%;
+ max-width: 64%;
 }
 
 #leftColumn, #centerColumn, #rightColumn, #doubleColumn {
@@ -280,56 +282,6 @@ input[type=hidden] {
 }
 
 
-
-/*
-.edit {
- background:#BCC4D0 url('../images/edit.png') no-repeat 2px 2px;
-}
-.view,
-.inspect {
- background:#BCC4D0 url('../images/view.png') no-repeat 2px 2px;
-}
-
-.container {
- background:#BCC4D0 url('../images/container.png') no-repeat 2px 2px;
-}
-
-.start {
- background:#BCC4D0 url('../images/start.png') no-repeat 2px 2px;
-}
-
-.stop {
- background:#BCC4D0 url('../images/stop.png') no-repeat 2px 2px;
-}
-
-.tag {
- background:#BCC4D0 url('../images/tag.png') no-repeat 2px 2px;
-}
-
-.history {
- background:#BCC4D0 url('../images/history.png') no-repeat 2px 2px;
-}
-
-.push {
- background:#BCC4D0 url('../images/push.png') no-repeat 2px 2px;
-}
-
-.pull {
- background:#BCC4D0 url('../images/pull.png') no-repeat 2px 2px;
-}
-
-.attach {
- background:#BCC4D0 url('../images/attach.png') no-repeat 2px 2px;
-}
-
-.hide,
-.delete {
- background:#BCC4D0 url('../images/delete.png') no-repeat 2px 0;
-}
-
-*/
-
-
 /* tables */
 table {
  width:100%;
@@ -395,7 +347,7 @@ table tbody td {
  cursor:default;
  margin:0;
  padding:5px;
- vertical-align:middle;
+ vertical-align:top;
  border:1px solid #BCC4D0;
  word-wrap:break-word;
 }
