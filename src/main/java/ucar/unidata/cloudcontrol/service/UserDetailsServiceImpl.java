@@ -84,7 +84,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         // Admin access
         if (access == 2) {
-            authList.add(new SimpleGrantedAuthority("ROLE_USER"));
             authList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } 
         return authList;
