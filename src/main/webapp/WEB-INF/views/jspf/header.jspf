@@ -6,34 +6,6 @@
         <ul class="nav"> 
          <c:choose>
           <c:when test="${loggedIn}">
-           <sec:authorize access="hasRole('ROLE_ADMIN')"> 
-            <li>
-             <b>Users</b>
-             <ul>
-              <li><a href="${baseUrl}/user">Manage Users</a></li>
-              <li><a href="${baseUrl}/user/create">Create New User</a></li>
-             </ul>
-            </li>
-            <li>
-             <b>Docker Server</b>
-             <ul>
-              <li>Server Information</li>
-              <li>Authentication Configuration</li>
-              <li>Ping Server</li>
-              <li>Server Version</li>
-             </ul>
-            </li>
-            <li>
-             <b>Images</b>
-             <ul>
-              <li><a href="${baseUrl}/docker/image/list">Manage Images</a></li>
-              <li><a href="${baseUrl}/docker/image/search">Search Images</a></li>
-              <li><a href="${baseUrl}/docker/image/create">Create an Image</a></li>
-              <li><a href="${baseUrl}/docker/image/build">Build Image From DockerFile</a></li>
-              <li><a href="${baseUrl}/docker/image/pull">Pull Image From Repository</a></li>
-             </ul>
-            </li>
-           </sec:authorize> 
            <li>
             <b>${authUserName}</b>
             <c:url var="logoutUrl" value="/j_spring_security_logout" />
