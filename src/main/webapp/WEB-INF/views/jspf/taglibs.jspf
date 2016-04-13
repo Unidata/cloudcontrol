@@ -8,12 +8,12 @@
 
 <jsp:useBean id="myDate" class="java.util.Date"/>  
 
-   <c:set var="baseUrl" value="${pageContext.request.contextPath}" />
-   <sec:authorize var="loggedIn" access="isAuthenticated()" />
-   <c:choose>
-    <c:when test="${loggedIn}">
-     <c:set var="authUserName">
-      <sec:authentication property="principal.username" /> 
-     </c:set>
-    </c:when>
-   </c:choose>
+<c:set var="baseUrl" value="${pageContext.request.contextPath}" />
+<sec:authorize var="loggedIn" access="isAuthenticated()" />
+<c:choose>
+ <c:when test="${loggedIn}">
+  <c:set var="authUserName">
+   <sec:authentication property="principal.username" /> 
+  </c:set>
+ </c:when>
+</c:choose>
