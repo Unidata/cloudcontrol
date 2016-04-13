@@ -32,21 +32,21 @@ public class _InfoRegistryConfig implements Serializable {
         if (Objects.isNull(indexConfigs)) {
             this.indexConfigs = "";
         } else {
-			StringBuilder sb = new StringBuilder();
-			for (Map.Entry<String, _IndexConfig> entry : indexConfigs.entrySet()) {
-				String key = entry.getKey();
-				sb.append("<br> &nbsp; " + key + ": <br>");
-				_IndexConfig value = entry.getValue();
-				if (Objects.isNull(value)) {
-					sb.append("");
-				} else {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, _IndexConfig> entry : indexConfigs.entrySet()) {
+                String key = entry.getKey();
+                sb.append("<br> &nbsp; " + key + ": <br>");
+                _IndexConfig value = entry.getValue();
+                if (Objects.isNull(value)) {
+                    sb.append("");
+                } else {
                     sb.append("&nbsp; &nbsp; &nbsp;  mirrors: " + value.getMirrors() + "<br>");
-					sb.append("&nbsp; &nbsp; &nbsp; name: " + value.getName() + "<br>");
-					sb.append("&nbsp; &nbsp; &nbsp; official: " + value.getOfficial() + "<br>");
-					sb.append("&nbsp; &nbsp; &nbsp; secure: " + value.getSecure());
-			    }
-				sb.append("<br>");
-		    }
+                    sb.append("&nbsp; &nbsp; &nbsp; name: " + value.getName() + "<br>");
+                    sb.append("&nbsp; &nbsp; &nbsp; official: " + value.getOfficial() + "<br>");
+                    sb.append("&nbsp; &nbsp; &nbsp; secure: " + value.getSecure());
+                }
+                sb.append("<br>");
+            }
             this.indexConfigs = sb.toString();
         }        
     }
@@ -59,19 +59,19 @@ public class _InfoRegistryConfig implements Serializable {
         if (Objects.isNull(insecureRegistryCIDRs)) {
             this.insecureRegistryCIDRs = "";
         } else {
-			if (!insecureRegistryCIDRs.isEmpty()) {
-				StringBuilder sb = new StringBuilder();
-				for (String s : insecureRegistryCIDRs) {
-					if (Objects.isNull(s)) {
-						sb.append("");
-					} else {
-						sb.append(s + ", ");
-					}
-			    }
-				this.insecureRegistryCIDRs = sb.toString();
-	    	} else {
-			    this.insecureRegistryCIDRs = "";
-		    }
+            if (!insecureRegistryCIDRs.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (String s : insecureRegistryCIDRs) {
+                    if (Objects.isNull(s)) {
+                        sb.append("");
+                    } else {
+                        sb.append(s + ", ");
+                    }
+                }
+                this.insecureRegistryCIDRs = sb.toString();
+            } else {
+                this.insecureRegistryCIDRs = "";
+            }
         }   
     }
 
@@ -91,13 +91,13 @@ public class _InfoRegistryConfig implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }  
-	
-	public static final class _IndexConfig {
-		private String mirrors;
-		private String name;
-		private String official;
-		private String secure;
-		
+    
+    public static final class _IndexConfig {
+        private String mirrors;
+        private String name;
+        private String official;
+        private String secure;
+        
         public String getMirrors() {
             return mirrors;
         }
@@ -106,19 +106,19 @@ public class _InfoRegistryConfig implements Serializable {
             if (Objects.isNull(mirrors)) {
                 this.mirrors = "";
             } else {
-				if (!mirrors.isEmpty()) {
-					StringBuilder sb = new StringBuilder();
-					for (String s : mirrors) {
-						if (Objects.isNull(s)) {
-							sb.append("");
-						} else {
-							sb.append(s + ", ");
-						}
-				    }
-					this.mirrors = sb.toString();
-		    	} else {
-				    this.mirrors = "";
-			    }
+                if (!mirrors.isEmpty()) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String s : mirrors) {
+                        if (Objects.isNull(s)) {
+                            sb.append("");
+                        } else {
+                            sb.append(s + ", ");
+                        }
+                    }
+                    this.mirrors = sb.toString();
+                } else {
+                    this.mirrors = "";
+                }
             }
         }
 
@@ -157,10 +157,10 @@ public class _InfoRegistryConfig implements Serializable {
                 this.secure = String.valueOf(secure);
             }
         }
-		
-	    @Override
-	    public String toString() {
-	        return ToStringBuilder.reflectionToString(this);
-	    } 
-	}
+        
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        } 
+    }
 }
