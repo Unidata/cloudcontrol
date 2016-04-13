@@ -359,7 +359,7 @@ public class _Info implements Serializable {
     public String getExperimentalBuild() {
         return experimentalBuild;
     }
-	
+    
     public void setExperimentalBuild(Boolean experimentalBuild) {
         if (Objects.isNull(experimentalBuild)) {
             this.experimentalBuild = "";
@@ -415,7 +415,7 @@ public class _Info implements Serializable {
             this.ipv4Forwarding = String.valueOf(ipv4Forwarding);
         }
     }
-	
+    
     public String getBridgeNfIptables() {
         return bridgeNfIptables;
     }
@@ -564,7 +564,7 @@ public class _Info implements Serializable {
             this.name = name;
         } 
     }
-	
+    
     public String getNcpu() {
         return ncpu;
     }
@@ -682,7 +682,7 @@ public class _Info implements Serializable {
             this.registryConfig = "";
         } else {
             StringBuilder sb = new StringBuilder();
-			sb.append("IndexConfigs: " + registryConfig.getIndexConfigs());
+            sb.append("IndexConfigs: " + registryConfig.getIndexConfigs());
             sb.append("InsecureRegistryCIDRs: " + registryConfig.getInsecureRegistryCIDRs() + "<br>");
             sb.append("Mirrors: " + registryConfig.getMirrors() + "<br>");
             this.registryConfig = sb.toString();
