@@ -20,4 +20,4 @@
    <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/dropit.js"></script>
    <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/jquery.tooltipster.min.js"></script>
    <script type="text/javascript" src="${baseUrl}/resources/js/main.js"></script>
-
+   
