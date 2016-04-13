@@ -1,7 +1,8 @@
 <%@ include file="/WEB-INF/views/jspf/taglibs.jspf" %>
+<%-- Seen if user is not logged in.  Displays general information about the project. The default index page gets redirected to here.  --%>
 <c:choose>
  <c:when test="${loggedIn}">
-  <c:redirect url="/docker/image/list"/>
+  <c:redirect url="/dashboard"/>
  </c:when> 
  <c:otherwise> 
  <!DOCTYPE HTML>
