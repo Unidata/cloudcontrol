@@ -95,7 +95,7 @@
   <!-- Resolves view names to the .jsp resources within the /WEB-INF/views directory --> 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/views/"></property>
-    <property name="suffix" value=".jsp"></property>        
+	<property name="suffix" value=".jsp"></property>        
   </bean>
   
   <!-- DAO injection -->  
@@ -111,9 +111,10 @@
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   
-  <!-- Declaration for controller use -->
+  <!-- Declaration Resource use -->
   <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl" />
   <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" />  
+  <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />  
 
   <!-- Declare a datasource that has pooling capabilities--> 
   <bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
