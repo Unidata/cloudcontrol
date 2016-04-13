@@ -79,16 +79,5 @@ public class AuthenticationController {
     public String getDeniedPage() {
         return "denied";
     }
-	
-    /**
-     * Accepts a GET request for the welcome page.
-     * View is the welcome page.
-     *
-     * @param model The Model used by the View.
-     * @return The 'welcome' path for the ViewResolver.
-     */
-    @RequestMapping(value = "/welcome", method = RequestMethod.GET)
-    public String getWelcomePage(Model model) {
-        return "welcome";
-    }
+
 }
