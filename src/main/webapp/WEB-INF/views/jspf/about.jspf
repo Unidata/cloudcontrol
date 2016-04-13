@@ -1,5 +1,5 @@
 	 <h3>About Cloud Control</h3>
-	 <p>Cloud Control is a web application used to manage Docker local and remote platforms.  Using the Cloud Control interface, users can access, start, and stop images set up by Cloud Control administrators.  Cloud Control administrators can configure the web application to perform almost any docker command performed via a terminal.</p>
+	 <p>CloudControl is a web-based dashboard which provides administrative controls for running <a href="http://www.docker.com/">docker</a>-based technologies in the cloud, as well as providing user management.</p>
 	 
  	 <p>Cloud Control is built on/utilizes the following technologies:</p>
  	 <ul>
