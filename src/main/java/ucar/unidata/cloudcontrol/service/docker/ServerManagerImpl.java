@@ -108,7 +108,6 @@ public class ServerManagerImpl implements ServerManager {
      * Requests Docker Registry Configuration information.
      *
 	 * @param infoRegistryConfig  The com.github.dockerjava.api.model.InfoRegistryConfig object to convert.
-	 *
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._InfoRegistryConfig object.
      */
     public _InfoRegistryConfig getInfoRegistryConfig(InfoRegistryConfig infoRegistryConfig) {
@@ -142,7 +141,7 @@ public class ServerManagerImpl implements ServerManager {
                 return _indexConfig;
             }
         };
-		Map<String, _InfoRegistryConfig._IndexConfig> _indexConfigMap = new HashMap <String, _InfoRegistryConfig._IndexConfig>();
+		Map<String, _InfoRegistryConfig._IndexConfig> _indexConfigMap = new HashMap <String, _InfoRegistryConfig._IndexConfig>(indexConfigMap.size());
 		for (Map.Entry<String, InfoRegistryConfig.IndexConfig> entry : indexConfigMap.entrySet()) {
 			_indexConfigMap.put(entry.getKey(), mapIndexConfigTo_IndexConfig.apply(entry.getValue()));
 		}

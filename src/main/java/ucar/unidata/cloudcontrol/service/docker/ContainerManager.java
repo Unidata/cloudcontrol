@@ -3,91 +3,96 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import java.util.List;
 import java.util.Map;
 
-import com.github.dockerjava.api.command.CreateContainerResponse;
-import com.github.dockerjava.api.command.InspectContainerResponse;
-import com.github.dockerjava.api.model.Container;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker.NewContainer;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 
 
 /**
- * Service for processing com.github.dockerjava.api.model.Container objects. 
+ * Service for processing Docker container-related api requests.
  */
 public interface ContainerManager {
 
     /**
-     * Requests a List of all available Containers.
-     * 
-     * @return  A List of available Containers.   
-     */
-    public List<Container> getContainerList();
-	
-    /**
-     * Requests a List of all available Containers corresponding to an Image.
+     * Requests a List of all available containers.
      *
-	 * @param image  The Container's Image.
-     * @return  A List of available Containers corresponding to an Image.
+     * @return  A a List edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
-    public List<Container> getContainerListByImage(String image);
-	
-	    public List<Container> getRunningContainerListByImage(String image);
-	
-	    public Map<String, String> getContainerStatusMap();
-	
+    public List<_Container> getContainerList();
+    
     /**
-     * Requests a single Container.
-     * 
-	 * @param id  The Container ID.
-     * @return  The Container.   
+     * Requests a List of all available containers corresponding to an image.
+     *
+     * @param image  The container's image.
+     * @return  A List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
-	public Container getContainer(String id);
+    public List<_Container> getContainerListByImage(String image);
+    
+    /**
+     * Requests a List of all available RUNNING containers corresponding to an image.
+     *
+     * @param image  The container's image.
+     * @return  A List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
+     */
+    public List<_Container> getRunningContainerListByImage(String image);
+    
+    /**
+     * Requests a Map of container statuses.
+     *
+     * @return  A Map of container statuses.
+     */
+    public Map<String, String> getContainerStatusMap();
+	
+	/**
+	 * Requests a single _Container object.
+	 * 
+	 * @param id  The container ID.
+	 * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._Container object.   
+	 */
+	public _Container getContainer(String id);
 
-    /**
-     * Returns a requested InspectContainerResponse.
-     * 
-     * @param id  The Container ID.
-     * @return  The requested InspectContainerResponse.  
-     */
-    public InspectContainerResponse inspectContainer(String id);
-	
+
+		
+
+ //   public InspectContainerResponse inspectContainer(String id);
+    
     /**
      * Returns a requested InspectContainerResponse.
      * 
      * @param newContainer  The NewContainer object that has the user-specified values.
      * @return  The requested InspectContainerResponse.  
      */
-    public CreateContainerResponse createContainer(NewContainer newContainer) ;
-	
-	    public CreateContainerResponse createContainer(String image);
-	
+//    public CreateContainerResponse createContainer(NewContainer newContainer) ;
+    
+//    public CreateContainerResponse createContainer(String image);
+    
     /**
      * Removes a Container.
      *
      * @param container  The Container object to remove.
      */
-	public void removeContainer(Container container);
-	
+//    public void removeContainer(Container container);
+    
     /**
      * Starts a Container.
      * 
      * @param container  The Container to start.
      */
-	public void startContainer(Container container);
+//    public void startContainer(Container container);
 
     /**
      * Stops a Container.
      * 
      * @param container  The Container to stop.
      */
-	public void stopContainer(Container container); 
-	
+//    public void stopContainer(Container container); 
+    
     /**
      * Stops a Container.
      * 
      * @param container  The Container to stop.
-	 * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
+     * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
      */
-	public void stopContainer(Container container, int timeout);
-	
+//    public void stopContainer(Container container, int timeout);
+    
 
 }

@@ -3,22 +3,19 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import java.util.List;
 import java.util.Map;
 
-import com.github.dockerjava.api.command.InspectImageResponse;
-import com.github.dockerjava.api.model.Image;
-import com.github.dockerjava.api.model.SearchItem;
-
+import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 
 /**
- * Service for processing com.github.dockerjava.api.model.Image objects. 
+ * Service for processing Docker image-related api requests.
  */
 public interface ImageManager {
 
     /**
-     * Requests a List of all available Images.
-     * 
-     * @return  A List of available Images.   
+     * Requests a List of all available _Image objects.
+     *
+     * @return  A a List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
      */
-    public List<Image> getImageList();
+    public List<_Image> getImageList();
 	
     /**
      * Requests a single Image.
@@ -26,7 +23,7 @@ public interface ImageManager {
 	 * @param id  The Image ID.
      * @return  The Image.   
      */
-    public Image getImage(String id);
+ //   public Image getImage(String id);
 	
     /**
      * Requests an Image's repository.
@@ -34,7 +31,7 @@ public interface ImageManager {
      * @param image  The Image.
      * @return  The Image repository (String).  
      */
-	public String getImageRepository(Image image);
+//	public String getImageRepository(Image image);
 	
     /**
      * Requests an Image's Container ID.
@@ -42,14 +39,14 @@ public interface ImageManager {
      * @param image  The Image.
      * @return  The Image Container ID (String).  
      */
-    public String getImageContainerId(Image image);
+//    public String getImageContainerId(Image image);
 	
     /**
      * Requests a Map of the Image's repositories (for form dropdown selection).
      * 
      * @return  The repository Map<String,String>.
      */
-    public Map<String,String> getRepositoryMap();
+//    public Map<String,String> getRepositoryMap();
 	
     /**
      * Requests a search of the available Images with a given query.
@@ -57,7 +54,7 @@ public interface ImageManager {
      * @param query  The query upon which to search.
      * @return  A List of resulting SearchItems.
      */
-    public List<SearchItem> searchImages(String query);
+ //   public List<SearchItem> searchImages(String query);
 
     /**
      * Returns a requested InspectImageResponse.
@@ -65,6 +62,6 @@ public interface ImageManager {
      * @param id  The Image ID.
      * @return  The requested InspectImageResponse.  
      */
-    public InspectImageResponse inspectImage(String id);
+ //   public InspectImageResponse inspectImage(String id);
 
 }
