@@ -58,13 +58,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         }   
         return users.get(0);
     }
-	
+    
     /**
      * Looks up and retrieves a User from the persistence mechanism using the emailAddress.
      * 
      * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
      * @return  The User.   
-	 * @throws RecoverableDataAccessException  If unable to lookup User with the given emailAddress. 
+     * @throws RecoverableDataAccessException  If unable to lookup User with the given emailAddress. 
      */
     public User lookupUserByEmailAddress(String emailAddress) {
         String sql = "SELECT * FROM users WHERE emailAddress = ?";
@@ -84,17 +84,6 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         String sql = "SELECT * FROM users ORDER BY dateCreated DESC";               
         List<User> users = getJdbcTemplate().query(sql, new UserMapper());
         return users;
-    }
-
-    /**
-     * Queries the persistence mechanism and returns the number of Users.
-     * 
-     * @return  The total number of Users.   
-     */
-    public int getUserCount() {
-        String sql = "SELECT count(*) FROM users";
-        List<User> users = getJdbcTemplate().query(sql, new UserMapper());
-        return users.size();
     }
 
     /**
@@ -126,25 +115,6 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
     }
 
     /**
-     * Finds and toggles the User's accountStatus in the persistence mechanism.
-     * 
-     * @param user  The User whose accountStatus needs to be toggled. 
-     * @throws RecoverableDataAccessException  If unable to find and toggle User's accountStatus. 
-     */
-    public void toggleAccountStatus(User user) {
-        String sql = "UPDATE users SET accountStatus = ?, dateModified = ? WHERE userId = ?";
-        int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
-            // order matters here
-            user.getAccountStatus(), 
-            user.getDateModified(),
-            user.getUserId()
-        });
-        if (rowsAffected  <= 0) {
-            throw new RecoverableDataAccessException("Unable to toggle User's accountStatus. User not found: " + user.toString());
-        }  
-    }
-
-    /**
      * Creates a new User in the persistence mechanism.
      * 
      * @param user  The User to be created. 
@@ -170,11 +140,14 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws RecoverableDataAccessException  If unable to find the User to update. 
      */
     public void updateUser(User user)  {
-        String sql = "UPDATE users SET emailAddress = ?, fullName = ?, dateModified = ? WHERE userId = ?";
+        String sql = "UPDATE users SET userName = ?, emailAddress = ?, fullName = ?, accessLevel = ?, accountStatus = ?, dateModified = ? WHERE userId = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
+            user.getUserName(),
             user.getEmailAddress(), 
             user.getFullName(),
+            user.getAccessLevel(),
+            user.getAccountStatus(),
             user.getDateModified(),
             user.getUserId()
         });
@@ -190,12 +163,12 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws RecoverableDataAccessException  If unable to find the User to update. 
      */
     public void updatePassword(User user)  {
-        String sql = "UPDATE users SET password = ?, dateModified = ? WHERE userId = ?";
+        String sql = "UPDATE users SET password = ?, dateModified = ? WHERE userName = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
             user.getPassword(), 
             user.getDateModified(),
-            user.getUserId()
+            user.getUserName()
         });
         if (rowsAffected  <= 0) {
             throw new RecoverableDataAccessException("Unable to update User's password.  User not found: " + user.toString());

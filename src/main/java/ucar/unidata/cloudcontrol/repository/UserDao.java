@@ -25,7 +25,7 @@ public interface UserDao {
      * @return  The User.   
      */
     public User lookupUser(String userName);
-	
+    
     /**
      * Looks up and retrieves a User from the persistence mechanism using the emailAddress.
      * 
@@ -42,13 +42,6 @@ public interface UserDao {
     public List<User> getUserList();
 
     /**
-     * Queries the persistence mechanism and returns the number of Users.
-     * 
-     * @return  The total number of Users.   
-     */
-    public int getUserCount();
-
-    /**
      * Finds and removes the User from the persistence mechanism using the userId.
      * 
      * @param userId  The userId of the User to locate (will be unique for each User). 
@@ -61,13 +54,6 @@ public interface UserDao {
      * @param userName  The userName of the User to locate (will be unique for each User). 
      */
     public void deleteUser(String userName);
-
-    /**
-     * Finds and toggles the User's accountStatus in the persistence mechanism.
-     * 
-     * @param user  The User whose accountStatus needs to be toggled. 
-     */
-    public void toggleAccountStatus(User user);
 
     /**
      * Creates a new User in the persistence mechanism.
