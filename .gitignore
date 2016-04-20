@@ -21,6 +21,14 @@ hs_err_pid*
 build/
 .gradle/
 
+#################
+# Coverity files #
+##################
+cov-int
+cloudcontrol.tgz
+/build/
+/bin/
+
 ######################
 # webapp files       #
 ######################
