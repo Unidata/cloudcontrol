@@ -50,7 +50,7 @@ public class ApplicationInitialization implements ServletContextListener {
 
     private String cloudcontrolHome = null;
     private String databaseSelected = null;
-
+    
     /**
      * Find the application home ${cloudcontrol.home} and make sure it exists.  if not, create it.
      * TODO: add -Dname=value JVM argument 
@@ -61,7 +61,7 @@ public class ApplicationInitialization implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent)  {
         ServletContext servletContext = servletContextEvent.getServletContext();
-		logger.info("Application context initialization..."); 
+        logger.info("Application context initialization..."); 
         try {
             File configFile = new File(servletContext.getRealPath("") + "/WEB-INF/classes/application.properties");
             if (!configFile.exists()) {
@@ -103,7 +103,7 @@ public class ApplicationInitialization implements ServletContextListener {
             logger.error(e.getMessage());   
             throw new RuntimeException(e.getMessage());  
         }
-		
+        
         try {
             createDatabase(cloudcontrolHome, databaseSelected, servletContext);
         } catch (Exception e) {            
@@ -119,31 +119,31 @@ public class ApplicationInitialization implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-		logger.info("Application context destruction..."); 
+        logger.info("Application context destruction..."); 
         if (databaseSelected.equals("derby")) {
             String derbyUrl = "jdbc:derby:" + cloudcontrolHome + "/db/cloudcontrol";
-            try {				
+            try {                
                 DriverManager.getConnection( derbyUrl + ";shutdown=true");
             } catch (SQLException e) {
-				if (e.getSQLState().equals("XJ004")) {
-					logger.info("Database is already shutdown" + e.getMessage()); 
-				} else {
-					logger.error("Error trying to get a database connection: " + e.getMessage()); 
-				}
+                if (e.getSQLState().equals("XJ004")) {
+                    logger.info("Database is already shutdown" + e.getMessage()); 
+                } else {
+                    logger.error("Error trying to get a database connection: " + e.getMessage()); 
+                }
             }  
-			
-			Enumeration<Driver> drivers = DriverManager.getDrivers();
-			while (drivers.hasMoreElements()) {
-			    Driver driver = drivers.nextElement();
-	            try { 
-					DriverManager.deregisterDriver(driver);
-					logger.info("Deregistering jdbc driver."); 
-	            } catch (SQLException e) {
-	                logger.error("Error deregistering driver: " + e.getMessage()); 
-	            }  
-			}
+            
+            Enumeration<Driver> drivers = DriverManager.getDrivers();
+            while (drivers.hasMoreElements()) {
+                Driver driver = drivers.nextElement();
+                try { 
+                    DriverManager.deregisterDriver(driver);
+                    logger.info("Deregistering jdbc driver."); 
+                } catch (SQLException e) {
+                    logger.error("Error deregistering driver: " + e.getMessage()); 
+                }  
+            }
         }
-		logger.error("Goodbye."); 
+        logger.error("Goodbye."); 
     }
 
 
@@ -183,11 +183,11 @@ public class ApplicationInitialization implements ServletContextListener {
                     createTables(derbyDriver, derbyUrl + ";create=true", null, null, servletContext);
                     DriverManager.getConnection(derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
-					if (e.getSQLState().equals("08006")) {
-						logger.info(e.getMessage()); 
-					} else {
-						logger.error(e.getMessage()); 
-					}
+                    if (e.getSQLState().equals("08006")) {
+                        logger.info(e.getMessage()); 
+                    } else {
+                        logger.error(e.getMessage()); 
+                    }
                 }        
             } else {
                 logger.info("Database already exists.");
@@ -227,6 +227,24 @@ public class ApplicationInitialization implements ServletContextListener {
         String insertAdminUserSQL = "INSERT INTO users " +
                                     "(userName, password, accessLevel, accountStatus, emailAddress, fullName, dateCreated, dateModified) VALUES " +
                                     "(?,?,?,?,?,?,?,?)"; 
+        
+        String createClientConfigTableSQL = "CREATE TABLE clientConfig" +
+                                            "(" +
+                                            "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                            "dockerHost VARCHAR(100) not null, " +
+                                            "dockerCertPath VARCHAR(120) not null, " +
+                                            "dockerTlsVerify INTEGER not null, " +
+                                            "createdBy VARCHAR(75) not null, " +
+                                            "lastUpdatedBy VARCHAR(75) not null, " +
+                                            "dateCreated TIMESTAMP not null, " +
+                                            "dateModified TIMESTAMP not null" +
+                                            ")";
+        String createDisplayImageTableSQL = "CREATE TABLE displayImages" +
+                                            "(" +
+                                            "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                            "imageId VARCHAR(120) not null" +
+                                            ")";
+        
 
      
         try {
@@ -238,45 +256,42 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
             preparedStatement.setInt(3, 2);
             preparedStatement.setInt(4, 1);
-            preparedStatement.setString(5, "admin@foo.baz.edu");
+            preparedStatement.setString(5, "admin@foo.bar.baz");
             preparedStatement.setString(6, "Cloud Control Administrator");
             preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
 
             preparedStatement = connection.prepareStatement(insertAdminUserSQL);
-            preparedStatement.setString(1, "user1");
-            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
-            preparedStatement.setInt(3, 1);
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setString(5, "user1@somewhere.org");
-            preparedStatement.setString(6, "Bob RickenFrick");
-            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.executeUpdate();
-			
-            preparedStatement = connection.prepareStatement(insertAdminUserSQL);
-            preparedStatement.setString(1, "user2");
+            preparedStatement.setString(1, "testUser");
             preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, 1);
-            preparedStatement.setString(5, "user2@someplace.com");
-            preparedStatement.setString(6, "Turd Ferguson");
+            preparedStatement.setString(5, "test@somewhere.org");
+            preparedStatement.setString(6, "Test User");
             preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+            preparedStatement.executeUpdate();
+            
+            connection = getDatabaseConnection(driver, url, username, password);
+            preparedStatement = connection.prepareStatement(createClientConfigTableSQL);
+            preparedStatement.executeUpdate();
+			
+            connection = getDatabaseConnection(driver, url, username, password);
+            preparedStatement = connection.prepareStatement(createDisplayImageTableSQL);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) { 
             logger.error(e.getMessage()); 
         } finally { 
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			} 
-			if (connection != null) {
-				connection.close();
-			} 
-		} 
-	}
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            } 
+            if (connection != null) {
+                connection.close();
+            } 
+        } 
+    }
 
 
     /**
@@ -288,7 +303,7 @@ public class ApplicationInitialization implements ServletContextListener {
      * @param password  The database password (null if not used).
      * @return  The the database connection.
      */
-	private static Connection getDatabaseConnection(String driver, String url, String username, String password) { 
+    private static Connection getDatabaseConnection(String driver, String url, String username, String password) { 
         Connection connection = null;
         try {
             Class.forName(driver); 
