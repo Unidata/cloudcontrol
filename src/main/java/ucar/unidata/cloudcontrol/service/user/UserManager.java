@@ -1,4 +1,4 @@
-package edu.ucar.unidata.cloudcontrol.service;
+package edu.ucar.unidata.cloudcontrol.service.user;
 
 import java.util.List;
 
@@ -25,14 +25,14 @@ public interface UserManager {
      * @return  The User.   
      */
     public User lookupUser(String userName);
-	
+    
     /**
      * Looks up and retrieves a User using the emailAddress.
      * 
      * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
      * @return  The User.   
      */
-	public User lookupUserByEmailAddress(String emailAddress);
+    public User lookupUserByEmailAddress(String emailAddress);
 
     /**
      * Requests a List of all Users.
@@ -40,13 +40,6 @@ public interface UserManager {
      * @return  A List of Users.   
      */
     public List<User> getUserList();
-
-    /**
-     * Queries and returns the number of Users.
-     * 
-     * @return  The total number of Users.   
-     */
-    public int getUserCount();
 
     /**
      * Finds and removes the User using the userId.
@@ -61,13 +54,6 @@ public interface UserManager {
      * @param userName  The userName of the User to locate (will be unique for each User). 
      */
     public void deleteUser(String userName);
-
-    /**
-     * Finds and toggles the User's accountStatus.
-     * 
-     * @param user  The User whose accountStatus needs to be toggled. 
-     */
-    public void toggleAccountStatus(User user);
 
     /**
      * Creates a new User.

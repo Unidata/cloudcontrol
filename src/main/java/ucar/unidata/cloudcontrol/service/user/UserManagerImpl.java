@@ -1,4 +1,4 @@
-package edu.ucar.unidata.cloudcontrol.service;
+package edu.ucar.unidata.cloudcontrol.service.user;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +12,7 @@ import edu.ucar.unidata.cloudcontrol.repository.UserDao;
  * Service for processing User objects. 
  */
 public class UserManagerImpl implements UserManager { 
-
+    
     private UserDao userDao;
 
     /**
@@ -44,7 +44,7 @@ public class UserManagerImpl implements UserManager {
     public User lookupUser(String userName){
         return userDao.lookupUser(userName);
     }
-	
+    
     /**
      * Looks up and retrieves a User using the emailAddress.
      * 
@@ -54,7 +54,7 @@ public class UserManagerImpl implements UserManager {
     public User lookupUserByEmailAddress(String emailAddress) {
         return userDao.lookupUserByEmailAddress(emailAddress);
     }
-	
+    
     /**
      * Requests a List of all Users.
      * 
@@ -62,15 +62,6 @@ public class UserManagerImpl implements UserManager {
      */
     public List<User> getUserList() {
         return userDao.getUserList();
-    }
-
-    /**
-     * Queries and returns the number of Users.
-     * 
-     * @return  The total number of Users.   
-     */
-    public int getUserCount(){
-        return userDao.getUserCount();
     }
 
     /**
@@ -89,17 +80,6 @@ public class UserManagerImpl implements UserManager {
      */
     public void deleteUser(String userName) {
         userDao.deleteUser(userName);
-    }
-
-    /**
-     * Finds and toggles the User's accountStatus.
-     * 
-     * @param user  The User whose accountStatus needs to be toggled. 
-     */
-    public void toggleAccountStatus(User user) {
-        Date now = new Date(System.currentTimeMillis());
-        user.setDateModified(now);
-        userDao.updateUser(user);
     }
 
     /**
@@ -139,7 +119,4 @@ public class UserManagerImpl implements UserManager {
         user.setDateModified(now);
         userDao.updatePassword(user);
     }
-	
-	
-	
 }
