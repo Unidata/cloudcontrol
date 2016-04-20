@@ -1,10 +1,10 @@
 package edu.ucar.unidata.cloudcontrol.controller.docker;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ public class ServerController implements HandlerExceptionResolver {
 
     @Resource(name="serverManager")
     private ServerManager serverManager;
-	
+    
     
     /**
      * Accepts a GET request for Docker server information.
@@ -50,11 +50,14 @@ public class ServerController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/info", method=RequestMethod.GET)
     public String getInfo(Model model) { 
-        _Info _info = serverManager.getInfo();       
-        model.addAttribute("serverInfo", _info);    
+        _Info _info = serverManager.getInfo();
+        if (!Objects.isNull(_info)) {
+            model.addAttribute("serverInfo", _info);   
+        }                   
+        model.addAttribute("action", "serverInfo");   
         return "dashboard";
     }
     
@@ -67,18 +70,20 @@ public class ServerController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/version", method=RequestMethod.GET)
     public String getVersion(Model model) { 
-        _Version _version = serverManager.getVersion();           
-        model.addAttribute("serverVersion", _version);   
+        _Version _version = serverManager.getVersion();
+        if (!Objects.isNull(_version)) {
+            model.addAttribute("serverVersion", _version);  
+        }                              
+        model.addAttribute("action", "serverVersion");  
         return "dashboard";
     }
     
-
     /**
-     * This method gracefully handles any uncaught exception that are fatal 
-     * in nature and unresolvable by the dockerImage.
+     * This method gracefully handles any uncaught exception
+     * that are fatal in nature and unresolvable by the user.
      * 
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.

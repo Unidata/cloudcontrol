@@ -1,11 +1,11 @@
 package edu.ucar.unidata.cloudcontrol.controller.docker;
 
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.io.StringWriter;
-import java.io.PrintWriter;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -53,23 +53,22 @@ public class ContainerController implements HandlerExceptionResolver {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/container/list", method=RequestMethod.GET)
     public String getContainerList(Model model) { 
-        List<_Container> _containers = containerManager.getContainerList();           
-        model.addAttribute("containerList", _containers);    
+        List<_Container> _containers = containerManager.getContainerList(); 
+		if (!Objects.isNull(_containers)) {      
+            model.addAttribute("containerList", _containers);  
+		}  
         return "dashboard";
     }
-    
-
-    
 
     /**
-     * This method gracefully handles any uncaught exception that are fatal 
-     * in nature and unresolvable by the dockerContainer.
+     * This method gracefully handles any uncaught exception
+     * that are fatal in nature and unresolvable by the user.
      * 
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.
      * @param handler  The executed handler, or null if none chosen at the time of the exception.  
      * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerContainer. 
+     * @return  The error page containing the appropriate message to the dockerImage. 
      */
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
