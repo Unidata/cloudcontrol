@@ -1,70 +1,126 @@
-
-   <h3>Images Available in This Docker Instance</h3>
-
-     <table class="list"> 
+      <%-- This view is to list all Images (admin and authenticated users). --%>
+      <h3>Images Available in This Docker Instance</h3>
       <c:choose>
-        <c:when test="${fn:length(imageList) gt 0}">
-         <thead>
-          <tr>
-           <th>
-            Repository/Tags
-           </th>
-           <th> 
-            Date Created
-           </th>
-           <th>
-            Status
-           </th>
-           <th class="hidebg">
-           </th>
-          </tr>
-         </thead>
-         <tbody>
-          <c:forEach items="${imageList}" var="image">     
-           <tr>
-            <td>  
-             <c:out value="${image.repoTags}" />
-            </td>
-            <td>
-             <c:out value="${image.created}"/>               
-            </td>
-            <td>
-             <c:out value="${image.status}" />
-            </td>
-            <td>
-            <sec:authorize access="hasRole('ROLE_ADMIN')">           
-             <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />" method="GET">
-              <input class="action" type="submit" value="Manage" />        
-             </form>
-            </sec:authorize>
-            <c:choose>
-             <c:when test="${fn:contains(image.status, 'Inactive')}">
-              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-               <input class="action" type="submit" value="Start" />        
-              </form>
-             </c:when>
-             <c:when test="${fn:contains(image.status, 'Exited')}">
-              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-               <input class="action" type="submit" value="Start" />        
-              </form>
-             </c:when>
-             <c:otherwise>
-              <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
-               <input class="action" type="submit" value="Stop" />        
-              </form>
-             </c:otherwise>
-            </c:choose>
-            </td>
-           </tr>
-          </c:forEach>
-         </tbody>
-        </c:when>
-        <c:otherwise>
-         <tr>
-          <td>
-           No images are available in this docker instance yet.
-          </td>
-         </tr>
-        </c:otherwise>
+       <c:when test="${imageList ne null}">
+        <c:choose>
+         <c:when test="${fn:length(imageList) gt 0}">  
+          <table class="list"> 
+           <thead>
+            <tr>
+             <th>
+              Repository/Tags
+             </th>
+             <th> 
+              Date Created
+             </th>
+             <th>
+              Status
+             </th>
+             <sec:authorize access="hasRole('ROLE_ADMIN')">
+              <th>
+               Visible to User
+              </th>
+             </sec:authorize>
+            </tr>
+           </thead>
+           <tbody>
+            <c:forEach items="${imageList}" var="image">
+             <c:set var="id" value="${fn:replace(image.id, ':', '')}" />     
+             <tr id="<c:out value="${id}" />Toggle" class="toggle">
+              <td class="main">
+               <c:out value="${image.repoTags}" />
+              </td>
+              <td>
+               <c:out value="${image.created}"/>               
+              </td>
+              <td>
+               <c:out value="${image.status}" />
+              </td>
+              <sec:authorize access="hasRole('ROLE_ADMIN')">
+               <td>
+                <c:out value="${image.isDisplayImage}" />
+               </td>
+              </sec:authorize>
+             </tr>
+             <tr id="<c:out value="${id}" />ToggleSection" class="hideandshow">
+             <sec:authorize access="hasRole('ROLE_ADMIN')">
+              <td colspan="4">
+             </sec:authorize>
+             <sec:authorize access="hasRole('ROLE_USER')">
+              <td colspan="3">
+             </sec:authorize>
+               <div>
+                <c:choose>
+                 <c:when test="${fn:contains(image.status, 'Inactive')}">
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
+                   <input class="action" type="submit" value="Start Image" disabled/>        
+                  </form>
+                 </c:when>
+                 <c:when test="${fn:contains(image.status, 'Exited')}">
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
+                   <input class="action" type="submit" value="Start Image" disabled/>        
+                  </form>
+                 </c:when>
+                 <c:otherwise>
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
+                   <input class="action" type="submit" value="Stop Image" disabled/>        
+                  </form>
+                 </c:otherwise>
+                </c:choose>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                 <c:choose>
+                  <c:when test="${image.isDisplayImage eq 'false'}">
+                   <form action="${baseUrl}/dashboard/docker/image/display/<c:out value="${image.id}"/>" method="GET">
+                    <input class="action" type="submit" value="Add To User Display" />        
+                   </form>
+                  </c:when>
+                  <c:otherwise>
+                   <form action="${baseUrl}/dashboard/docker/image/remove/<c:out value="${image.id}"/>" method="GET">
+                    <input class="action" type="submit" value="Remove From User Display" />        
+                   </form>
+                  </c:otherwise>
+                 </c:choose>
+                </sec:authorize>
+                <form action="${baseUrl}/dashboard/docker/image/inspect/<c:out value="${image.id}" />/" method="GET">
+                 <input class="action" type="submit" value="Inspect" disabled/>        
+                </form> 
+                <form action="${baseUrl}/dashboard/docker/image/history/<c:out value="${image.id}" />/" method="GET">
+                 <input class="action" type="submit" value="Get History" disabled/>        
+                </form>
+                <form action="${baseUrl}/dashboard/docker/image/push/<c:out value="${image.id}" />/" method="GET">
+                 <input class="action" type="submit" value="Push to Repo" disabled/>        
+                </form>
+                <form action="${baseUrl}/dashboard/docker/image/tag/<c:out value="${image.id}" />/" method="GET">
+                 <input class="action" type="submit" value="Tag" disabled/>        
+                </form>
+                <form action="${baseUrl}/dashboard/docker/image/remove/<c:out value="${image.id}" />/" method="GET">
+                 <input class="action" type="submit" value="Remove" disabled/>        
+                </form>
+				 NOTE: most of these don't have the backend in place just yet and won't work.  They're as placeholders.
+               </div>
+              </td>
+             </tr>                 
+            </c:forEach>
+           </tbody>
+          </table>
+         </c:when>
+         <c:otherwise>
+         <sec:authorize access="hasRole('ROLE_ADMIN')">   
+          <p>No images are available in this docker instance yet. Add some!</p>
+         </sec:authorize>
+         <sec:authorize access="hasRole('ROLE_USER')">
+          <p>No images are available in this docker instance yet. The site administrator has yet to add some.</p>
+         </sec:authorize>
+         </c:otherwise>
+        </c:choose>        
+       </c:when>
+       <c:otherwise>
+        <sec:authorize access="hasRole('ROLE_ADMIN')">   
+         <p>Unable to display Docker images.</p>
+         <p>Cloud Control is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the Cloud Control Docker client in order to continue.</p>
+        </sec:authorize>
+        <sec:authorize access="hasRole('ROLE_USER')">
+         <p>Nothing to see here.  The site administrator has not yet connected to a Docker server.  Try back later.</p>
+        </sec:authorize>
+       </c:otherwise>
       </c:choose>
-     </table> 
