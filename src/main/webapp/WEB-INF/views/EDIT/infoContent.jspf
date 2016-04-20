@@ -1,0 +1,6 @@
+<%-- Edit this file with your own content. --%>
+<ul>
+ <li><a href="${baseUrl}/gettingStarted">Getting Started</a></li>
+ <li><a href="${baseUrl}/about">About Cloud Control</a></li>
+ <li><a href="mailto:support@unidata.ucar.edu?subject=CloudControl">Contact Site Admin</a></li>
+</ul>
