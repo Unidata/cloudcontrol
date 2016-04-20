@@ -1,9 +1,9 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.List;
-import java.util.Map;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 
 /**
  * Service for processing Docker image-related api requests.
@@ -18,50 +18,39 @@ public interface ImageManager {
     public List<_Image> getImageList();
 	
     /**
-     * Requests a single Image.
-     * 
-	 * @param id  The Image ID.
-     * @return  The Image.   
+     * Requests a List of all available _Image objects that the user is allowed to see.
+     *
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
      */
- //   public Image getImage(String id);
+    public List<_Image> filterByDisplayImage();
 	
     /**
-     * Requests an Image's repository.
+     * Looks up and retrieves the DisplayImage from the persistence mechanism using the Image ID.
      * 
-     * @param image  The Image.
-     * @return  The Image repository (String).  
+     * @param imageId   The ID of the Image (will be unique for each DisplayImage). 
+     * @return  The DisplayImage.   
      */
-//	public String getImageRepository(Image image);
-	
+    public DisplayImage lookupDisplayImage(String imageId);
+            
     /**
-     * Requests an Image's Container ID.
+     * Looks up and retrieves a List of all DisplayImages from the persistence mechanism.
      * 
-     * @param image  The Image.
-     * @return  The Image Container ID (String).  
+     * @return  The List of DisplayImages.   
      */
-//    public String getImageContainerId(Image image);
-	
+    public List<DisplayImage> getAllDisplayImages();
+    
     /**
-     * Requests a Map of the Image's repositories (for form dropdown selection).
+     * Finds and removes the DisplayImage from the persistence mechanism using the Image ID.
      * 
-     * @return  The repository Map<String,String>.
+     * @param imageId  The ID of the Image. 
      */
-//    public Map<String,String> getRepositoryMap();
-	
-    /**
-     * Requests a search of the available Images with a given query.
-     * 
-     * @param query  The query upon which to search.
-     * @return  A List of resulting SearchItems.
-     */
- //   public List<SearchItem> searchImages(String query);
+    public void deleteDisplayImage(String imageId);
 
     /**
-     * Returns a requested InspectImageResponse.
+     * Creates a new DisplayImage in the persistence mechanism.
      * 
-     * @param id  The Image ID.
-     * @return  The requested InspectImageResponse.  
+     * @param displayImage  The DisplayImage to be created. 
      */
- //   public InspectImageResponse inspectImage(String id);
-
+    public void createDisplayImage(DisplayImage displayImage);
+	
 }

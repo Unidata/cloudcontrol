@@ -1,24 +1,27 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.command.InspectImageResponse;
+import com.github.dockerjava.api.exception.NotFoundException;
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Image;
-import com.github.dockerjava.api.model.SearchItem;
-import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
+import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+import edu.ucar.unidata.cloudcontrol.repository.docker.DisplayImageDao;
+import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 
 
@@ -30,26 +33,87 @@ public class ImageManagerImpl implements ImageManager {
     
     @Resource(name="containerManager")
     private ContainerManager containerManager;
+    
+    @Resource(name = "clientManager")
+    private ClientManager clientManager;
+	
+    private DisplayImageDao displayImageDao;
 
     /**
-     * Initializes a com.github.dockerjava.api.DockerClient.
-     *
-     * @return  A DockerClient object.
+     * Sets the data access object which will acquire and persist the data 
+     * passed to it via the methods of this ImageManager. 
+     * 
+     * @param displayImageDao  The service mechanism data access object representing a DisplayImage. 
      */
-    public DockerClient initializeDockerClient() {
-        DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder().build();
-        return DockerClientBuilder.getInstance(config).build();
+    public void setDisplayImageDao(DisplayImageDao displayImageDao) {
+        this.displayImageDao = displayImageDao;
     }
-
 
     /**
      * Requests a List of all available _Image objects.
      *
-     * @return  A a List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
      */
     public List<_Image> getImageList() {
-        DockerClient dockerClient = initializeDockerClient();
-        List<Image> images = dockerClient.listImagesCmd().withShowAll(false).exec();
+        List<_Image> _images; 
+        try {
+            DockerClient dockerClient = clientManager.initializeDockerClient();
+            List<Image> images = dockerClient.listImagesCmd().withShowAll(false).exec();
+            _images = processImageList(images); 
+        } catch (Exception e) {
+            logger.error("Unable to get list of Images: " + e);
+            _images = null;
+        }            
+        return _images;
+    }
+	
+    /**
+     * Requests a List of all available _Image objects that the user is allowed to see.
+     *
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
+     */
+    public List<_Image> filterByDisplayImage() {
+		List<_Image> displayImages = new ArrayList<_Image>();
+        List<_Image> _images = getImageList();
+        if (!Objects.isNull(_images)) {
+	        for (_Image _image : _images) {
+	            if (!_image.getIsDisplayImage()) {
+	            	displayImages.add(_image);
+	            }
+	        }
+        }
+        return displayImages;
+    }
+
+    /**
+     * Utility method to process a List of com.github.dockerjava.api.model.Image objects
+     * to a corresponding List of edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
+     *
+     * @param images  The com.github.dockerjava.api.model.Image List.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Image List.
+     */
+    public List<_Image> processImageList(List<Image> images) {
+        List<_Image> _images = new ArrayList<_Image>(images.size());
+        for (Image image : images) {
+            _Image _image = convertImage(image);
+            if (!Objects.isNull(_image)) {
+                _images.add(_image);
+            }
+        }
+        if (_images.isEmpty()) {
+            _images = null;
+        }
+        return _images;
+    }
+    
+    /**
+     * Converts a com.github.dockerjava.api.model.Image object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._Image object.
+     *
+     * @param image  The com.github.dockerjava.api.model.Image object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Image object.
+     */
+    public _Image convertImage(Image image) {
         Function<Image, _Image> mapImageTo_Image = new Function<Image, _Image>() {
             public _Image apply(Image i) {
                 _Image _image = new _Image();
@@ -62,118 +126,55 @@ public class ImageManagerImpl implements ImageManager {
                 return _image;
             }
         };
+        _Image _image = null;
         Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
-        List<_Image> _images = new ArrayList<_Image>(images.size());
-        for (Image image : images) {
-            _Image _image = mapImageTo_Image.apply(image);
+        if (!Objects.isNull(_containerStatusMap)) {
+            _image = mapImageTo_Image.apply(image);
             if (_containerStatusMap.containsKey(_image.getRepoTags())) {
                 _image.setStatus(_containerStatusMap.get(_image.getRepoTags()));          
             }
-            _images.add(_image);
+            DisplayImage displayImage = lookupDisplayImage(_image.getId());
+			if (!Objects.isNull(displayImage)) {
+				_image.setIsDisplayImage(true);
+			}
         }
-        return _images;
-    }
-    
-    /**
-     * Requests a single Image.
-     * 
-     * @param id  The Image ID.
-     * @return  The Image.   
-     */
-/*
-    public Image getImage(String id) {
-        DockerClient dockerClient = initializeDockerClient();
-        List<Image> images = getImageList();   
-        Image image = null;
-        for (Image i : images) {
-            if (id.equals(i.getId())) {
-                image = i; 
-                break;
-            }
-        } 
-        return image;
-    }
-*/
-     
-    /**
-     * Requests an Image's repository.
-     * 
-     * @param image  The Image.
-     * @return  The Image repository (String).  
-     */
-/*
-    public String getImageRepository(Image image) {
-        DockerClient dockerClient = initializeDockerClient();
-        String id = image.getId();
-        String repository = null;
-        List<Image> images = getImageList();   
-        for (Image i : images) {
-            if (id.equals(i.getId())) {
-                String[] repoTags = i.getRepoTags();
-                String[] splitString = repoTags[0].split(":");     
-                repository = splitString[0];
-                break;
-            }
-        } 
-        return repository;
-    }
-*/
-    
-    /**
-     * Requests an Image's Container ID.
-     * 
-     * @param image  The Image.
-     * @return  The Image Container ID (String).  
-     */
-/*
-    public String getImageContainerId(Image image) {
-        InspectImageResponse inspectImageResponse = inspectImage(image.getId());
-        return inspectImageResponse.getContainer();
-    }
-*/
-    
-     
-    /**
-     * Requests a Map of the Image's repositories (for form dropdown selection).
-     * 
-     * @return  The repository Map<String,String>.
-     */
-/*
-    public Map<String,String> getRepositoryMap() {
-        DockerClient dockerClient = initializeDockerClient();
-        Map<String,String> imageMap = new LinkedHashMap<String,String>();
-        List<Image> imageList = getImageList();
-        for (Image i : imageList) {
-            String repo = getImageRepository(i);
-            imageMap.put(repo, repo);
-        }
-        return imageMap;
+        return _image;
     }   
-*/
-    
+	
     /**
-     * Requests a search of the available Images with a given query.
+     * Looks up and retrieves the DisplayImage from the persistence mechanism using the Image ID.
      * 
-     * @param query  The query upon which to search.
-     * @return  A List of resulting SearchItems.
+     * @param imageId   The ID of the Image (will be unique for each DisplayImage). 
+     * @return  The DisplayImage.   
      */
-/*
-    public List<SearchItem> searchImages(String query) {
-        DockerClient dockerClient = initializeDockerClient();
-        return dockerClient.searchImagesCmd(query).exec();
+    public DisplayImage lookupDisplayImage(String imageId){
+    	return displayImageDao.lookupDisplayImage(imageId);
+    }
+            
+    /**
+     * Looks up and retrieves a List of all DisplayImages from the persistence mechanism.
+     * 
+     * @return  The List of DisplayImages.   
+     */
+    public List<DisplayImage> getAllDisplayImages(){
+    	return displayImageDao.getAllDisplayImages();
     }
     
-   
     /**
-     * Returns a requested InspectImageResponse.
-     *
-     * @param id  The Image ID.
-     * @return  The requested InspectImageResponse.
+     * Finds and removes the DisplayImage from the persistence mechanism using the Image ID.
+     * 
+     * @param imageId  The ID of the Image. 
      */
-/*
-    public InspectImageResponse inspectImage(String id) {
-        DockerClient dockerClient = initializeDockerClient();
-        return dockerClient.inspectImageCmd(id).exec();
+    public void deleteDisplayImage(String imageId) {
+    	displayImageDao.deleteDisplayImage(imageId);
     }
-*/
+
+    /**
+     * Creates a new DisplayImage in the persistence mechanism.
+     * 
+     * @param displayImage  The DisplayImage to be created. 
+     */
+    public void createDisplayImage(DisplayImage displayImage){
+    	displayImageDao.createDisplayImage(displayImage);
+    }
 }

@@ -3,6 +3,11 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import java.util.List;
 import java.util.Map;
 
+// importing these for ability to start and stop images.  Will convert them 
+// to their _Obj instances and remove them.
+import com.github.dockerjava.api.command.CreateContainerResponse;
+import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.Container;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 
@@ -41,58 +46,34 @@ public interface ContainerManager {
      * @return  A Map of container statuses.
      */
     public Map<String, String> getContainerStatusMap();
-	
-	/**
-	 * Requests a single _Container object.
-	 * 
-	 * @param id  The container ID.
-	 * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._Container object.   
-	 */
-	public _Container getContainer(String id);
-
-
-		
-
- //   public InspectContainerResponse inspectContainer(String id);
     
     /**
-     * Returns a requested InspectContainerResponse.
+     * Requests a single _Container object.
      * 
-     * @param newContainer  The NewContainer object that has the user-specified values.
-     * @return  The requested InspectContainerResponse.  
+     * @param id  The container ID.
+     * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._Container object.   
      */
-//    public CreateContainerResponse createContainer(NewContainer newContainer) ;
-    
-//    public CreateContainerResponse createContainer(String image);
-    
+    public _Container getContainer(String id);
+
     /**
-     * Removes a Container.
+     * Starts a _Container.
      *
-     * @param container  The Container object to remove.
+     * @param _container  The _Container to start.
      */
-//    public void removeContainer(Container container);
+    public void startContainer(_Container _container);
     
     /**
-     * Starts a Container.
-     * 
-     * @param container  The Container to start.
+     * Stops a _Container.
+     *
+     * @param _container  The _Container to stop.
      */
-//    public void startContainer(Container container);
+    public void stopContainer(_Container _container);
 
     /**
-     * Stops a Container.
-     * 
-     * @param container  The Container to stop.
-     */
-//    public void stopContainer(Container container); 
-    
-    /**
-     * Stops a Container.
-     * 
-     * @param container  The Container to stop.
+     * Stops a _Container.
+     *
+     * @param _container  The _Container to stop.
      * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
      */
-//    public void stopContainer(Container container, int timeout);
-    
-
+    public void stopContainer(_Container _container, int timeout);
 }
