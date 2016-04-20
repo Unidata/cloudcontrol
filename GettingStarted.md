@@ -15,9 +15,9 @@ WARNING: Cloud Control uses this super awesome <a href="https://github.com/docke
 #### 2. <a href="https://github.com/Unidata/cloudcontrol">Download</a> Cloud Control source code from GitHub.
  
 #### 3. Modify <code>applications.properties</code>
-Find the <code>src/main/webapp/WEB-INF/classes/applications.properties</code> file and make any modifications to the  <code>servletcontainer.home</code> and <code>cloudcontrol.home</code> values as needed.  
+Find the <code>src/main/webapp/WEB-INF/classes/applications.properties</code> file and make any modifications to the <code>cloudcontrol.home</code> as needed.
  
-By default, Cloud Control is configured to place <code>cloudcontrol.home</code> in the servlet container home directory. (This directory needs to survive any upgrades to the WAR file, so be mindful of where it resides.)
+A good idea is to place <code>cloudcontrol.home</code> in the default servlet container home directory. (This directory needs to survive any upgrades to the WAR file, so be mindful of where it resides.)
  
 #### 4. Modify <code>messages.properties</code>
 Find the <code>src/main/webapp/WEB-INF/classes/messages.properties</code> file and make any modifications to the  <code>global.title</code> and <code>help.message</code> values as needed.  This will customize the main title on the website and the help message displayed during errors. 
@@ -45,8 +45,18 @@ It's on the TODO list to embed this app in a servlet container that you can just
  
 #### 7. Test away!
 
-Some functionality doesn't exist yet, but it will shortly. Feel free to send us comments at <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a>
+Some functionality doesn't exist yet, but it will shortly. Default logins for the admin and test user are as follows:
  
+    login: admin
+    password: changeme
+
+   and
+
+     login: testUser
+     password: changeme
+
+Feel free to send us comments at <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a>
+
  Be sure to check out the <a href="https://github.com/Unidata/cloudcontrol/issues">GitHub issues</a> associated with this project for an idea of the TODO list to see if something on your want-list is there. 
 
 
