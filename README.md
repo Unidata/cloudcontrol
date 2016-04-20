@@ -17,6 +17,3 @@ Cloud Control is built on/utilizes the following OpenSource technologies:
 Cloud Control is early in the development stage and is Proof-Of-Concept.  The Docker-based technologies it relies on are constantly evolving requiring frequent refactoring. Therefore, this software should be considered a pre-alpha release.  Please read the <a href="https://github.com/Unidata/cloudcontrol/blob/master/LICENSE">license</a> before use.
 
 Send questions or comments about this project to: <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a>
-
-### Getting Started
-
