@@ -55,7 +55,9 @@
       
     <security:intercept-url pattern="/index.jsp" access="permitAll" />
     <security:intercept-url pattern="/welcome" access="permitAll" />
-    <security:intercept-url pattern="/user/register" access="permitAll" />
+	<security:intercept-url pattern="/welcome/register" access="permitAll" />
+	<security:intercept-url pattern="/about" access="permitAll" />
+	<security:intercept-url pattern="/gettingStarted" access="permitAll" />
     <security:intercept-url pattern="/login/**" access="permitAll" />
     <security:intercept-url pattern="/denied" access="permitAll" />
     <security:intercept-url pattern="/**" access="isAuthenticated()" />
@@ -99,11 +101,11 @@
   </bean>
   
   <!-- DAO injection -->  
-  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.UserDetailsServiceImpl">
+  <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.user.UserDetailsServiceImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 
-  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.UserManagerImpl">
+  <bean id="userManager" class="edu.ucar.unidata.cloudcontrol.service.user.UserManagerImpl">
     <property name="userDao" ref="userDao"/>
   </bean>
 
@@ -111,11 +113,28 @@
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   
-  <!-- Declaration Resource use -->
-  <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl" />
+  <bean id="clientManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ClientManagerImpl">
+    <property name="clientConfigDao" ref="clientConfigDao"/>
+  </bean>
+
+  <bean id="clientConfigDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcClientConfigDao">
+    <property name="dataSource" ref="dbDataSource"/>
+  </bean>
+  
+  <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl">
+    <property name="displayImageDao" ref="displayImageDao"/>
+  </bean>
+
+  <bean id="displayImageDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcDisplayImageDao">
+    <property name="dataSource" ref="dbDataSource"/>
+  </bean>
+  
+  <!-- Declaration for Resource use -->
   <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" />  
   <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />  
-
+ 
+  
+  
   <!-- Declare a datasource that has pooling capabilities--> 
   <bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="${jdbc.driverClassName}"/>
