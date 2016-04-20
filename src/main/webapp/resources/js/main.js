@@ -8,7 +8,6 @@ $(document).ready(function() {
 		contentAsHTML: 'true'
     });
        
-
     $('ul.nav').dropit({ action: 'click', triggerEl: 'b' });
 
     $('.accordion h3').click(function() {
@@ -45,7 +44,7 @@ function toggleTheThings () {
     function runEffect(item){ 
             var corresponding = $(item).attr('id') + "Section";            
             $("#"+ corresponding).toggle();
-            $(item).toggleClass("collapse");
+            $(item).toggleClass("expand");
             var contents = $(item).html();
             if (contents.match('show')) {
                 $(item).html(contents.replace('show','hide'));

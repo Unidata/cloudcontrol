@@ -131,5 +131,8 @@ header nav ul.nav ul.dropit-submenu li input[type=submit]{
  height: 20px;
  width: auto;
  border:none !important;
- background-color: none;
+ background-color: none !important;
+ -webkit-box-shadow: none !important;
+ -moz-box-shadow: none !important;
+ box-shadow: none !important;
 }
