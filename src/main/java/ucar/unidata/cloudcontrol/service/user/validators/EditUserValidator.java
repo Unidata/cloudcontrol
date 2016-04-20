@@ -1,7 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.user.validators;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.BasicConfigurator;
+
 import org.apache.log4j.Logger;
 
 import javax.annotation.Resource;
@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 /**
  * Validator class for the form-backing object for modifying a User (sans password).
@@ -57,43 +57,10 @@ public class EditUserValidator implements Validator  {
      */
     public void validate(Object obj, Errors errors) {
         User user = (User) obj;
-		logger.info("HERE: " + user.getUserId());
-        validateUserName(user.getUserName(), errors);  
         validateFullName(user.getFullName(), errors); 
         validateAccessLevel(user.getAccessLevel(), errors);
         validateAccountStatus(user.getAccountStatus(), errors);
-        validateEmailAddress(user.getEmailAddress(), errors);
-    }
-
-    /**
-     * Validates the user input for the userName field.
-     * 
-     * @param input  The user input to validate.
-     * @param error  Object in which to store any validation errors.
-     */
-    public void validateUserName(String input, Errors errors) {
-        if (StringUtils.isBlank(input)) {
-            errors.rejectValue("userName", "userName.required");
-            return;
-        }
-        if ((StringUtils.length(input) < 2) || (StringUtils.length(input) > 50)) {
-            errors.rejectValue("userName", "userName.length");
-            return;
-        }        
-        pattern = Pattern.compile(USER_NAME_PATTERN);
-        matcher = pattern.matcher(input);
-        if (!matcher.matches()) {
-            errors.rejectValue("userName", "userName.chars");
-            return;
-        }
-        try {
-            User user = userManager.lookupUser(input);           
-            errors.rejectValue("userName", "userName.alreadyInUse");
-            return;
-        } catch (RecoverableDataAccessException e) {
-            return;
-        }
-        
+        validateEmailAddress(user.getEmailAddress(),  user.getUserName(), errors);
     }
 
     /**
@@ -118,9 +85,10 @@ public class EditUserValidator implements Validator  {
      * Validates the user input for the emailAddress field.
      * 
      * @param input  The user input to validate.
+     * @param userName  The user name needed to validate.
      * @param error  Object in which to store any validation errors.
      */    
-     public void validateEmailAddress(String input, Errors errors) {
+     public void validateEmailAddress(String input, String userName, Errors errors) {
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("emailAddress", "emailAddress.required");
             return;
@@ -132,8 +100,11 @@ public class EditUserValidator implements Validator  {
             return;
         }  
         try {
-            User user = userManager.lookupUserByEmailAddress(input);           
-            errors.rejectValue("emailAddress", "emailAddress.alreadyInUse");
+            User dbUser = userManager.lookupUserByEmailAddress(input);  
+            if (!userName.equals(dbUser.getUserName())) {
+                errors.rejectValue("emailAddress", "emailAddress.alreadyInUse");
+                return;
+            }        
             return;
         } catch (RecoverableDataAccessException e) {
             return;

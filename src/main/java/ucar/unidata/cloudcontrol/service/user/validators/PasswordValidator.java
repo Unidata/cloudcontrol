@@ -1,7 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.user.validators;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.BasicConfigurator;
+
 import org.apache.log4j.Logger;
 
 import javax.annotation.Resource;
@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 /**
  * Validator class for the form-backing object for resetting a User's password.

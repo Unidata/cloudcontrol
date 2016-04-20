@@ -1,12 +1,13 @@
 package edu.ucar.unidata.cloudcontrol.service.user.validators;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.BasicConfigurator;
+
 import org.apache.log4j.Logger;
 
-import javax.annotation.Resource;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.annotation.Resource;
 
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 /**
  * Validator class for the form-backing object for a User creation/registration.
@@ -57,7 +58,6 @@ public class CreateUserValidator implements Validator  {
      */
     public void validate(Object obj, Errors errors) {
         User user = (User) obj;
-		logger.info("HERE: " + user.getUserId());
         validateUserName(user.getUserName(), errors);  
         validateFullName(user.getFullName(), errors); 
         validatePassword("password",  user.getPassword(), errors); 
@@ -90,13 +90,12 @@ public class CreateUserValidator implements Validator  {
             return;
         }
         try {
-            User user = userManager.lookupUser(input);           
+            User user = userManager.lookupUser(input);        
             errors.rejectValue("userName", "userName.alreadyInUse");
             return;
         } catch (RecoverableDataAccessException e) {
             return;
         }
-        
     }
 
     /**
