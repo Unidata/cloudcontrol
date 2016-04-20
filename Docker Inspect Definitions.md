@@ -8,5 +8,5 @@ Use this file to define terms found in the output of `docker inspect`.  See the 
 
 ## Definitions
 
-* `EntryPoint` - Used to configure a container that will run as an executable.
+* `EntryPoint` - Used to configure a container that will run as an executable. (https://docs.docker.com/engine/reference/builder/#entrypoint)
  
