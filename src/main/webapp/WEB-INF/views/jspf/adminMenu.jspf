@@ -1,0 +1,18 @@
+      <h3>Docker Server Information</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/docker/server/info">Server Information</a></li>
+       <li><a href="${baseUrl}/dashboard/docker/server/version">Server Version</a></li>
+      </ul>
+      <h3>Image Administration</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/docker/image/list">List Images</a></li>
+      </ul>
+      <h3>User Management</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/user">Manage Users</a></li>
+       <li><a href="${baseUrl}/dashboard/user/create">Create New User</a></li>
+      </ul>
+      <h3>Cloud Control Settings</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/docker/client">Docker Client Configuration</a></li>
+      </ul>

@@ -1,0 +1,12 @@
+
+      <h3>Explore Docker Images</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/docker/image/list">List Images</a></li>
+      </ul>
+      <h3>Account Information</h3>
+      <ul>
+       <li><a href="${baseUrl}/dashboard/user/view/${authUserName}">Manage Account</a></li>
+       <li><a href="${baseUrl}/dashboard/user/password/${authUserName}">Change Password</a></li>
+      </ul>
+      <h3>Further Information</h3>
+      <%@ include file="/WEB-INF/views/EDIT/infoContent.jspf" %>
