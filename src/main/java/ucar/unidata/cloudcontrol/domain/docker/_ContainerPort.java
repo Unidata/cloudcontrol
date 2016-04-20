@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Object representing Docker container port information.
  *
- * Data in this object corresponds to the com.github.dockerjava.api.model.Container object.
+ * Data in this object corresponds to the com.github.dockerjava.api.model.ContainerPort object.
  *
  * Note: This object is passed directly to the view with no intermediary manipulation.
  * Therefore, the com.github.dockerjava.api.model.ContainerPort attribute types have 

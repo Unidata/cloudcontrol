@@ -28,6 +28,7 @@ public class _Image implements Serializable {
     private String size;
     private String virtualSize; 
     private String status = "Inactive"; 
+	private boolean isDisplayImage = false; 
 
     public String getCreated() {
         return created;
@@ -143,6 +144,14 @@ public class _Image implements Serializable {
         } else {
             this.status = status;
         }        
+    }
+	
+    public boolean getIsDisplayImage() {
+        return isDisplayImage;
+    }
+    
+    public void setIsDisplayImage(boolean isDisplayImage) {
+        this.isDisplayImage = isDisplayImage;      
     }
     
     @Override

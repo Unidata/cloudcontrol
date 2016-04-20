@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Object representing Docker container host configuration information.
+ * Object representing Docker container network information.
  *
  * Data in this object corresponds to the com.github.dockerjava.api.model.ContainerNetwork object.
  *
