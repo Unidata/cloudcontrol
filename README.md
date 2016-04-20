@@ -1,5 +1,8 @@
 # Cloud Control
-
+<a href="https://scan.coverity.com/projects/cloudcontrol">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/8628/badge.svg"/>
+</a>
 ### About Cloud Control
 
 CloudControl is a web-based dashboard which provides administrative controls to deploy and manage Docker images in the cloud.  In particular, the web interface makes it easy for users unfamiliar with Docker to utilize Docker docker-based technologies. Users of CloudControl do not need to possess in-depth knowledge of Docker commands.
