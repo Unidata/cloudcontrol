@@ -1,7 +1,9 @@
 	 <h3>About Cloud Control</h3>
-	 <p>CloudControl is a web-based dashboard which provides administrative controls for running <a href="http://www.docker.com/">docker</a>-based technologies in the cloud, as well as providing user management.</p>
+	 <p>CloudControl is a web-based dashboard which provides administrative controls to deploy and manage Docker images in the cloud.  In particular, the web interface makes it easy for users unfamiliar with Docker to utilize Docker docker-based technologies. Users of CloudControl do not need to possess in-depth knowledge of Docker commands.</p>
+
+     <p>What sets CloudControl apart from other Docker/Cloud technologies is user management layer with users, roles, and permissions.  The CloudControl administrator can customize the user environment to grant access to predetermined images and Docker engines, and configure/limit the Docker commands the user is allowed to perform.</p>
 	 
- 	 <p>Cloud Control is built on/utilizes the following technologies:</p>
+ 	 <p>Cloud Control is built on/utilizes the following OpenSource technologies:</p>
  	 <ul>
  	  <li><a href="http://www.docker.com/">Docker</a>, <a href="http://docs.docker.com/machine/install-machine/">Docker Machine</a>, <a href="http://docs.docker.com/engine/reference/api/docker_remote_api/">Docker Remote API</a></li>
  	  <li><a href="https://github.com/docker-java/docker-java">docker-java client</a></li>
@@ -9,3 +11,6 @@
  	  <li><a href="https://db.apache.org/derby/">Apache Derby</a></li>
  	  <li><a href="https://jquery.com/">JQuery</a></li>
      </ul>
+	 
+	 <p>Cloud Control is early in the development stage and is Proof-Of-Concept.  The Docker-based technologies it relies on are constantly evolving requiring frequent refactoring. Therefore, this software should be considered a <b>pre-alpha</b> release.  Please read the <a href="https://github.com/Unidata/cloudcontrol/blob/master/LICENSE">license</a> before use.</p>
+	 <p>Send questions or comments about this project to: <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a></p>
