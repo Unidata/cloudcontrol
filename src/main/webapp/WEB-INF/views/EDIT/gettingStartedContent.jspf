@@ -16,7 +16,7 @@
  <dt>2. <a href="https://github.com/Unidata/cloudcontrol">Download</a> Cloud Control source code from GitHub.</dt>
  
  <dt>3. Modify <code>applications.properties</code></dt>
- <dd>Find the <code>src/main/webapp/WEB-INF/classes/applications.properties</code> file and make any modifications to the  <code>servletcontainer.home</code> and <code>cloudcontrol.home</code> values as needed.  By default, Cloud Control is configured to place <code>cloudcontrol.home</code> in the servlet container home directory. (This directory needs to survive any upgrades to the WAR file, so be mindful of where it resides.)</dd>
+ <dd>Find the <code>src/main/webapp/WEB-INF/classes/applications.properties</code> file and make any modifications to the <code>cloudcontrol.home</code> values as needed.  A good idea is to place <code>cloudcontrol.home</code> in the default servlet container home directory. (This directory needs to survive any upgrades to the WAR file, so be mindful of where it resides.)</dd>
  
  <dt>4. Modify <code>messages.properties</code></dt>
  <dd>Find the <code>src/main/webapp/WEB-INF/classes/messages.properties</code> file and make any modifications to the  <code>global.title</code> and <code>help.message</code> values as needed.  This will customize the main title on the website and the help message displayed during errors.</dd> 
@@ -29,13 +29,22 @@
  <dd><code>gettingStartedContent.jspf</code> contains information about how to get started with the project (presumably) and will be displayed in the right column before login.</dd>
  <dd><code>infoContent.jspf</code> contains links that will be displayed at the top-right corner of the website (question mark dropdown), and in the user navigation menu.</dd>
  
- <dt>6. Build the WAR file.</dt>
+ <dt>6. Build the WAR file and deplot to a servlet container.</dt>
  <dd>Run the following command from the Cloud Control installation directory: <code>./gradlew war</code> to produce a WAR file.</dd>
  <dd>Note: running the above command will build the Cloud Control web application as <code>ROOT.war</code>.  If you wish to change the name, modify the <code>build.gradle</code> file.</dd>
  <dd>It's on the TODO list to embed this app in a servlet container that you can just download and run, negating the need to run a servlet container like Tomcat.  (Not that there's anything wrong with Tomcat.)</dd>
  
  <dt>7. Test away!</dt>
- <dd>Some functionality doesn't exist yet, but it will shortly. Feel free to send us comments at <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a></dd>
+ <dd>Some functionality doesn't exist yet, but it will shortly. Default logins for the admin and test user are as follows:</dd>
+
+  <dd>&nbsp; &nbsp; login: admin</dd>
+  <dd>&nbsp; &nbsp; password: changeme</dd>
+  <dd>&nbsp; &nbsp;  &nbsp;  &nbsp; and </dd>
+  <dd>&nbsp; &nbsp; login: testUser</dd>
+  <dd>&nbsp; &nbsp; password: changeme</dd>
+  
+
+ <dd>Feel free to send us comments at <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a></dd>
  
  <dd>Be sure to check out the <a href="https://github.com/Unidata/cloudcontrol/issues">GitHub issues</a> associated with this project for an idea of the TODO list to see if something on your want-list is there. </dd>
 </dl>
