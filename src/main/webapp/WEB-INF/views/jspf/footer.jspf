@@ -1,7 +1,6 @@
        </div><!-- /#content -->
       </div> <!-- /#container -->   
      <footer>
-      This website is created and maintained by the <a href="http://www.unidata.ucar.edu/">Unidata Program Center</a>.
+	  <%@ include file="/WEB-INF/views/EDIT/footerContent.jspf" %>
      </footer>
-	 
     </div> <!-- /#wrap -->

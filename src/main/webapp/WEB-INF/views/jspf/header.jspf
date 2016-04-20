@@ -11,12 +11,12 @@
             <c:url var="logoutUrl" value="/j_spring_security_logout" />
             <ul>
              <li>
-              <form action="${baseUrl}/user/view/${authUserName}" method="GET">
+              <form action="${baseUrl}/dashboard/user/view/${authUserName}" method="GET">
                <input type="submit" value="Manage Account" />
               </form>
              </li>
              <li>
-              <form action="${baseUrl}/user/password/${authUserName}" method="GET">
+              <form action="${baseUrl}/dashboard/user/password/${authUserName}" method="GET">
                <input type="submit" value="Change Password" />
               </form>
              </li>
@@ -30,16 +30,13 @@
            </li>
           </c:when>
           <c:otherwise>
-           <li><a href="${baseUrl}/user/register"><spring:message code="user.register.title"/></a></li>
-           <li><a href="${baseUrl}/login"><spring:message code="login"/></a></li>
+           <li><a href="${baseUrl}/welcome/register">Register</a></li>
+           <li><a href="${baseUrl}/login">Login</a></li>
           </c:otherwise>
          </c:choose>  
          <li class="help">
           <b>&nbsp;</b>
-          <ul>
-           <li><a href="${baseUrl}/gettingStarted"><spring:message code="gettingStarted"/></a></li>
-           <li><a href="${baseUrl}/about"><spring:message code="about"/></a></li>
-          </ul>
+          <%@ include file="/WEB-INF/views/EDIT/infoContent.jspf" %>
          </li>  
         </ul>
        </nav>
