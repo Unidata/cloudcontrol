@@ -36,7 +36,7 @@ public class ImageManagerImpl implements ImageManager {
     
     @Resource(name = "clientManager")
     private ClientManager clientManager;
-	
+    
     private DisplayImageDao displayImageDao;
 
     /**
@@ -66,21 +66,21 @@ public class ImageManagerImpl implements ImageManager {
         }            
         return _images;
     }
-	
+    
     /**
      * Requests a List of all available _Image objects that the user is allowed to see.
      *
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
      */
     public List<_Image> filterByDisplayImage() {
-		List<_Image> displayImages = new ArrayList<_Image>();
+        List<_Image> displayImages = new ArrayList<_Image>();
         List<_Image> _images = getImageList();
         if (!Objects.isNull(_images)) {
-	        for (_Image _image : _images) {
-	            if (!_image.getIsDisplayImage()) {
-	            	displayImages.add(_image);
-	            }
-	        }
+            for (_Image _image : _images) {
+                if (!_image.getIsDisplayImage()) {
+                    displayImages.add(_image);
+                }
+            }
         }
         return displayImages;
     }
@@ -130,17 +130,19 @@ public class ImageManagerImpl implements ImageManager {
         Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
         if (!Objects.isNull(_containerStatusMap)) {
             _image = mapImageTo_Image.apply(image);
-            if (_containerStatusMap.containsKey(_image.getRepoTags())) {
-                _image.setStatus(_containerStatusMap.get(_image.getRepoTags()));          
+            if (!Objects.isNull(_image)) {
+                if (_containerStatusMap.containsKey(_image.getRepoTags())) {
+                    _image.setStatus(_containerStatusMap.get(_image.getRepoTags()));  
+		            DisplayImage displayImage = lookupDisplayImage(_image.getId());
+		            if (!Objects.isNull(displayImage)) {
+		                _image.setIsDisplayImage(true);
+		            }        
+                }
             }
-            DisplayImage displayImage = lookupDisplayImage(_image.getId());
-			if (!Objects.isNull(displayImage)) {
-				_image.setIsDisplayImage(true);
-			}
         }
         return _image;
     }   
-	
+    
     /**
      * Looks up and retrieves the DisplayImage from the persistence mechanism using the Image ID.
      * 
@@ -148,7 +150,7 @@ public class ImageManagerImpl implements ImageManager {
      * @return  The DisplayImage.   
      */
     public DisplayImage lookupDisplayImage(String imageId){
-    	return displayImageDao.lookupDisplayImage(imageId);
+        return displayImageDao.lookupDisplayImage(imageId);
     }
             
     /**
@@ -157,7 +159,7 @@ public class ImageManagerImpl implements ImageManager {
      * @return  The List of DisplayImages.   
      */
     public List<DisplayImage> getAllDisplayImages(){
-    	return displayImageDao.getAllDisplayImages();
+        return displayImageDao.getAllDisplayImages();
     }
     
     /**
@@ -166,7 +168,7 @@ public class ImageManagerImpl implements ImageManager {
      * @param imageId  The ID of the Image. 
      */
     public void deleteDisplayImage(String imageId) {
-    	displayImageDao.deleteDisplayImage(imageId);
+        displayImageDao.deleteDisplayImage(imageId);
     }
 
     /**
@@ -175,6 +177,6 @@ public class ImageManagerImpl implements ImageManager {
      * @param displayImage  The DisplayImage to be created. 
      */
     public void createDisplayImage(DisplayImage displayImage){
-    	displayImageDao.createDisplayImage(displayImage);
+        displayImageDao.createDisplayImage(displayImage);
     }
 }

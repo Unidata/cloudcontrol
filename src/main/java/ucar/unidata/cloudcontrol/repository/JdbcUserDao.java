@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.repository;
 
 import java.util.List;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -129,7 +130,11 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("users").usingGeneratedKeyColumns("userId");
             SqlParameterSource parameters = new BeanPropertySqlParameterSource(user);
             Number newUserId = insertActor.executeAndReturnKey(parameters);
-            user.setUserId(newUserId.intValue());
+			if (!Objects.isNull(newUserId)) {
+	            user.setUserId(newUserId.intValue());
+			} else {
+	            throw new RecoverableDataAccessException("Unable to create new User: " + user.toString());
+			}
         }   
     }
 

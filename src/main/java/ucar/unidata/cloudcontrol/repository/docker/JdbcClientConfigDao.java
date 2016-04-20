@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.repository.docker;
 
 import java.util.List;
+import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -157,8 +158,12 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("clientConfig").usingGeneratedKeyColumns("id");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(clientConfig);
         Number newId = insertActor.executeAndReturnKey(parameters);
-        clientConfig.setId(newId.intValue());  
-        return newId.intValue();
+		if (!Objects.isNull(newId)) {
+            clientConfig.setId(newId.intValue()); 
+			return newId.intValue();
+		} else {
+            throw new RecoverableDataAccessException("Unable to create ClientConfig: " + clientConfig.toString());
+		}
     }
 
     /**
