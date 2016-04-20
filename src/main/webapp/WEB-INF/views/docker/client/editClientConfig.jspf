@@ -1,0 +1,34 @@
+      <%-- This view is to edit the configuration the Docker client (admin only). --%>
+      <h3>Edit Docker Client Configuration</h3>
+      
+      <p>* Indicates a required field.</p>
+
+       <form:form action="${baseUrl}/dashboard/docker/client/edit/${clientConfig.id}" commandName="clientConfig" method="POST">
+        <ul class="format threeQuarters">      
+         <li>
+          <label for="dockerHost" class="tooltip" title="The host/port or unix socket needed to connect to the Docker engine.  The same as the DOCKER_HOST value (if applicable).">
+           Docker Host/Port or Unix Socket*
+          </label>
+          <form:input path="dockerHost" />
+          <form:errors path="dockerHost" cssClass="error" />
+         </li>
+         <li>
+          <label for="dockerTlsVerify" class="tooltip" title="Whether TLS verification is required for access.  Always true in Cloud Control. The same as the DOCKER_TLS_Verify value (if applicable).">
+           Docker TLS Verify
+          </label>
+          <form:input path="dockerTlsVerify" cssClass="fieldDisabled" disabled="true" value="1"/>
+          <form:errors path="dockerTlsVerify" cssClass="error" />  
+         </li>
+         <li>
+          <label for="dockerCertPath" class="tooltip" title="Path to the certificates needed for TLS verification.  The same as the DOCKER_CERT_PATH value (if applicable).">
+           Docker Certificate Path*
+          </label>
+          <form:input path="dockerCertPath" />
+          <form:errors path="dockerCertPath" cssClass="error" />  
+         </li>
+         <li>
+          <input type="submit" value="Edit Configuration" /> 
+         </li>
+        </ul>
+       </form:form>
+

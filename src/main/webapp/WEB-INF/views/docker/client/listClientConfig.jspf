@@ -1,0 +1,73 @@
+      <%-- This view is to view the Docker client configuration (admin only). --%>
+      <h3>Viewing Docker Client Configuration</h3>
+      <c:choose>
+       <c:when test="${not empty clientConfig}">  
+        <table class="list"> 
+         <tbody>
+          <tr>
+           <td>        
+            Docker Host/Port or Unix Socket
+           </td>
+           <td>   
+            <c:out value="${clientConfig.dockerHost}" />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            Docker TLS Verify
+           </td>
+           <td>
+            <c:out value="${clientConfig.dockerTlsVerify}" />
+           </td>
+          </tr>
+          <tr>
+           <td>  
+            Docker Certificate Path
+           </td>
+           <td>
+            <c:out value="${clientConfig.dockerCertPath}" />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            Created By (User)
+           </td>
+           <td>
+            <c:out value="${clientConfig.createdBy}" />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            Date Created
+           </td>
+           <td>
+            <fmt:formatDate value="${clientConfig.dateCreated}" type="BOTH" dateStyle="default"/>
+           </td>
+          </tr>
+          <tr>
+           <td>
+            Last Modified By (User)
+           </td>
+           <td>
+            <c:out value="${clientConfig.lastUpdatedBy}" />
+           </td>
+          </tr>
+          <tr>
+           <td>
+            Date Last Modified
+           </td>
+           <td>
+            <fmt:formatDate value="${clientConfig.dateModified}" type="BOTH" dateStyle="default"/>
+           </td>
+          </tr>
+         </tbody>
+        </table>
+        <form action="${baseUrl}/dashboard/docker/client/edit/<c:out value="${clientConfig.id}" />" method="GET">
+         <input type="submit" value="Edit Client Configuration" />        
+        </form>
+       </c:when> 
+       <c:otherwise>
+        <p>Unable to display Docker client configuration.</p>
+        <p>Cloud Control is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the Cloud Control Docker client in order to continue.</p>
+       </c:otherwise>
+      </c:choose>
