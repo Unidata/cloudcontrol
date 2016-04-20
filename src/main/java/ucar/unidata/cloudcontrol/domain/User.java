@@ -1,7 +1,9 @@
 package edu.ucar.unidata.cloudcontrol.domain;
 
-import java.util.Date;
 import java.io.Serializable;
+import java.util.Date;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Object representing a User.  
@@ -203,26 +205,10 @@ public class User implements Serializable {
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
     }
-
-    /**
-     * String representation of a User object.
-     * A User is person with an account in the cloudcontrol web app. 
-     * The User attributes correspond to database columns.
-     */ 
+	
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append("userId: " + userId + "\n ");
-        buffer.append("userName: " + userName + "\n ");
-        buffer.append("fullName: " + fullName + "\n ");
-        buffer.append("password: " + password + "\n ");
-        buffer.append("confirmPassword: " + confirmPassword + "\n ");
-        buffer.append("accessLevel: " + String.valueOf(accessLevel) + "\n ");
-        buffer.append("accountStatus: " + String.valueOf(accountStatus) + "\n ");
-        buffer.append("emailAddress: " + emailAddress + "\n ");
-        buffer.append("dateCreated: " + dateCreated + "\n ");
-        buffer.append("dateModified: " + dateModified + "\n ");        
-        return buffer.toString();
-    }
-
+        return ToStringBuilder.reflectionToString(this);
+    } 
 
 }
