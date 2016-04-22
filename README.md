@@ -1,4 +1,4 @@
-# Cloud Control
+# Cloud Control <img src="https://github.com/Unidata/cloudcontrol/blob/master/src/main/webapp/resources/images/header.png" alt="Cloud Control"/>
 <a href="https://scan.coverity.com/projects/cloudcontrol">
   <img alt="Coverity Scan Build Status"
        src="https://scan.coverity.com/projects/8628/badge.svg"/>
