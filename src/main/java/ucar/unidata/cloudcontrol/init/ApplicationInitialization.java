@@ -51,6 +51,7 @@ public class ApplicationInitialization implements ServletContextListener {
     private static final String DEFAULT_HOME = System.getProperty("catalina.base") + "/cloudcontrol";
     private static final String DEFAULT_DATABASE = "derby";
 
+    private String servletcontainerHome = null;
     private String cloudcontrolHome = null;
     private String databaseSelected = null;
     
@@ -65,7 +66,8 @@ public class ApplicationInitialization implements ServletContextListener {
         ServletContext servletContext = servletContextEvent.getServletContext();
         logger.info("Application context initialization..."); 
         try {
-            File configFile = new File(servletContext.getRealPath("") + "/WEB-INF/classes/application.properties");
+            ClassLoader classLoader = getClass().getClassLoader();
+	    File configFile = new File(classLoader.getResource("application.properties").getFile());
             if (!configFile.exists()) {
                 logger.info("Configuration file not provided.");  
                 logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);    
@@ -81,7 +83,14 @@ public class ApplicationInitialization implements ServletContextListener {
                     while ((currentLine = reader.readLine()) != null) {
                         String lineData;
                         if ((lineData = StringUtils.stripToNull(currentLine)) != null) {
+                            if (lineData.startsWith("servletcontainer.home")) {
+                                servletcontainerHome = StringUtils.removeStart(lineData, "servletcontainer.home=");
+                                logger.info("${servletcontainer.home} set to: " + servletcontainerHome);  
+                            }
                             if (lineData.startsWith("cloudcontrol.home")) {
+                                if(StringUtils.containsAny(lineData,"${servletcontainer.home}")) {
+                                    lineData = StringUtils.replace(lineData, "${servletcontainer.home}", servletcontainerHome);
+                                }
                                 cloudcontrolHome = StringUtils.removeStart(lineData, "cloudcontrol.home=");
                                 logger.info("${cloudcontrol.home} set to: " + cloudcontrolHome);  
                             }
@@ -167,7 +176,7 @@ public class ApplicationInitialization implements ServletContextListener {
      */
     public void createDirectory(File file) throws RuntimeException {
         if (!file.exists()) {
-            logger.info("Creating ${cloudcontrol.home}...");
+            logger.info("Creating " + file.getPath());
             if (!file.mkdirs()) {
                 throw new RuntimeException("Unable to create the following directory: " + file);
             }                   
@@ -232,10 +241,10 @@ public class ApplicationInitialization implements ServletContextListener {
                     
                     connection = DriverManager.getConnection(derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
-                    if (e.getSQLState().equals("XJ004")) {
+                    if (e.getSQLState().equals("XJ004")) { // database not found
                         logger.info("Database is already shutdown" + e.getMessage()); 
                     } else {
-                        logger.error("Error trying to get a database connection: " + e.getMessage()); 
+                        logger.info("Database connection: " + e.getMessage()); 
                     }
                 } finally { 
                     if (connection != null) {
