@@ -88,6 +88,18 @@
           </props>
       </property>
   </bean>
+
+  <!-- Taming the pesky derby.log file -->
+  <bean id="setDerbyLog" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+    <property name="targetClass"><value>java.lang.System</value></property>
+    <property name="targetMethod"><value>setProperty</value></property>
+    <property name="arguments">
+      <list>
+        <value>derby.stream.error.file</value>
+        <value>${derby.stream.error.file}</value>
+      </list>
+    </property>
+  </bean>
  
   <!-- Message source resolver to use messages.properties file in the 'war/WEB-INF/classes' directory -->
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
@@ -131,9 +143,7 @@
   
   <!-- Declaration for Resource use -->
   <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" />  
-  <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />  
- 
-  
+  <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />   
   
   <!-- Declare a datasource that has pooling capabilities--> 
   <bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
