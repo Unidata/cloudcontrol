@@ -24,7 +24,6 @@ Find the <code>src/main/webapp/WEB-INF/classes/messages.properties</code> file a
  
 Leave the validation contents of this file alone.
  
- 
 #### 5. Modify the content of <code>src/main/webapp/WEB-INF/views/EDIT</code> to customize various aspects of the website.
 
 * <code>aboutContent.jspf</code> contains information about a project (presumably) and will be displayed in the left column before login.
@@ -35,13 +34,9 @@ Leave the validation contents of this file alone.
  
 * <code>infoContent.jspf</code> contains links that will be displayed at the top-right corner of the website (question mark dropdown), and in the user navigation menu.
  
-#### 6. Build the WAR file.
+#### 6. <a href="https://github.com/Unidata/cloudcontrol/blob/master/BUILD.md">Build</a> the WAR file.
 
-Run the following command from the Cloud Control installation directory: <code>./gradlew war</code> to produce a WAR file. 
-
-Note: running the above command will build the Cloud Control web application as <code>ROOT.war</code>.  If you wish to change the name, modify the <code>build.gradle</code> file.
-
-It's on the TODO list to embed this app in a servlet container that you can just download and run, negating the need to run a servlet container like Tomcat.  (Not that there's anything wrong with Tomcat.)
+Follow the instructions in the <a href="https://github.com/Unidata/cloudcontrol/blob/master/BUILD.md">BUILD</a> file and then deploy the WAR file to your servlet container.
  
 #### 7. Test away!
 
