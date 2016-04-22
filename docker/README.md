@@ -1,22 +1,21 @@
-# Docker Utility Directory
+# Run Cloud Control in Docker
 
-This directory contains the necessary files to build and run a docker-based tomcat instance.  This is a utility for ease-of-use and may eventually be removed.
-
-# Usage
+This directory contains the necessary files to build and run Cloud Control in  a docker-based tomcat instance.  This is a utility for ease-of-use and may eventually be removed.
 
 The following steps are used to build cloudcontrol, build the docker container, then run the docker container.
 
-> Run all commands from the root cloudcontrol/ directory.
+**Note**: Run all commands from the root cloudcontrol/ directory.
 
-## Build CC
+
+#### Build CC
 
     $ ./gradlew war
 
-## Build Docker Container
+#### Build Docker Container
 
     $ docker build -t unidata/cloudcontrol -f docker/Dockerfile.cloudcontrol .
 
-## Run Docker Container
+#### Run Docker Container
 
     $ docker run --rm -it -P unidata/cloudcontrol
 
