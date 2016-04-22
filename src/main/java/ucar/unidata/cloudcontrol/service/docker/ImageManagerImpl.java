@@ -128,15 +128,15 @@ public class ImageManagerImpl implements ImageManager {
         };
         _Image _image = null;
         Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
-        if (!Objects.isNull(_containerStatusMap)) {
+        if (_containerStatusMap != null) { //coverity 
             _image = mapImageTo_Image.apply(image);
             if (!Objects.isNull(_image)) {
                 if (_containerStatusMap.containsKey(_image.getRepoTags())) {
                     _image.setStatus(_containerStatusMap.get(_image.getRepoTags()));  
-		            DisplayImage displayImage = lookupDisplayImage(_image.getId());
-		            if (!Objects.isNull(displayImage)) {
-		                _image.setIsDisplayImage(true);
-		            }        
+                    DisplayImage displayImage = lookupDisplayImage(_image.getId());
+                    if (!Objects.isNull(displayImage)) {
+                        _image.setIsDisplayImage(true);
+                    }        
                 }
             }
         }

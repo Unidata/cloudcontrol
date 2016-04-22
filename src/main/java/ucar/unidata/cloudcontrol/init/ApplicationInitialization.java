@@ -56,7 +56,6 @@ public class ApplicationInitialization implements ServletContextListener {
     
     /**
      * Find the application home ${cloudcontrol.home} and make sure it exists.  if not, create it.
-     * TODO: add -Dname=value JVM argument 
      * Find out what database was selected for use and create the database if it doesn't exist.
      * 
      * @param servletContextEvent  The event class.
@@ -76,8 +75,9 @@ public class ApplicationInitialization implements ServletContextListener {
             } else {
                 logger.info("Reading configuration file.");  
                 String currentLine;
-				try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
+                BufferedReader reader = null;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
                     while ((currentLine = reader.readLine()) != null) {
                         String lineData;
                         if ((lineData = StringUtils.stripToNull(currentLine)) != null) {
@@ -90,18 +90,25 @@ public class ApplicationInitialization implements ServletContextListener {
                                 logger.info("${cloudcontrol.db} set to: " + databaseSelected);  
                             }
                         }
+                    }                    
+                } catch (SecurityException e) {
+                    logger.error("Unable to access cloudcontrol configuration file: " + e);
+                } catch (FileNotFoundException e) {
+                    logger.error("Unable to find cloudcontrol configuration file: " + e);
+                } catch (IOException e) {
+                    logger.error("Issues reading from the cloudcontrol configuration file: " + e); 
+                } catch (Exception e) {
+                    logger.error(e); 
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            logger.error("Unable to close BufferedReader: " + e); 
+                        }
                     }
-					reader.close();
-				} catch (SecurityException e) {
-					logger.error("Unable to access cloudcontrol configuration file: " + e);
-				} catch (FileNotFoundException e) {
-					logger.error("Unable to find cloudcontrol configuration file: " + e);
-				} catch (IOException e) {
-					logger.error("Issues reading from the cloudcontrol configuration file: " + e); 
-				} catch (Exception e) {
-					logger.error(e); 
-				}
-				
+                }
+                
                 if (cloudcontrolHome == null) {
                     logger.info("Configuration file does not contain ${cloudcontrol.home} information.");  
                     logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);  
@@ -134,7 +141,7 @@ public class ApplicationInitialization implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-		Connection connection = null;
+        Connection connection = null;
         logger.info("Application context destruction..."); 
         if (databaseSelected.equals("derby")) { 
             Enumeration<Driver> drivers = DriverManager.getDrivers();
@@ -178,37 +185,37 @@ public class ApplicationInitialization implements ServletContextListener {
             Connection connection = null;
             String derbyDriver = "org.apache.derby.jdbc.EmbeddedDriver";
             String derbyUrl = "jdbc:derby:" + cloudcontrolHome + "/db/cloudcontrol";
-	        String createUsersTableSql = "CREATE TABLE users" +
-	                                     "(" +
-	                                     "userId INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-	                                     "userName VARCHAR(50) not null, " +
-	                                     "password VARCHAR(80) not null, " +
-	                                     "accessLevel INTEGER not null, " +
-	                                     "accountStatus INTEGER not null, " +
-	                                     "emailAddress VARCHAR(75) not null, " +
-	                                     "fullName VARCHAR(75) not null, " +
-	                                     "dateCreated TIMESTAMP not null, " +
-	                                     "dateModified TIMESTAMP not null" +
-	                                     ")";
+            String createUsersTableSql = "CREATE TABLE users" +
+                                         "(" +
+                                         "userId INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                         "userName VARCHAR(50) not null, " +
+                                         "password VARCHAR(80) not null, " +
+                                         "accessLevel INTEGER not null, " +
+                                         "accountStatus INTEGER not null, " +
+                                         "emailAddress VARCHAR(75) not null, " +
+                                         "fullName VARCHAR(75) not null, " +
+                                         "dateCreated TIMESTAMP not null, " +
+                                         "dateModified TIMESTAMP not null" +
+                                         ")";
 
         
-	        String createClientConfigTableSql = "CREATE TABLE clientConfig" +
-	                                            "(" +
-	                                            "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-	                                            "dockerHost VARCHAR(100) not null, " +
-	                                            "dockerCertPath VARCHAR(120) not null, " +
-	                                            "dockerTlsVerify INTEGER not null, " +
-	                                            "createdBy VARCHAR(75) not null, " +
-	                                            "lastUpdatedBy VARCHAR(75) not null, " +
-	                                            "dateCreated TIMESTAMP not null, " +
-	                                            "dateModified TIMESTAMP not null" +
-	                                            ")";
-	        String createDisplayImageTableSql = "CREATE TABLE displayImages" +
-	                                            "(" +
-	                                            "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
-	                                            "imageId VARCHAR(120) not null" +
-	                                            ")";
-			
+            String createClientConfigTableSql = "CREATE TABLE clientConfig" +
+                                                "(" +
+                                                "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                                "dockerHost VARCHAR(100) not null, " +
+                                                "dockerCertPath VARCHAR(120) not null, " +
+                                                "dockerTlsVerify INTEGER not null, " +
+                                                "createdBy VARCHAR(75) not null, " +
+                                                "lastUpdatedBy VARCHAR(75) not null, " +
+                                                "dateCreated TIMESTAMP not null, " +
+                                                "dateModified TIMESTAMP not null" +
+                                                ")";
+            String createDisplayImageTableSql = "CREATE TABLE displayImages" +
+                                                "(" +
+                                                "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                                "imageId VARCHAR(120) not null" +
+                                                ")";
+            
             if (!new File(cloudcontrolHome + "/db/cloudcontrol").exists()) {
                 logger.info("Database does not exist yet.  Creating...");
                 try { 
@@ -216,20 +223,20 @@ public class ApplicationInitialization implements ServletContextListener {
                 } catch (Exception e) {
                     logger.error("Failed to create directory: " + e); 
                 }  
-				
+                
                 try { 
                     createTables(createUsersTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
-					addDefaultAdminUser(derbyDriver, derbyUrl + ";create=true", null, null);
-					createTables(createClientConfigTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
-					createTables(createDisplayImageTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
-					
+                    addDefaultAdminUser(derbyDriver, derbyUrl + ";create=true", null, null);
+                    createTables(createClientConfigTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
+                    createTables(createDisplayImageTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
+                    
                     connection = DriverManager.getConnection(derbyUrl + ";shutdown=true");
-	            } catch (SQLException e) {
-	                if (e.getSQLState().equals("XJ004")) {
-	                    logger.info("Database is already shutdown" + e.getMessage()); 
-	                } else {
-	                    logger.error("Error trying to get a database connection: " + e.getMessage()); 
-	                }
+                } catch (SQLException e) {
+                    if (e.getSQLState().equals("XJ004")) {
+                        logger.info("Database is already shutdown" + e.getMessage()); 
+                    } else {
+                        logger.error("Error trying to get a database connection: " + e.getMessage()); 
+                    }
                 } finally { 
                     if (connection != null) {
                         try {
@@ -252,7 +259,7 @@ public class ApplicationInitialization implements ServletContextListener {
     /**
      * Creates the tables in the database.
      *
-	 * @param createSql  The table creation sql to execute.
+     * @param createSql  The table creation sql to execute.
      * @param driver  The jdbc driver to load.
      * @param url  The database url with which to make the connection.
      * @param username  The database username (null if not used).
@@ -260,25 +267,25 @@ public class ApplicationInitialization implements ServletContextListener {
      * @throws SQLException  If an SQL error occurs when trying to close the preparedStatement or conenction.
      */
     private static void createTables(String createSql, String driver, String url, String username, String password) throws SQLException { 
-		Connection connection = null;
+        Connection connection = null;
         PreparedStatement preparedStatement = null;
-		
+        
         try {
-	        try {
-	            Class.forName(driver); 
-	        } catch (ClassNotFoundException e) { 
-	            logger.error("Unable to find database drive class: " + e); 
-	        }
-	        try { 
-	            if ((username != null) && (password != null)){
-	                connection = DriverManager.getConnection(url, username, password);
-	            } else {
-	                connection = DriverManager.getConnection(url);
-	            }
-	        } catch (SQLException e) {
-	            logger.error("Unable to establish database connection: " + e); 
-	        } 
-			
+            try {
+                Class.forName(driver); 
+            } catch (ClassNotFoundException e) { 
+                logger.error("Unable to find database drive class: " + e); 
+            }
+            try { 
+                if ((username != null) && (password != null)){
+                    connection = DriverManager.getConnection(url, username, password);
+                } else {
+                    connection = DriverManager.getConnection(url);
+                }
+            } catch (SQLException e) {
+                logger.error("Unable to establish database connection: " + e); 
+            } 
+            
             preparedStatement = connection.prepareStatement(createSql);
             preparedStatement.executeUpdate();
 
@@ -312,28 +319,28 @@ public class ApplicationInitialization implements ServletContextListener {
      * @throws SQLException  If an SQL error occurs when trying to close the preparedStatement or conenction.
      */
     private static void addDefaultAdminUser(String driver, String url, String username, String password) throws SQLException { 
-		Connection connection = null;
+        Connection connection = null;
         PreparedStatement preparedStatement = null;
         String insertSql = "INSERT INTO users " +
                                     "(userName, password, accessLevel, accountStatus, emailAddress, fullName, dateCreated, dateModified) VALUES " +
                                     "(?,?,?,?,?,?,?,?)"; 
      
         try {
-	        try {
-	            Class.forName(driver); 
-	        } catch (ClassNotFoundException e) { 
-	            logger.error("Unable to find database drive class: " + e); 
-	        }
-	        try { 
-	            if ((username != null) && (password != null)){
-	                connection = DriverManager.getConnection(url, username, password);
-	            } else {
-	                connection = DriverManager.getConnection(url);
-	            }
-	        } catch (SQLException e) {
-	            logger.error("Unable to establish database connection: " + e); 
-	        } 
-			
+            try {
+                Class.forName(driver); 
+            } catch (ClassNotFoundException e) { 
+                logger.error("Unable to find database drive class: " + e); 
+            }
+            try { 
+                if ((username != null) && (password != null)){
+                    connection = DriverManager.getConnection(url, username, password);
+                } else {
+                    connection = DriverManager.getConnection(url);
+                }
+            } catch (SQLException e) {
+                logger.error("Unable to establish database connection: " + e); 
+            } 
+            
             preparedStatement = connection.prepareStatement(insertSql);
             preparedStatement.setString(1, "admin");
             preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
@@ -344,7 +351,7 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
-			
+            
         } catch (SQLException e) { 
             logger.error("Unable to prepare and/or execute prepared statement: " + e); 
         } finally { 
@@ -364,5 +371,5 @@ public class ApplicationInitialization implements ServletContextListener {
             } 
         } 
     }
-	
+    
 }

@@ -1,7 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.repository.docker;
 
 import java.util.List;
-import java.util.Objects;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -74,11 +73,11 @@ public class JdbcDisplayImageDao extends JdbcDaoSupport implements DisplayImageD
         this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("displayImages").usingGeneratedKeyColumns("id");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(displayImage);
         Number newId = insertActor.executeAndReturnKey(parameters);
-		if (!Objects.isNull(newId)) {
+        if (newId != null) {
             displayImage.setId(newId.intValue());  
-		} else {
+        } else {
             throw new RecoverableDataAccessException("Unable to create DisplayImage: " + displayImage.toString());
-		}
+        }
     }
 
 
