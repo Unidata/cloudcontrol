@@ -25,6 +25,14 @@ public interface ImageManager {
     public List<_Image> filterByDisplayImage();
 	
     /**
+     * Determines if Docker Image is flagged for displaying to the user in the interface (e.g., a DisplayImage).
+     * 
+     * @param imageId   The ID of the Image (will be unique for each DisplayImage). 
+     * @return  Whether the Image is a DisplayImage or not.
+     */
+    public Boolean isDisplayImage(String imageId);
+	
+    /**
      * Looks up and retrieves the DisplayImage from the persistence mechanism using the Image ID.
      * 
      * @param imageId   The ID of the Image (will be unique for each DisplayImage). 

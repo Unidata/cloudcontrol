@@ -66,24 +66,6 @@ public class ImageManagerImpl implements ImageManager {
         }            
         return _images;
     }
-    
-    /**
-     * Requests a List of all available _Image objects that the user is allowed to see.
-     *
-     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
-     */
-    public List<_Image> filterByDisplayImage() {
-        List<_Image> displayImages = new ArrayList<_Image>();
-        List<_Image> _images = getImageList();
-        if (!Objects.isNull(_images)) {
-            for (_Image _image : _images) {
-                if (!_image.getIsDisplayImage()) {
-                    displayImages.add(_image);
-                }
-            }
-        }
-        return displayImages;
-    }
 
     /**
      * Utility method to process a List of com.github.dockerjava.api.model.Image objects
@@ -97,6 +79,7 @@ public class ImageManagerImpl implements ImageManager {
         for (Image image : images) {
             _Image _image = convertImage(image);
             if (!Objects.isNull(_image)) {
+				_image.setIsDisplayImage(isDisplayImage(_image.getId()));  // query the db and see if is DisplayImage
                 _images.add(_image);
             }
         }
@@ -142,6 +125,38 @@ public class ImageManagerImpl implements ImageManager {
         }
         return _image;
     }   
+	
+    /**
+     * Requests a List of all available _Image objects that the user is allowed to see.
+     *
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
+     */
+    public List<_Image> filterByDisplayImage() {
+        List<_Image> displayImages = new ArrayList<_Image>();
+        List<_Image> _images = getImageList();
+        if (!Objects.isNull(_images)) {
+            for (_Image _image : _images) {
+                if (!_image.getIsDisplayImage()) {
+                    displayImages.add(_image);
+                }
+            }
+        }
+        return displayImages;
+    }
+	
+    /**
+     * Determines if Docker Image is flagged for displaying to the user in the interface (e.g., a DisplayImage).
+     * 
+     * @param imageId   The ID of the Image (will be unique for each DisplayImage). 
+     * @return  Whether the Image is a DisplayImage or not.
+     */
+    public Boolean isDisplayImage(String imageId){
+		if (!Objects.isNull(lookupDisplayImage(imageId))) {
+			return true;
+		} else {
+			return false;
+		}
+    }
     
     /**
      * Looks up and retrieves the DisplayImage from the persistence mechanism using the Image ID.
