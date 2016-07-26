@@ -1,23 +1,22 @@
-/*
+/**
  * Tooltips CSS
  */
 
 .tooltip {
  display:inline;
- cursor: help;
+ cursor:help;
 }
-
 .tooltipster-light {
- border-radius: 5px; 
- border: 1px solid #BCC4D0;
- background: #FFFFFF;
+ border-radius:5px; 
+ border:1px solid #BCC4D0;
+ background:#FFFFFF;
  font-size:9pt;
  -moz-box-shadow:5px 5px 5px rgba(0,0,0,0.3);
  -webkit-box-shadow:5px 5px 5px rgba(0,0,0,0.3);
  box-shadow:5px 5px 5px rgba(0,0,0,0.3);
 }
 .tooltipster-light .tooltipster-content {
- font-size: 9pt;
- line-height: 16px;
- padding: 8px 10px;
+ font-size:9pt;
+ line-height:16px;
+ padding:8px 10px;
 }

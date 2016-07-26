@@ -1,24 +1,21 @@
-/*
+/**
  * Accordion CSS
  */
 
 .accordion h3 {
- color: #23538A;    
+ color:#23538A;    
  margin:0;
  padding:10px 20px;
- background: transparent url('../images/right.png') no-repeat left 10px;
+ background:transparent url('../images/right.png') no-repeat left 10px;
 }
-
 .accordion h3.expand {
- background: transparent url('../images/down.png') no-repeat left 10px;
+ background:transparent url('../images/down.png') no-repeat left 10px;
 }
-
 .accordion h3:hover,
 .accordion h3:active  {
- text-decoration: underline;
- cursor: pointer;
+ text-decoration:underline;
+ cursor:pointer;
 }
-
 .accordion ul {
  list-style:none;
  margin:0;
@@ -26,23 +23,19 @@
  float:left;
  clear:left;
  width:auto;
- font-size: 9pt;
+ font-size:9pt;
 }
-
 .accordion ul li {
  width:100%;
  margin:0;
  padding:10px 20px; 
  position:relative; 
 }
-
-
 .accordion ul li.selected {
- font-weight: bold;
- background-color: #EEE9E9;
+ font-weight:bold;
+ background-color:#EEE9E9;
  color:#000000;
 }
-
 .accordion ul li.selected a:hover,
 .accordion ul li.selected a:active {
  text-decoration:none;
