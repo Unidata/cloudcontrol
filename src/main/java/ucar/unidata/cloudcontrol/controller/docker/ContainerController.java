@@ -29,7 +29,7 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 
 
 /**
- * Controller to issue rudimentary containerContainer-related Docker commands.
+ * Controller to issue rudimentary Container-related Docker commands.
  */
 
 @Controller

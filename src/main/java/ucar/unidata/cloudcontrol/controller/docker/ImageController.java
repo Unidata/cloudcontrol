@@ -39,6 +39,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
@@ -58,12 +59,14 @@ public class ImageController implements HandlerExceptionResolver {
     @Resource(name="serverManager")
     private ServerManager serverManager;
     
+    @Resource(name="containerManager")
+    private ContainerManager containerManager;
+    
     /**
      * Accepts a GET request for a List of Docker images.
      *
      * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  Model
-     * also contains a Map container statuses corresponding to the images.
+     * which will be loaded and displayed in the view via jspf.  
      * 
      * @param authentication  The Authentication object to check roles with. 
      * @param model  The Model used by the View.
@@ -71,12 +74,12 @@ public class ImageController implements HandlerExceptionResolver {
      */
     @RequestMapping(value="/dashboard/docker/image/list", method=RequestMethod.GET)
     public String getImageList(Authentication authentication, Model model) { 
-		List<_Image> _images; 
+        List<_Image> _images; 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-			_images = imageManager.getImageList(); 
+            _images = imageManager.getImageList(); 
         } else {
-        	_images = imageManager.filterByDisplayImage(); 
+            _images = imageManager.filterByDisplayImage(); 
         }
         if (!Objects.isNull(_images)) {
              model.addAttribute("imageList", _images);   
@@ -95,22 +98,58 @@ public class ImageController implements HandlerExceptionResolver {
     }
     
     /**
+     * Accepts a GET request start a Docker image.
+     *
+     * The view is the dashboard.  The model contains the image List
+     * which will be loaded and displayed in the view via jspf.  
+     * 
+     * @param id  The Image ID.
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+    @RequestMapping(value="/dashboard/docker/image/{id}/start", method=RequestMethod.GET)
+    public String startImage(@PathVariable String id, Model model) { 
+        if (!containerManager.startContainer(id)) {
+            model.addAttribute("error", "Unable to start Image."); 
+        }
+        return "redirect:/dashboard/docker/image/list";  
+    }
+    
+    /**
+     * Accepts a GET request stop a Docker image.
+     *
+     * The view is the dashboard.  The model contains the image List
+     * which will be loaded and displayed in the view via jspf.  
+     * 
+     * @param id  The Image ID.
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+    @RequestMapping(value="/dashboard/docker/image/{id}/stop", method=RequestMethod.GET)
+    public String stopImage(@PathVariable String id, Model model) {   
+        if (!containerManager.stopContainer(id)) {
+            model.addAttribute("error", "Unable to start Image."); 
+        }
+        return "redirect:/dashboard/docker/image/list";  
+    }
+    
+    
+    /**
      * Accepts a GET request to add an Image to the user display.  
      * By default, images are not shown in user display until added by admin. 
      *
      * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  Model
-     * also contains a Map container statuses corresponding to the images.
+     * which will be loaded and displayed in the view via jspf.  
      *
      * Only Users with the role of 'ROLE_ADMIN' can add an Image to the user display.
      * 
      * @param id  The Image ID. 
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to create new ClientConfig.
+     * @throws RuntimeException  If unable to create a DisplayImage.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value="/dashboard/docker/image/display/{id}", method=RequestMethod.GET)
+    @RequestMapping(value="/dashboard/docker/image/userDisplay/add/{id}", method=RequestMethod.GET)
     public ModelAndView addDisplayImage(@PathVariable String id, Model model) { 
         try {
             DisplayImage displayImage = new DisplayImage();
@@ -122,7 +161,7 @@ public class ImageController implements HandlerExceptionResolver {
                  model.addAttribute("imageList", _images);  
                  model.addAttribute("action", "listImages");       
             } else {
-                throw new RuntimeException("An error occurred whilst processing DisplayImage");
+                throw new RuntimeException("An error occurred whilst processing addDisplayImage request.  Unable to create a DisplayImage.");
             }
             return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
         } catch (RecoverableDataAccessException e) {
@@ -135,18 +174,17 @@ public class ImageController implements HandlerExceptionResolver {
      * By default, images are not shown in user display until added by admin. 
      *
      * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  Model
-     * also contains a Map container statuses corresponding to the images.
+     * which will be loaded and displayed in the view via jspf.  
      *
      * Only Users with the role of 'ROLE_ADMIN' can remove an Image to the user display.
      * 
      * @param id  The Image ID. 
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to create new ClientConfig.
+     * @throws RuntimeException  If unable to create a DisplayImage.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value="/dashboard/docker/image/remove/{id}", method=RequestMethod.GET)
+    @RequestMapping(value="/dashboard/docker/image/userDisplay/remove/{id}", method=RequestMethod.GET)
     public ModelAndView removeDisplayImage(@PathVariable String id, Model model) { 
         try {
             imageManager.deleteDisplayImage(id);  
@@ -156,7 +194,7 @@ public class ImageController implements HandlerExceptionResolver {
                  model.addAttribute("imageList", _images);  
                  model.addAttribute("action", "listImages");       
             } else {
-                throw new RuntimeException("An error occurred whilst processing DisplayImage");
+                throw new RuntimeException("An error occurred whilst processing removeDisplayImage request.  Unable to delete a DisplayImage.");
             }
             return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
         } catch (RecoverableDataAccessException e) {
