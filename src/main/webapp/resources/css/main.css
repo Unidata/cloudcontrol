@@ -70,6 +70,13 @@ h3 {
  font-size:9pt;
 }
 
+/* Used in image management display */
+.inactive {
+ color:#FF0000;
+}
+.active {
+ color:#00FF00;
+}
 
 /* Page layout */
 #wrap {
@@ -144,6 +151,23 @@ h3 {
  margin:0 0 20px 0;
 }
 
+.left, .right {
+ padding:10px;
+ width:45%; 
+ float:left;
+ top:0;
+ height:100%;
+}
+
+.right {
+ float:right !important;
+ clear:right !important;
+}
+
+.left p, .right p{
+ margin:0 0 10px 0 !important;
+}
+
 .dec {
  padding:10px;
  border:1px solid #BCC4D0;
@@ -202,7 +226,7 @@ select.fieldDisabled {
  background-color:#EFEFEF;
 }
 
-input[type=submit] {
+input[type=submit]{
  -webkit-border-radius:2px; 
  -moz-border-radius:2px;
  border-radius:2px;
@@ -219,12 +243,16 @@ input[type=submit] {
  -moz-box-shadow:0px 1px 2px #666666;
  box-shadow:0px 1px 2px #666666;
  color:#000000;
- padding:5px;
+ padding:5px !important;
  margin-right:10px;
  font-weight:normal;
  width:auto;
  border:none;
  cursor:pointer;
+}
+input[type=submit].disabled{
+ color:#696969;
+ cursor:not-allowed;
 }
 
 input[type=submit]:hover {
@@ -239,8 +267,17 @@ input[type=submit]:hover {
  filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#FFFFFF, endColorstr=#BEC5C5);
 }
 
-.admin {
- background-image:url('../images/admin.png') top right no-repeat !important;
+input[type=submit].disabled:hover {
+ text-decoration:none;
+ background-color:#FFFFFF; 
+ background-image:-webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#D9DDDD));
+ background-image:-webkit-linear-gradient(top, #FFFFFF, #D9DDDD);
+ background-image:-moz-linear-gradient(top, #FFFFFF, #D9DDDD);
+ background-image:-ms-linear-gradient(top, #FFFFFF, #D9DDDD);
+ background-image:-o-linear-gradient(top, #FFFFFF, #D9DDDD);
+ background-image:linear-gradient(to bottom, #FFFFFF, #D9DDDD);
+ filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#FFFFFF, endColorstr=#D9DDDD);
+ cursor:not-allowed;
 }
 
 a.open:link,
