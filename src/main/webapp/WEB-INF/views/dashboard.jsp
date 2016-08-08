@@ -35,6 +35,11 @@
      </sec:authorize> 
     </div><!-- /.leftColumn -->
     <div id="doubleColumn">
+        
+     <c:if test="${error != null}">
+	  <p><c:out value="${image.created}"/></p>       
+     </c:if>
+             
      <c:choose>      
       <%-- View server version (admin only) --%>
       <c:when test="${action eq 'serverVersion'}">   
@@ -50,7 +55,7 @@
       <c:when test="${action eq 'listImages'}">   
        <%@ include file="/WEB-INF/views/docker/image/listImages.jspf" %>
       </c:when>
-
+      
       <%-- List all users (admin only) --%>
       <c:when test="${action eq 'listUsers'}">   
        <%@ include file="/WEB-INF/views/user/listUsers.jspf" %>
@@ -102,7 +107,7 @@
       </c:when>
      
       <c:otherwise>
-        <%@ include file="/WEB-INF/views/jspf/status.jspf" %>
+       <%@ include file="/WEB-INF/views/jspf/status.jspf" %>
       </c:otherwise>
      </c:choose>
     </div><!-- /.doubleColumn -->
