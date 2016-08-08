@@ -18,6 +18,8 @@ import org.apache.log4j.Logger;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.exception.NotFoundException;
+import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.ContainerHostConfig;
 import com.github.dockerjava.api.model.ContainerNetwork;
@@ -26,12 +28,16 @@ import com.github.dockerjava.api.model.ContainerPort;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.Ports;
+import com.github.dockerjava.api.model.Volume;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerHostConfig;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetworkSettings;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort;
+import edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Volume;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 
 /**
@@ -229,6 +235,156 @@ public class ContainerManagerImpl implements ContainerManager {
         return _network;
     }
     
+    /**
+     * Converts a com.github.dockerjava.api.command.InspectContainerResponse object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse object.
+     *
+     * @param inspectContainerResponse  The com.github.dockerjava.api.command.InspectContainerResponse object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse object.
+     */
+    public _InspectContainerResponse convertInspectContainerResponse(InspectContainerResponse inspectContainerResponse) {
+        Function<InspectContainerResponse, _InspectContainerResponse> mapInspectContainerResponseTo_InspectContainerResponse = new Function<InspectContainerResponse, _InspectContainerResponse>() {
+            public _InspectContainerResponse apply(InspectContainerResponse i) {
+				_InspectContainerResponse _inspectContainerResponse = new _InspectContainerResponse();
+                _inspectContainerResponse.setArgs(i.getArgs());
+                //_inspectContainerResponse.setConfig(i.getConfig()));
+                _inspectContainerResponse.setCreated(i.getCreated());
+                _inspectContainerResponse.setDriver(i.getDriver());
+                _inspectContainerResponse.setExecDriver(i.getExecDriver());
+                //_inspectContainerResponse.setHostConfig(i.getHostConfig());
+                _inspectContainerResponse.setHostnamePath(i.getHostnamePath());
+                _inspectContainerResponse.setHostsPath(i.getHostsPath());
+                _inspectContainerResponse.setId(i.getId());
+            //    _inspectContainerResponse.setSizeRootFs(i.getSizeRootFs()); // newer version of docker-java
+                _inspectContainerResponse.setImageId(i.getImageId());
+                _inspectContainerResponse.setMountLabel(i.getMountLabel());
+                _inspectContainerResponse.setName(i.getName());
+                _inspectContainerResponse.setRestartCount(i.getRestartCount());
+                //_inspectContainerResponse.setNetworkSettings(i.getNetworkSettings());
+                _inspectContainerResponse.setPath(i.getPath());
+                _inspectContainerResponse.setProcessLabel(i.getProcessLabel());
+                _inspectContainerResponse.setResolvConfPath(i.getResolvConfPath());
+                _inspectContainerResponse.setExecIds(i.getExecIds());
+                _inspectContainerResponse.setState(convertContainerState(_inspectContainerResponse, i.getState()));
+                //_inspectContainerResponse.setVolumes(i.getVolumes());
+                //_inspectContainerResponse.setVolumesRW(i.getVolumesRW());
+                _inspectContainerResponse.setMounts(processMountList(i.getMounts()));
+                return _inspectContainerResponse;
+            }
+        };
+        _InspectContainerResponse _inspectContainerResponse = mapInspectContainerResponseTo_InspectContainerResponse.apply(inspectContainerResponse);
+        return _inspectContainerResponse;
+    }
+	
+    /**
+     * Converts a com.github.dockerjava.api.command.InspectContainerResponse.ContainerState object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._ContainerState object.
+     *
+     * @param containerState  A com.github.dockerjava.api.command.InspectContainerResponse.ContainerState object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._ContainerState object.
+     */
+    public _InspectContainerResponse._ContainerState convertContainerState(_InspectContainerResponse _inspectContainerResponse, InspectContainerResponse.ContainerState containerState) {
+        Function<InspectContainerResponse.ContainerState, _InspectContainerResponse._ContainerState> mapContainerStateTo_ContainerState = new Function<InspectContainerResponse.ContainerState, _InspectContainerResponse._ContainerState>() {
+            public _InspectContainerResponse._ContainerState apply(InspectContainerResponse.ContainerState c) {
+                _InspectContainerResponse._ContainerState _containerState = _inspectContainerResponse.new _ContainerState();
+                _containerState.setStatus(c.getStatus());
+                _containerState.setRunning(c.getRunning());
+                _containerState.setPaused(c.getPaused());
+                _containerState.setRestarting(c.getRestarting());
+                _containerState.setOomKilled(c.getOOMKilled());
+                _containerState.setDead(c.getDead());
+                _containerState.setPid(c.getPid());
+                _containerState.setExitCode(c.getExitCode());
+                _containerState.setError(c.getError());
+                _containerState.setStartedAt(c.getStartedAt());
+                _containerState.setFinishedAt(c.getFinishedAt());
+                return _containerState;
+            }
+        };
+        _InspectContainerResponse._ContainerState _containerState = mapContainerStateTo_ContainerState.apply(containerState);
+        return _containerState;
+    }
+	
+    /**
+     * Utility method to process a List of com.github.dockerjava.api.command.InspectContainerResponse.Mount objects
+     * to a corresponding List of edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount objects.
+     *
+     * @param mounts  The com.github.dockerjava.api.command.InspectContainerResponse.Mount List.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount List.
+     */
+    public List<_InspectContainerResponse._Mount> processMountList(List<InspectContainerResponse.Mount> mounts) {
+        List<_InspectContainerResponse._Mount> _mounts = new ArrayList<_InspectContainerResponse._Mount>(mounts.size());
+        for (InspectContainerResponse.Mount mount : mounts) {
+            _InspectContainerResponse._Mount _mount = convertMount(mount);
+            _mounts.add(_mount);
+        }
+        return _mounts;
+    }
+	
+    /**
+     * Converts a com.github.dockerjava.api.command.InspectContainerResponse.Mount object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount object.
+     *
+     * @param mount  A com.github.dockerjava.api.command.InspectContainerResponse.Mount object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Mount object.
+     */
+    public _InspectContainerResponse._Mount convertMount(InspectContainerResponse.Mount mount) {
+        Function<InspectContainerResponse.Mount, _InspectContainerResponse._Mount> mapMountTo_Mount = new Function<InspectContainerResponse.Mount, _InspectContainerResponse._Mount>() {
+            public _InspectContainerResponse._Mount apply(InspectContainerResponse.Mount m) {
+                _InspectContainerResponse._Mount _mount = new _InspectContainerResponse._Mount();
+                _mount.setName(m.getName());
+                _mount.setSource(m.getSource());
+                _mount.setDestination(convertVolume(m.getDestination()));
+                _mount.setDriver(m.getDriver());
+                _mount.setRw(m.getRW());
+                return _mount;
+            }
+        };
+        _InspectContainerResponse._Mount _mount = mapMountTo_Mount.apply(mount);
+        return _mount;
+    }
+    
+    /**
+     * Converts a com.github.dockerjava.api.command.CreateContainerResponse object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse object.
+     *
+     * @param createContainerResponse  The com.github.dockerjava.api.command.CreateContainerResponse object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse object.
+     */
+    public _CreateContainerResponse convertCreateContainerResponse(CreateContainerResponse createContainerResponse) {
+        Function<CreateContainerResponse, _CreateContainerResponse> mapCreateContainerResponseTo_CreateContainerResponse = new Function<CreateContainerResponse, _CreateContainerResponse>() {
+            public _CreateContainerResponse apply(CreateContainerResponse c) {
+				_CreateContainerResponse _createContainerResponse = new _CreateContainerResponse();
+                _createContainerResponse.setId(c.getId());
+                _createContainerResponse.setWarnings(c.getWarnings());
+                return _createContainerResponse;
+            }
+        };
+        _CreateContainerResponse _createContainerResponse = mapCreateContainerResponseTo_CreateContainerResponse.apply(createContainerResponse);
+        return _createContainerResponse;
+    }
+    
+    /**
+     * Converts a com.github.dockerjava.api.model.Volume object to
+     * a edu.ucar.unidata.cloudcontrol.domain.docker._Volume object.
+     *
+     * @param volume  The com.github.dockerjava.api.model.Volume object to convert.
+     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Volume object.
+     */
+    public _Volume convertVolume(Volume volume) {
+        Function<Volume, _Volume> mapVolumeTo_Volume = new Function<Volume, _Volume>() {
+            public _Volume apply(Volume v) {
+				_Volume _volume = new _Volume();
+                _volume.setPath(v.getPath());
+                return _volume;
+            }
+        };
+        _Volume _volume = mapVolumeTo_Volume.apply(volume);
+        return _volume;
+    }
+    
+    
+    
     
     
     
@@ -285,13 +441,13 @@ public class ContainerManagerImpl implements ContainerManager {
      */
     public Map<String, String> getContainerStatusMap() {
         Map<String, String> _containerStatusMap = null;
-        List<_Container> _containers = getContainerList();   
+        List<_Container> _containers = getContainerList();  
         if (!Objects.isNull(_containers)) { 
             _containerStatusMap = new HashMap<String, String>();
             for (_Container c : _containers) {
-                if (!StringUtils.contains(c.getStatus(), "Exited")) {
+           //     if (!StringUtils.contains(c.getStatus(), "Exited")) {
                     _containerStatusMap.put(c.getImage(), c.getStatus());
-                } 
+           //     } 
             }
         } 
         return _containerStatusMap;
@@ -314,84 +470,108 @@ public class ContainerManagerImpl implements ContainerManager {
         } 
         return _container;
     }  
-	
+    
     /**
-     * Starts a _Container.
+     * Starts a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
      *
-     * @param _container  The _Container to start.
+     * @param imageId  The ID of the Image in which to start the _Container.
+	 * @return  The whether the container has been started or not. 
      */
-    public void startContainer(_Container _container) {
+    public boolean startContainer(String imageId) {
+		boolean isRunning = false;
         try {
-           DockerClient dockerClient = clientManager.initializeDockerClient();
-           dockerClient.startContainerCmd(_container.getId()).exec();
-       } catch (Exception e) {
-           logger.error("Unable to start Container: " + e);
-       }           
+            DockerClient dockerClient = clientManager.initializeDockerClient();
+            _CreateContainerResponse _createContainerResponse = createContainer(dockerClient, imageId);  
+            String _containerId = _createContainerResponse.getId();
+            dockerClient.startContainerCmd(_containerId).exec();
+			
+			// further checking to see if it's running.
+			_InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _containerId);  
+	        if (! _inspectContainerResponse.getState().getRunning().equals("true")) {
+	            logger.error("Container " + _containerId + " is not running when it should be: " + _inspectContainerResponse.getState().getExitCode());
+	        } else{
+	        	isRunning = true;
+	        }   
+        } catch (NotModifiedException e) {
+            logger.error("Container is already running: " + e);    
+        } catch (NotFoundException e) {
+            logger.error("Unable to find and start container: " + e); 
+        } catch (Exception e) {
+            logger.error("Unable to start Container: " + e);
+        } 
+		return isRunning;          
     }
     
     /**
-     * Stops a _Container.
+     * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
      *
-     * @param _container  The _Container to stop.
+     * @param imageId  The ID of the Image in which resides the _Container to stop.
+	 * @return  The whether the container has been started or not. 
      */
-    public void stopContainer(_Container _container) {
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            dockerClient.stopContainerCmd(_container.getId()).exec();
-        } catch (Exception e) {
-            logger.error("Unable to stop Container: " + e);
-        }           
+    public boolean stopContainer(String imageId) {
+		boolean isStopped = false;
+        List<_Container> _containers = getRunningContainerListByImage(imageId);  
+		if (_containers.isEmpty()) {
+            logger.error("Unable to find any running containers for image: " + imageId); 
+		} else {
+			_Container _container = null;
+			for (_Container c : _containers) {
+				_container = c;  // ugh.  Assuming there is only one container for now.
+			}
+            try {		
+				DockerClient dockerClient = clientManager.initializeDockerClient();	
+			    dockerClient.stopContainerCmd(_container.getId()).exec();
+			
+			    // further checking to see if it's stopped running.
+	            _InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _container.getId()); 
+	            if (_inspectContainerResponse.getState().getRunning().equals("true")) {
+	                logger.error("Container " + _container.getId() + " is still running when it should not be: " + _inspectContainerResponse.getState().getExitCode());
+	            } else {
+	            	isStopped = true;
+	            }
+	        } catch (NotModifiedException e) {
+	                logger.error("Container is still running: " + e);    
+	        } catch (NotFoundException e) {
+	                logger.error("Unable to find and stop container: " + e);   
+		    } catch (Exception e) {
+		            logger.error("Unable to stop Container: " + e);
+		    }
+        }   
+		return isStopped;        
     }
 
-    /**
-     * Stops a _Container.
-     *
-     * @param _container  The _Container to stop.
-     * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
-     */
-    public void stopContainer(_Container _container, int timeout) {
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            dockerClient.stopContainerCmd(_container.getId()).withTimeout(timeout).exec();
-        } catch (Exception e) {
-            logger.error("Unable to stop Container: " + e);
-        }    
-    }
     
     /**
-     * Returns a CreateContainerResponse object.
+     * Returns a _CreateContainerResponse object.
      *
+     * @param dockerClient  The DockerClient object to use.
      * @param imageId  The ID of the image we want container-ize.
-     * @return  The CreateContainerResponse.
+     * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse.
      */
-	/*
-     public CreateContainerResponse createContainer(String imageId) {
+     public _CreateContainerResponse createContainer(DockerClient dockerClient, String imageId) {
          try {
-             DockerClient dockerClient = clientManager.initializeDockerClient();
-             return dockerClient.createContainerCmd(imageId).exec();
+             return convertCreateContainerResponse(dockerClient.createContainerCmd(imageId).exec());
          } catch (Exception e) {
              logger.error("Unable to create a Container: " + e);
              return null;
          }    
      }
-	 */
+     
     
      /**
-      * Returns a requested InspectContainerResponse.
+      * Returns a requested _InspectContainerResponse.
       *
+	  * @param dockerClient  The DockerClient object to use.
       * @param containerId  The Container ID to inspect.
-      * @return  The InspectContainerResponse.
+      * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse.
       */
-     /*
-     public InspectContainerResponse inspectContainer(String containerId) {
-		 try{
-             DockerClient dockerClient = clientManager.initializeDockerClient();
-             return dockerClient.inspectContainerCmd(containerId).exec();
+     public _InspectContainerResponse inspectContainer(DockerClient dockerClient, String containerId) {
+         try{
+             return convertInspectContainerResponse(dockerClient.inspectContainerCmd(containerId).exec());
          } catch (Exception e) {
              logger.error("Unable to inspect Container: " + e);
              return null;
          }    
      }
-     */
         
 }

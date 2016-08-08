@@ -56,24 +56,18 @@ public interface ContainerManager {
     public _Container getContainer(String id);
 
     /**
-     * Starts a _Container.
+     * Starts a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
      *
-     * @param _container  The _Container to start.
+     * @param imageId  The ID of the Image in which to start the _Container.
+	 * @return  The whether the container has been started or not. 
      */
-    public void startContainer(_Container _container);
+    public boolean startContainer(String imageId);
     
     /**
-     * Stops a _Container.
+     * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
      *
-     * @param _container  The _Container to stop.
+     * @param imageId  The ID of the Image in which resides the _Container to stop.
+	 * @return  The whether the container has been started or not. 
      */
-    public void stopContainer(_Container _container);
-
-    /**
-     * Stops a _Container.
-     *
-     * @param _container  The _Container to stop.
-     * @param timeout  Timeout in seconds before killing the container. Defaults to 10 seconds.
-     */
-    public void stopContainer(_Container _container, int timeout);
+    public boolean stopContainer(String imageId);
 }

@@ -18,6 +18,14 @@ public interface ImageManager {
     public List<_Image> getImageList();
 	
     /**
+     * Requests a specific _Image object.
+     * 
+     * @param imageId  The _Image ID.
+     * @return  The _Image.   
+     */
+    public _Image getImage(String imageId);
+	
+    /**
      * Requests a List of all available _Image objects that the user is allowed to see.
      *
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.

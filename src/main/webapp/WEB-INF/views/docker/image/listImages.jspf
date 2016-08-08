@@ -43,61 +43,100 @@
               </sec:authorize>
              </tr>
              <tr id="<c:out value="${id}" />ToggleSection" class="hideandshow">
+             
              <sec:authorize access="hasRole('ROLE_ADMIN')">
               <td colspan="4">
              </sec:authorize>
              <sec:authorize access="hasRole('ROLE_USER')">
               <td colspan="3">
-             </sec:authorize>
-               <div>
+             </sec:authorize>    
+			 
+               <div class="left">
+                <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status: 
                 <c:choose>
                  <c:when test="${fn:contains(image.status, 'Inactive')}">
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-                   <input class="action" type="submit" value="Start Image" disabled/>        
+                 <b class="inactive"><c:out value="${image.status}" /></b></p>
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/start" method="GET">
+                   <input type="submit" value="Start Image" />        
                   </form>
                  </c:when>
                  <c:when test="${fn:contains(image.status, 'Exited')}">
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/start" />/" method="GET">
-                   <input class="action" type="submit" value="Start Image" disabled/>        
+                 <b class="inactive"><c:out value="${image.status}" /></b></p>
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/start" method="GET">
+                   <input type="submit" value="Start Image" />        
                   </form>
                  </c:when>
                  <c:otherwise>
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}/stop" />/" method="GET">
-                   <input class="action" type="submit" value="Stop Image" disabled/>        
+                 <b class="active"><c:out value="${image.status}" /></b></p>
+                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/stop" method="GET">
+                   <input type="submit" value="Stop Image" />        
                   </form>
                  </c:otherwise>
                 </c:choose>
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
+               </div>
+
+               
+               <div class="right">
+                <p class="tooltip block" title="View more detailed <b>information about the image</b> using the <i>inspect</i> and <i>history</i> features.">Image Information:</p>
+                <form action="${baseUrl}/dashboard/docker/image/inspect/<c:out value="${image.id}" />" method="GET">
+                 <input type="submit" value="Inspect Image" />        
+                </form>
+                <form action="${baseUrl}/dashboard/docker/image/history/<c:out value="${image.id}" />" method="GET">
+                 <input type="submit" value="Image History" />        
+                </form>  
+               </div>
+                
+               <sec:authorize access="hasRole('ROLE_ADMIN')">
+
+                <div class="left">
+                 <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image Visible to User: 
                  <c:choose>
                   <c:when test="${image.isDisplayImage eq 'false'}">
-                   <form action="${baseUrl}/dashboard/docker/image/display/<c:out value="${image.id}"/>" method="GET">
-                    <input class="action" type="submit" value="Add To User Display" />        
+				   <b class="inactive"><c:out value="${image.isDisplayImage}" /></b></p>
+                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/add/<c:out value="${image.id}" />" method="GET">
+                    <input type="submit" value="Show to User" />        
                    </form>
                   </c:when>
                   <c:otherwise>
-                   <form action="${baseUrl}/dashboard/docker/image/remove/<c:out value="${image.id}"/>" method="GET">
-                    <input class="action" type="submit" value="Remove From User Display" />        
+				   <b class="active"><c:out value="${image.isDisplayImage}" /></b></p>
+                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/Remove/<c:out value="${image.id}" />" method="GET">
+                    <input type="submit" value="Hide from User" />        
                    </form>
                   </c:otherwise>
                  </c:choose>
-                </sec:authorize>
-                <form action="${baseUrl}/dashboard/docker/image/inspect/<c:out value="${image.id}" />/" method="GET">
-                 <input class="action" type="submit" value="Inspect" disabled/>        
-                </form> 
-                <form action="${baseUrl}/dashboard/docker/image/history/<c:out value="${image.id}" />/" method="GET">
-                 <input class="action" type="submit" value="Get History" disabled/>        
-                </form>
-                <form action="${baseUrl}/dashboard/docker/image/push/<c:out value="${image.id}" />/" method="GET">
-                 <input class="action" type="submit" value="Push to Repo" disabled/>        
-                </form>
-                <form action="${baseUrl}/dashboard/docker/image/tag/<c:out value="${image.id}" />/" method="GET">
-                 <input class="action" type="submit" value="Tag" disabled/>        
-                </form>
-                <form action="${baseUrl}/dashboard/docker/image/remove/<c:out value="${image.id}" />/" method="GET">
-                 <input class="action" type="submit" value="Remove" disabled/>        
-                </form>
-				 NOTE: most of these don't have the backend in place just yet and won't work.  They're as placeholders.
-               </div>
+                </div>
+                <div class="right"> 
+                 <p class="tooltip block" title="The <b>image output</b> option determines how to handle the output of the image after it is run.">Image Output:</p>
+                 <form action="${baseUrl}/dashboard/docker/image/output/shell/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Shell" />        
+                 </form>    
+                 <form action="${baseUrl}/dashboard/docker/image/output/browser/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Browser" />        
+                 </form>
+                 <form action="${baseUrl}/dashboard/docker/image/output/custom/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Custom" />        
+                 </form>  
+                </div>  
+				
+				
+                <div class="left"> 
+                 <p class="tooltip block" title="<b>Share</b> the image by tagging it to a repository or pushing it on to a registry.">Share Image:</p>      
+                 <form action="${baseUrl}/dashboard/docker/image/tag/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Tag Image" />        
+                 </form>
+                 <form action="${baseUrl}/dashboard/docker/image/push/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Push to Registry" />        
+                 </form>
+                </div>
+				
+                <div class="right"> 
+                 <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the docker file system.">Danger Zone:</p>      
+                 <form action="${baseUrl}/dashboard/docker/image/delete/<c:out value="${image.id}" />" method="GET">
+                  <input type="submit" value="Delete Image" />        
+                 </form>
+                </div>
+               
+               </sec:authorize>
               </td>
              </tr>                 
             </c:forEach>
@@ -109,7 +148,7 @@
           <p>No images are available in this docker instance yet. Add some!</p>
          </sec:authorize>
          <sec:authorize access="hasRole('ROLE_USER')">
-          <p>No images are available in this docker instance yet. The site administrator has yet to add some.</p>
+          <p>No images are available in this docker instance yet. The site administrator has yet to add any.</p>
          </sec:authorize>
          </c:otherwise>
         </c:choose>        

@@ -79,7 +79,6 @@ public class ImageManagerImpl implements ImageManager {
         for (Image image : images) {
             _Image _image = convertImage(image);
             if (!Objects.isNull(_image)) {
-				_image.setIsDisplayImage(isDisplayImage(_image.getId()));  // query the db and see if is DisplayImage
                 _images.add(_image);
             }
         }
@@ -109,22 +108,40 @@ public class ImageManagerImpl implements ImageManager {
                 return _image;
             }
         };
+		// populate other vaiables not in the original com.github.dockerjava.api.model.Image object
         _Image _image = null;
+		// find the status info of the container to see if the image is running.
         Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
         if (_containerStatusMap != null) { //coverity 
             _image = mapImageTo_Image.apply(image);
             if (!Objects.isNull(_image)) {
-                if (_containerStatusMap.containsKey(_image.getRepoTags())) {
-                    _image.setStatus(_containerStatusMap.get(_image.getRepoTags()));  
-                    DisplayImage displayImage = lookupDisplayImage(_image.getId());
-                    if (!Objects.isNull(displayImage)) {
-                        _image.setIsDisplayImage(true);
-                    }        
+                if (_containerStatusMap.containsKey(_image.getId())) {
+                    _image.setStatus(_containerStatusMap.get(_image.getId())); 
                 }
             }
         }
+		// query the db and see if is DisplayImage
+		_image.setIsDisplayImage(isDisplayImage(_image.getId()));    
         return _image;
     }   
+	
+    /**
+     * Requests a specific _Image object.
+     * 
+     * @param imageId  The _Image ID.
+     * @return  The _Image.   
+     */
+    public _Image getImage(String imageId) {
+        List<_Image> _images = getImageList(); 
+        _Image _image = null;
+        for (_Image i : _images) {
+            if (imageId.equals(i.getId())) {
+                _image = i; 
+                break;
+            }
+        } 
+        return _image;
+    }
 	
     /**
      * Requests a List of all available _Image objects that the user is allowed to see.
@@ -136,7 +153,7 @@ public class ImageManagerImpl implements ImageManager {
         List<_Image> _images = getImageList();
         if (!Objects.isNull(_images)) {
             for (_Image _image : _images) {
-                if (!_image.getIsDisplayImage()) {
+                if (_image.getIsDisplayImage()) {
                     displayImages.add(_image);
                 }
             }
