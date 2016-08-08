@@ -6,6 +6,11 @@
  display:inline;
  cursor:help;
 }
+.block{
+ display:block !important;
+ cursor:help;
+ width:100%;
+}
 .tooltipster-light {
  border-radius:5px; 
  border:1px solid #BCC4D0;
