@@ -215,7 +215,8 @@ select,
 
 
 input,
-select {
+select,
+button {
  color:#696969;
  height:25px;
  background-color:#FFFFFF;
@@ -226,7 +227,8 @@ select.fieldDisabled {
  background-color:#EFEFEF;
 }
 
-input[type=submit]{
+input[type=submit],
+button {
  -webkit-border-radius:2px; 
  -moz-border-radius:2px;
  border-radius:2px;
