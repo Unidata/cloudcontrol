@@ -8,7 +8,7 @@ compileJava {
 ext {
     springVersion = "4.2.4.RELEASE"
     springSecurityVersion = "4.0.3.RELEASE"
-    dockerJavaVersion = "3.0.0-RC4"
+    dockerJavaVersion = "3.0.3"
     glassFishVersion = "2.11"
 }
 

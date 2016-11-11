@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.DockerClientException;
 import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
+import com.github.dockerjava.core.DefaultDockerClientConfig;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
 import edu.ucar.unidata.cloudcontrol.repository.docker.ClientConfigDao;
@@ -45,7 +45,7 @@ public class ClientManagerImpl implements ClientManager {
         List<ClientConfig> clientConfigs = getAllClientConfigs();
         if (clientConfigs.size() > 0) {
 			ClientConfig clientConfig = clientConfigs.get(0);       
-            DockerClientConfig config = DockerClientConfig.createDefaultConfigBuilder()
+            DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost(clientConfig.getDockerHost())
                 .withDockerTlsVerify(true)
                 .withDockerCertPath(clientConfig.getDockerCertPath())
