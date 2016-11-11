@@ -21,14 +21,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class _Image implements Serializable {
 
-    private String created;
+    private String created;                  // Changed from Long
     private String id;
     private String parentId;
-    private String repoTags;
-    private String size;
-    private String virtualSize; 
-    private String status = "Inactive"; 
-	private boolean isDisplayImage = false; 
+    private String repoTags;                 // Changed from String[]
+    private String size;                     // Changed from Long
+    private String virtualSize;              // Changed from Long
+    private String status = "Inactive";      // CloudControl attribute
+    private boolean isDisplayImage = false;  // CloudControl attribute
 
     public String getCreated() {
         return created;
@@ -145,7 +145,7 @@ public class _Image implements Serializable {
             this.status = status;
         }        
     }
-	
+    
     public boolean getIsDisplayImage() {
         return isDisplayImage;
     }

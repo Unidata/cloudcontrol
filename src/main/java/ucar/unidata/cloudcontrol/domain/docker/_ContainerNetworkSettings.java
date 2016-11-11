@@ -18,7 +18,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class _ContainerNetworkSettings implements Serializable {
 
-    private String networks;
+    private String networks;  // Changed from Map<String, ContainerNetwork>
     
     public String getNetworks() {
         return networks;

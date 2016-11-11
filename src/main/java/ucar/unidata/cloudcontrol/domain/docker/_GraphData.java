@@ -21,7 +21,7 @@ public class _GraphData implements Serializable {
     private String rootDir;
     private String deviceId;
     private String deviceName;
-    private String deviceSize;
+    private String deviceSize; 
     
     
     public String getRootDir() {

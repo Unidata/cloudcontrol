@@ -24,18 +24,18 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class _Container implements Serializable {
 
     private String command;
-    private String created;
+    private String created;          // Changed from Long
     private String id;
     private String image;
     private String imageId;
-    private String names;
-    private String ports;
-    private String labels;
+    private String names;            // Changed from String[]
+    private String ports;            // Changed from ContainerPort[]
+    private String labels;           // Changed from Map<String, String>
     private String status;
-    private String sizeRw;
-    private String sizeRootFs;
-    private String hostConfig;
-    private String networkSettings;
+    private String sizeRw;           // Changed from Long
+    private String sizeRootFs;       // Changed from Long
+    private String hostConfig;       // Changed from ContainerHostConfig
+    private String networkSettings;  // Changed from ContainerNetworkSettings
 
     public String getCommand() {
         return command;
@@ -232,7 +232,7 @@ public class _Container implements Serializable {
             }
         }   
     }
-	
+    
     public String getHostConfig() {
         return hostConfig;
     }

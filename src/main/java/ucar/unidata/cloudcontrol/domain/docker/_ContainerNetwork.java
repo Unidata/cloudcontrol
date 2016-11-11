@@ -18,15 +18,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class _ContainerNetwork implements Serializable {
 
-    private String aliases;
+    private String aliases;              // Changed from List<String>
     private String networkID;
     private String endpointId;
     private String gateway;
     private String ipAddress;
-    private String ipPrefixLen;
+    private String ipPrefixLen;          // Changed from Integer
     private String ipV6Gateway;
     private String globalIPv6Address;
-    private String globalIPv6PrefixLen;
+    private String globalIPv6PrefixLen;  // Changed from Integer
     private String macAddress;
     
     public String getAliases() {

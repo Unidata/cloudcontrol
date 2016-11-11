@@ -22,7 +22,7 @@ public class _ContainerHostConfig implements Serializable {
     public String getNetworkMode() {
         return networkMode;
     }
-
+ 
     public void setNetworkMode(String networkMode) {
         if (Objects.isNull(networkMode)) {
             this.networkMode = "";

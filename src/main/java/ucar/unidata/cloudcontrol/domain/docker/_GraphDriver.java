@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class _GraphDriver implements Serializable {
 
     private String name;
-    private String data;
+    private String data;  // Changed from GraphData
 	
 	
     public String getName() {

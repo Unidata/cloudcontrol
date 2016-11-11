@@ -27,7 +27,8 @@ public class _Version implements Serializable {
     private String operatingSystem;
     private String version;
     private String buildTime;
-    private String experimental;
+    private String experimental;  // Changed from Boolean
+	
 
 
     public String getApiVersion() {

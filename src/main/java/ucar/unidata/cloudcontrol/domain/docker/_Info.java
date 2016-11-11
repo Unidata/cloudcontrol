@@ -23,51 +23,51 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class _Info implements Serializable {
 
     private String architecture;
-    private String containers;
-    private String containersStopped;
-    private String containersPaused;
-    private String containersRunning;
-    private String cpuCfsPeriod; 
-    private String cpuCfsQuota;
-    private String cpuShares;
-    private String cpuSet;
-    private String debug;
+    private String containers;         // Changed from Integer  
+    private String containersStopped;  // Changed from Integer 
+    private String containersPaused;   // Changed from Integer 
+    private String containersRunning;  // Changed from Integer 
+    private String cpuCfsPeriod;       // Changed from Boolean 
+    private String cpuCfsQuota;        // Changed from Boolean 
+    private String cpuShares;          // Changed from Boolean 
+    private String cpuSet;             // Changed from Boolean 
+    private String debug;              // Changed from Boolean 
     private String discoveryBackend;
     private String dockerRootDir;
     private String driver;
-    private String driverStatuses;
-    private String systemStatus;
-    private String plugins;
+    private String driverStatuses;     // Changed from List<List<String>> 
+    private String systemStatus;       // Changed from List<Object>
+    private String plugins;            // Changed from Map<String, List<String>>
     private String executionDriver;
     private String loggingDriver;
-    private String experimentalBuild;
+    private String experimentalBuild;  // Changed from Boolean 
     private String httpProxy;
     private String httpsProxy;
     private String id;
-    private String ipv4Forwarding;
-    private String bridgeNfIptables;
-    private String bridgeNfIp6tables;
-    private String images;
+    private String ipv4Forwarding;     // Changed from Boolean 
+    private String bridgeNfIptables;   // Changed from Boolean 
+    private String bridgeNfIp6tables;  // Changed from Boolean 
+    private String images;             // Changed from Integer  
     private String indexServerAddress;
     private String initPath;
     private String initSha1;
     private String kernelVersion;
-    private String labels;
-    private String memoryLimit;
-    private String memTotal;
+    private String labels;             // Changed from String[]
+    private String memoryLimit;        // Changed from Boolean 
+    private String memTotal;           // Changed from Long
     private String name;
-    private String ncpu;
-    private String nEventsListener;
-    private String nfd;
-    private String nGoroutines;
+    private String ncpu;               // Changed from Integer 
+    private String nEventsListener;    // Changed from Integer 
+    private String nfd;                // Changed from Integer 
+    private String nGoroutines;        // Changed from Integer 
     private String noProxy;
-    private String oomKillDisable;
+    private String oomKillDisable;     // Changed from Boolean 
     private String osType;
-    private String oomScoreAdj;
+    private String oomScoreAdj;        // Changed from Integer 
     private String operatingSystem;
-    private String registryConfig;
-    private String sockets;
-    private String swapLimit;
+    private String registryConfig;     // Changed from InfoRegistryConfig 
+    private String sockets;            // Changed from String[]
+    private String swapLimit;          // Changed from Boolean 
     private String systemTime;
     private String serverVersion;
     private String clusterStore;

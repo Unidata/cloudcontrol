@@ -20,9 +20,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class _InfoRegistryConfig implements Serializable {
 
-    private String indexConfigs;
-    private String insecureRegistryCIDRs;
-    private String mirrors;
+    private String indexConfigs;           // Changed from Map<String, IndexConfig>
+    private String insecureRegistryCIDRs;  // Changed from List<String>
+    private String mirrors;                // Changed from Object
     
     public String getIndexConfigs() {
         return indexConfigs;
@@ -93,10 +93,10 @@ public class _InfoRegistryConfig implements Serializable {
     }  
     
     public static final class _IndexConfig {
-        private String mirrors;
+        private String mirrors;   // Changed from List<String>
         private String name;
-        private String official;
-        private String secure;
+        private String official;  // Changed from Boolean
+        private String secure;    // Changed from Boolean
         
         public String getMirrors() {
             return mirrors;

@@ -22,19 +22,19 @@ public class _InspectImageResponse implements Serializable {
     private String arch;
     private String author;
     private String comment;
- //   private ContainerConfig config;
+   // private ContainerConfig config;           // Changed from ContainerConfig          
     private String container;
-//    private ContainerConfig containerConfig;
+   // private ContainerConfig containerConfig;  // Changed from ContainerConfig
     private String created;
     private String dockerVersion;
     private String id;
     private String os;
     private String parent;
-    private String size;
-    private String repoTags;
-    private String repoDigests;
-    private String virtualSize;
-    private String graphDriver;
+    private String size;                      // Changed from Long         
+    private String repoTags;                  // Changed from List<String>
+    private String repoDigests;               // Changed from List<String>
+    private String virtualSize;               // Changed from Long  
+    private String graphDriver;               // Changed from GraphDriver
 	
 	
     public String getArch() {

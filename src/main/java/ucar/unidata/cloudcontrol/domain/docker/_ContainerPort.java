@@ -18,8 +18,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class _ContainerPort implements Serializable {
 
     private String ip;
-    private String privatePort;
-    private String publicPort;
+    private String privatePort;  // Changed from Integer
+    private String publicPort;   // Changed from Integer
     private String type;
     
     public String getIp() {
