@@ -35,7 +35,6 @@ import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerHostConfig;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetworkSettings;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort;
-import edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Volume;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
@@ -345,26 +344,6 @@ public class ContainerManagerImpl implements ContainerManager {
     }
     
     /**
-     * Converts a com.github.dockerjava.api.command.CreateContainerResponse object to
-     * a edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse object.
-     *
-     * @param createContainerResponse  The com.github.dockerjava.api.command.CreateContainerResponse object to convert.
-     * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse object.
-     */
-    public _CreateContainerResponse convertCreateContainerResponse(CreateContainerResponse createContainerResponse) {
-        Function<CreateContainerResponse, _CreateContainerResponse> mapCreateContainerResponseTo_CreateContainerResponse = new Function<CreateContainerResponse, _CreateContainerResponse>() {
-            public _CreateContainerResponse apply(CreateContainerResponse c) {
-				_CreateContainerResponse _createContainerResponse = new _CreateContainerResponse();
-                _createContainerResponse.setId(c.getId());
-                _createContainerResponse.setWarnings(c.getWarnings());
-                return _createContainerResponse;
-            }
-        };
-        _CreateContainerResponse _createContainerResponse = mapCreateContainerResponseTo_CreateContainerResponse.apply(createContainerResponse);
-        return _createContainerResponse;
-    }
-    
-    /**
      * Converts a com.github.dockerjava.api.model.Volume object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Volume object.
      *
@@ -472,23 +451,23 @@ public class ContainerManagerImpl implements ContainerManager {
     }  
     
     /**
-     * Starts a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
+     * Starts a Docker container.
      *
-     * @param imageId  The ID of the Image in which to start the _Container.
+     * @param imageId  The ID of the Image in which to start the container.
 	 * @return  The whether the container has been started or not. 
      */
     public boolean startContainer(String imageId) {
 		boolean isRunning = false;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
-            _CreateContainerResponse _createContainerResponse = createContainer(dockerClient, imageId);  
-            String _containerId = _createContainerResponse.getId();
-            dockerClient.startContainerCmd(_containerId).exec();
+    	    CreateContainerResponse createContainerResponse = createContainer(dockerClient, imageId); 
+			String containerId = createContainerResponse.getId();
+			dockerClient.startContainerCmd(containerId).exec();
 			
-			// further checking to see if it's running.
-			_InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _containerId);  
-	        if (! _inspectContainerResponse.getState().getRunning().equals("true")) {
-	            logger.error("Container " + _containerId + " is not running when it should be: " + _inspectContainerResponse.getState().getExitCode());
+			// further checking to see if it's running. 
+			InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, containerId);
+	        if (! inspectContainerResponse.getState().getRunning().equals("true")) {
+	            logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
 	        } else{
 	        	isRunning = true;
 	        }   
@@ -523,7 +502,8 @@ public class ContainerManagerImpl implements ContainerManager {
 			    dockerClient.stopContainerCmd(_container.getId()).exec();
 			
 			    // further checking to see if it's stopped running.
-	            _InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _container.getId()); 
+	            //_InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _container.getId()); 
+				_InspectContainerResponse _inspectContainerResponse = inspectContainerCC(dockerClient, _container.getId());
 	            if (_inspectContainerResponse.getState().getRunning().equals("true")) {
 	                logger.error("Container " + _container.getId() + " is still running when it should not be: " + _inspectContainerResponse.getState().getExitCode());
 	            } else {
@@ -542,21 +522,37 @@ public class ContainerManagerImpl implements ContainerManager {
 
     
     /**
-     * Returns a _CreateContainerResponse object.
+     * Returns a CreateContainerResponse object.
      *
      * @param dockerClient  The DockerClient object to use.
      * @param imageId  The ID of the image we want container-ize.
-     * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._CreateContainerResponse.
+     * @return  The CreateContainerResponse.
      */
-     public _CreateContainerResponse createContainer(DockerClient dockerClient, String imageId) {
+     public CreateContainerResponse createContainer(DockerClient dockerClient, String imageId) {
          try {
-             return convertCreateContainerResponse(dockerClient.createContainerCmd(imageId).exec());
+             return dockerClient.createContainerCmd(imageId).exec();
          } catch (Exception e) {
              logger.error("Unable to create a Container: " + e);
              return null;
          }    
      }
      
+     /**
+      * Returns a requested InspectContainerResponse.
+      *
+	  * @param dockerClient  The DockerClient object to use.
+      * @param containerId  The Container ID to inspect.
+      * @return  The InspectContainerResponse.
+      */
+     public InspectContainerResponse inspectContainer(DockerClient dockerClient, String containerId) {
+         try{
+             return dockerClient.inspectContainerCmd(containerId).exec();
+         } catch (Exception e) {
+             logger.error("Unable to inspect Container: " + e);
+             return null;
+         }    
+     }
+	 
     
      /**
       * Returns a requested _InspectContainerResponse.
@@ -565,7 +561,7 @@ public class ContainerManagerImpl implements ContainerManager {
       * @param containerId  The Container ID to inspect.
       * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse.
       */
-     public _InspectContainerResponse inspectContainer(DockerClient dockerClient, String containerId) {
+     public _InspectContainerResponse inspectContainerCC(DockerClient dockerClient, String containerId) {
          try{
              return convertInspectContainerResponse(dockerClient.inspectContainerCmd(containerId).exec());
          } catch (Exception e) {

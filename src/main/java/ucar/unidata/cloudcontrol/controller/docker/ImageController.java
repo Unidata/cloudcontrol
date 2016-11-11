@@ -39,6 +39,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
@@ -133,6 +134,58 @@ public class ImageController implements HandlerExceptionResolver {
         return "redirect:/dashboard/docker/image/list";  
     }
     
+    /**
+     * Accepts a GET request to Inspect a Docker image.
+     *
+     * View is is the requested _InspectImageResponse (details corresponding 
+     * to an Image). The model contains the image inspection information
+     * which will be loaded and displayed in the view via jspf.  
+     * 
+     * @param id  The Image ID.
+     * @param authentication  The Authentication object to check roles with. 
+     * @param model  The Model used by the View.
+     * @return  The path for the ViewResolver.
+     */
+    @RequestMapping(value="/dashboard/docker/image/{id}/inspect", method=RequestMethod.GET)
+    public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {          
+            if (!imageManager.isDisplayImage(id)) {
+                model.addAttribute("error", "You are not allowed to access this Image."); 
+                List<_Image> _images = imageManager.filterByDisplayImage(); 
+                if (!Objects.isNull(_images)) {
+                     model.addAttribute("imageList", _images);   
+                } else {
+                    // see if server info image number jives 
+                     _Info _info = serverManager.getInfo(); 
+                    if (!Objects.isNull(_info)) {
+                        if (Integer.parseInt(_info.getImages()) == 0) {
+                            _images = new ArrayList<_Image>();
+                            model.addAttribute("imageList", _images);   
+                        }
+                    }
+                }
+                model.addAttribute("action", "listImages");               
+                return "dashboard";
+            }
+	    }
+		
+		
+        _InspectImageResponse _inspectImageResponse = imageManager.inspectImage(id);   
+        if (_inspectImageResponse != null) {
+            model.addAttribute("inspectImageResponse", _inspectImageResponse);     
+        } else {
+            throw new RuntimeException("An error occurred whilst processing Inspect Image request. InspectImageResponse in null.");  
+        }       
+        _Image _image = imageManager.getImage(id); 
+        if (_image != null) {
+            model.addAttribute("image", _image);  
+        } else {
+            throw new RuntimeException("An error occurred whilst processing Inspect Image request.  Image is null.");  
+        }
+        return "docker/image/inspectImage";
+    }
+    
     
     /**
      * Accepts a GET request to add an Image to the user display.  
@@ -161,7 +214,7 @@ public class ImageController implements HandlerExceptionResolver {
                  model.addAttribute("imageList", _images);  
                  model.addAttribute("action", "listImages");       
             } else {
-                throw new RuntimeException("An error occurred whilst processing addDisplayImage request.  Unable to create a DisplayImage.");
+                throw new RuntimeException("An error occurred whilst processing addDisplayImage request.  Image List is null.");
             }
             return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
         } catch (RecoverableDataAccessException e) {
@@ -194,15 +247,13 @@ public class ImageController implements HandlerExceptionResolver {
                  model.addAttribute("imageList", _images);  
                  model.addAttribute("action", "listImages");       
             } else {
-                throw new RuntimeException("An error occurred whilst processing removeDisplayImage request.  Unable to delete a DisplayImage.");
+                throw new RuntimeException("An error occurred whilst processing removeDisplayImage request.  Image List is null.");
             }
             return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
         } catch (RecoverableDataAccessException e) {
             throw new RuntimeException("Unable to delete DisplayImage: " + e);
         }        
     }
-    
-    
     
     /**
      * This method gracefully handles any uncaught exception

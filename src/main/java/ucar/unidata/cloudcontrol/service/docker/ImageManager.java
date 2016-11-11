@@ -3,6 +3,7 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import java.util.List;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 
 /**
@@ -68,5 +69,14 @@ public interface ImageManager {
      * @param displayImage  The DisplayImage to be created. 
      */
     public void createDisplayImage(DisplayImage displayImage);
+	
+    /**
+     * Returns the reposnse to a request image request.
+     *
+     * @param imageId  The Image ID.
+     * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse object.
+     */
+    public _InspectImageResponse inspectImage(String imageId);
+	
 	
 }

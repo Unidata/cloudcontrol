@@ -56,9 +56,9 @@ public interface ContainerManager {
     public _Container getContainer(String id);
 
     /**
-     * Starts a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
+     * Starts a Docker container.
      *
-     * @param imageId  The ID of the Image in which to start the _Container.
+     * @param imageId  The ID of the Image in which to start the container.
 	 * @return  The whether the container has been started or not. 
      */
     public boolean startContainer(String imageId);

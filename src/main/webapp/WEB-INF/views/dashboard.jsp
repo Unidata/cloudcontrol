@@ -37,7 +37,12 @@
     <div id="doubleColumn">
         
      <c:if test="${error != null}">
-	  <p><c:out value="${image.created}"/></p>       
+      <p class="error">
+       <b>  
+        <c:out value="${error}"/>  
+       </b>
+	  </p>
+      <p><c:out value="${image.created}"/></p>       
      </c:if>
              
      <c:choose>      

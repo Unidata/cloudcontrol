@@ -78,12 +78,9 @@
                
                <div class="right">
                 <p class="tooltip block" title="View more detailed <b>information about the image</b> using the <i>inspect</i> and <i>history</i> features.">Image Information:</p>
-                <form action="${baseUrl}/dashboard/docker/image/inspect/<c:out value="${image.id}" />" method="GET">
-                 <input type="submit" value="Inspect Image" />        
-                </form>
-                <form action="${baseUrl}/dashboard/docker/image/history/<c:out value="${image.id}" />" method="GET">
-                 <input type="submit" value="Image History" />        
-                </form>  
+                <button id="<c:out value='${image.id}' />" class="inspect">
+                 Inspect Image      
+                </button>  
                </div>
                 
                <sec:authorize access="hasRole('ROLE_ADMIN')">
@@ -99,7 +96,7 @@
                   </c:when>
                   <c:otherwise>
 				   <b class="active"><c:out value="${image.isDisplayImage}" /></b></p>
-                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/Remove/<c:out value="${image.id}" />" method="GET">
+                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/remove/<c:out value="${image.id}" />" method="GET">
                     <input type="submit" value="Hide from User" />        
                    </form>
                   </c:otherwise>
@@ -163,3 +160,5 @@
         </sec:authorize>
        </c:otherwise>
       </c:choose>
+	  
+	  <div id="dialog"></div>
