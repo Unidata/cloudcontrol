@@ -149,28 +149,13 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/{id}/inspect", method=RequestMethod.GET)
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {          
-            if (!imageManager.isDisplayImage(id)) {
-                model.addAttribute("error", "You are not allowed to access this Image."); 
-                List<_Image> _images = imageManager.filterByDisplayImage(); 
-                if (!Objects.isNull(_images)) {
-                     model.addAttribute("imageList", _images);   
-                } else {
-                    // see if server info image number jives 
-                     _Info _info = serverManager.getInfo(); 
-                    if (!Objects.isNull(_info)) {
-                        if (Integer.parseInt(_info.getImages()) == 0) {
-                            _images = new ArrayList<_Image>();
-                            model.addAttribute("imageList", _images);   
-                        }
-                    }
-                }
-                model.addAttribute("action", "listImages");               
-                return "dashboard";
+        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {    
+			logger.info("not admin");      
+            if (!imageManager.isDisplayImage(id)) {    
+				logger.info("not display image");     
+                model.addAttribute("error", "Permissions Error!  You are not allowed to access this Image.  Please contact the site administrator if you have any questions.");
             }
 	    }
-		
-		
         _InspectImageResponse _inspectImageResponse = imageManager.inspectImage(id);   
         if (_inspectImageResponse != null) {
             model.addAttribute("inspectImageResponse", _inspectImageResponse);     

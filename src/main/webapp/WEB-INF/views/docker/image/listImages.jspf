@@ -1,4 +1,5 @@
       <%-- This view is to list all Images (admin and authenticated users). --%>
+
       <h3>Images Available in This Docker Instance</h3>
       <c:choose>
        <c:when test="${imageList ne null}">

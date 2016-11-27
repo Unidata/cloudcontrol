@@ -21,35 +21,50 @@
 <script type="text/javascript" src="${baseUrl}/resources/js/jQuery/plugins/jquery.tooltipster.min.js"></script>
 <script type="text/javascript" src="${baseUrl}/resources/js/main.js"></script>
 
+
+
 <script>
  $( document ).ready(function() {
      $(".inspect").on( "click", function() {
-		 var imageId = $(this).attr("id");
+         var imageId = $(this).attr("id");
          var url = "/dashboard/docker/image/" + imageId + "/inspect";
-
          $.ajax({
-             url: url,
-             success: function(data) {
-				 if (!data.includes("CloudControlERROR")) {
-			         $("#dialog").dialog( {
-			             modal: true,
-			             open: function () {
-			                 $(this).load(url);
-			             },   
-			             title: "Inspection Details for Image " + imageId,
-			             height: 600,
-			             width: 800,
-			             buttons: { 
-			                 Close: function() {
-			                     $(this).dialog("close");
-			                 }
-			             }
-			         });
-				 }
-             }
+             url: url
+         })
+         .done(function(data){
+             $("#dialog").dialog({
+                 modal: true,
+                 open: function () {
+                     $(this).load(url);
+                 },   
+                 title: "Inspection Details for Image " + imageId,
+                 height: 300,
+                 width: 800,
+                 buttons: { 
+                     Close: function() {
+                         $(this).dialog("close");
+                     }
+                 }
+             });
+         })
+         .fail(function(data){
+             $("#dialog").dialog({
+                 modal: true,
+                 open: function () {
+                     $(this).text("Unable to retrieve inspection details.  Please contact the site administrator.");
+                 },   
+                 title: "Error",
+                 height: 200,
+                 width: 800,
+                 buttons: { 
+                     Close: function() {
+                         $(this).dialog("close");
+                     }
+                 }
+             });
          });
-
      });
  });
-                    
 </script>
+    
+
