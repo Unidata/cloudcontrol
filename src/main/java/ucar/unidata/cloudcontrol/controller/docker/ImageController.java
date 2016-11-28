@@ -32,11 +32,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.view.RedirectView;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
@@ -99,43 +101,79 @@ public class ImageController implements HandlerExceptionResolver {
     }
     
     /**
-     * Accepts a GET request start a Docker image.
-     *
-     * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  
+     * Accepts an AJAX GET request start a Docker image.
      * 
      * @param id  The Image ID.
-     * @param model  The Model used by the View.
-     * @return  The path for the ViewResolver.
+     * @param authentication  The Authentication object to check roles with. 
+     * @return  The status of the started Image (if successful), or an error message.
      */
     @RequestMapping(value="/dashboard/docker/image/{id}/start", method=RequestMethod.GET)
-    public String startImage(@PathVariable String id, Model model) { 
+    @ResponseBody
+    public String startImage(@PathVariable String id, Authentication authentication) { 
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
+            if (!imageManager.isDisplayImage(id)) {       
+               return "Error: You are not allowed to start this Image.  Please contact the site administrator if you have any questions.";
+            }
+        }
         if (!containerManager.startContainer(id)) {
-            model.addAttribute("error", "Unable to start Image."); 
+            return "Error: Unable to start image.  Please contact the site administrator."; 
+        } else {
+            return imageManager.getImage(id).getStatus();  
         }
-        return "redirect:/dashboard/docker/image/list";  
     }
     
     /**
-     * Accepts a GET request stop a Docker image.
+     * Accepts an AJAX GET request stop a Docker image.
      *
-     * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  
-     * 
      * @param id  The Image ID.
-     * @param model  The Model used by the View.
-     * @return  The path for the ViewResolver.
+     * @param authentication  The Authentication object to check roles with. 
+     * @return  The status of the started Image (if successful), or an error message.
      */
+    @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{id}/stop", method=RequestMethod.GET)
-    public String stopImage(@PathVariable String id, Model model) {   
-        if (!containerManager.stopContainer(id)) {
-            model.addAttribute("error", "Unable to start Image."); 
+    public String stopImage(@PathVariable String id, Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
+            if (!imageManager.isDisplayImage(id)) {       
+               return "Error: You are not allowed to start/stop this Image.  Please contact the site administrator if you have any questions.";
+            }
         }
-        return "redirect:/dashboard/docker/image/list";  
+        
+        if (!containerManager.stopContainer(id)) {
+            return "Error: Unable to stop image.  Please contact the site administrator."; 
+        } else {
+            return imageManager.getImage(id).getStatus();  
+        }
     }
     
     /**
-     * Accepts a GET request to Inspect a Docker image.
+     * Accepts an AJAX GET request for a Map of Docker image status information. 
+     * 
+     * @param authentication  The Authentication object to check roles with. 
+     * @return  The Map of Docker image statuses.
+     */
+    @ResponseBody 
+    @RequestMapping(value="/dashboard/docker/image/list/status", method=RequestMethod.GET)
+    public Map<String,String> getImageList(Authentication authentication) { 
+        List<_Image> _images; 
+		Map<String,String> statusMap;
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            _images = imageManager.getImageList(); 
+        } else {
+            _images = imageManager.filterByDisplayImage(); 
+        }
+        if (!Objects.isNull(_images)) {
+            statusMap = imageManager.getImageStatusMap(_images);  
+        } else {
+            statusMap = new HashMap<String, String>();
+        }      
+		return statusMap;  
+    }
+    
+    /**
+     * Accepts an AJAX GET request to Inspect a Docker image.
      *
      * View is is the requested _InspectImageResponse (details corresponding 
      * to an Image). The model contains the image inspection information
@@ -149,13 +187,11 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/{id}/inspect", method=RequestMethod.GET)
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {    
-			logger.info("not admin");      
-            if (!imageManager.isDisplayImage(id)) {    
-				logger.info("not display image");     
+        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
+            if (!imageManager.isDisplayImage(id)) {       
                 model.addAttribute("error", "Permissions Error!  You are not allowed to access this Image.  Please contact the site administrator if you have any questions.");
             }
-	    }
+        }
         _InspectImageResponse _inspectImageResponse = imageManager.inspectImage(id);   
         if (_inspectImageResponse != null) {
             model.addAttribute("inspectImageResponse", _inspectImageResponse);     
