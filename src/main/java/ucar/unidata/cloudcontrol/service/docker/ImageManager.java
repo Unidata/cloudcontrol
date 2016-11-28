@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
@@ -77,6 +78,20 @@ public interface ImageManager {
      * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse object.
      */
     public _InspectImageResponse inspectImage(String imageId);
+	
+    /**
+     * Requests a Map of the statuses of all available _Image objects.
+     *
+     * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
+     */
+    public Map<String, String> getImageStatusMap();
+	
+    /**
+     * Requests a Map of the statuses of the provided List of _Image objects.
+     *
+     * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
+     */
+    public Map<String, String> getImageStatusMap(List<_Image> images);
 	
 	
 }

@@ -55,7 +55,7 @@ public class ImageManagerImpl implements ImageManager {
     /**
      * Requests a List of all available _Image objects.
      *
-     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> getImageList() {
         List<_Image> _images; 
@@ -149,7 +149,7 @@ public class ImageManagerImpl implements ImageManager {
     /**
      * Requests a List of all available _Image objects that the user is allowed to see.
      *
-     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Info objects.
+     * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> filterByDisplayImage() {
         List<_Image> displayImages = new ArrayList<_Image>();
@@ -309,5 +309,41 @@ public class ImageManagerImpl implements ImageManager {
         _GraphData _graphData = mapGraphDataTo_GraphData.apply(graphData);
         return _graphData;
     }
-    
+	
+    /**
+     * Requests a Map of the statuses of all available _Image objects.
+     *
+     * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
+     */
+    public Map<String, String> getImageStatusMap() {
+		Map<String, String> idStatusMap = new HashMap<String, String>();
+        List<_Image> _images = getImageList();
+        for (_Image _image : _images) {
+            if (!Objects.isNull(_image)) {
+                idStatusMap.put(_image.getId(), _image.getStatus());
+            }
+        }
+        if (idStatusMap.isEmpty()) {
+            idStatusMap = null;
+        }
+        return idStatusMap;
+    }
+	
+    /**
+     * Requests a Map of the statuses of the provided List of _Image objects.
+     *
+     * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
+     */
+    public Map<String, String> getImageStatusMap(List<_Image> _images) {
+		Map<String, String> idStatusMap = new HashMap<String, String>();
+        for (_Image _image : _images) {
+            if (!Objects.isNull(_image)) {
+                idStatusMap.put(_image.getId(), _image.getStatus());
+            }
+        }
+        if (idStatusMap.isEmpty()) {
+            idStatusMap = null;
+        }
+        return idStatusMap;
+    }
 }
