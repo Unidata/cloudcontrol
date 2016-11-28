@@ -1,5 +1,4 @@
       <%-- This view is to list all Images (admin and authenticated users). --%>
-
       <h3>Images Available in This Docker Instance</h3>
       <c:choose>
        <c:when test="${imageList ne null}">
@@ -51,27 +50,27 @@
              <sec:authorize access="hasRole('ROLE_USER')">
               <td colspan="3">
              </sec:authorize>    
-			 
+             
                <div class="left">
                 <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status: 
                 <c:choose>
                  <c:when test="${fn:contains(image.status, 'Inactive')}">
-                 <b class="inactive"><c:out value="${image.status}" /></b></p>
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/start" method="GET">
-                   <input type="submit" value="Start Image" />        
-                  </form>
+                  <span class="inactive"><c:out value="${image.status}" /></span></p>
+                  <button id="<c:out value='${image.id}' />" class="start">
+                   Start Image      
+                  </button>
                  </c:when>
                  <c:when test="${fn:contains(image.status, 'Exited')}">
-                 <b class="inactive"><c:out value="${image.status}" /></b></p>
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/start" method="GET">
-                   <input type="submit" value="Start Image" />        
-                  </form>
+                  <span class="inactive"><c:out value="${image.status}" /></span></p>
+                  <button id="<c:out value='${image.id}' />" class="start">
+                   Start Image      
+                  </button>
                  </c:when>
                  <c:otherwise>
-                 <b class="active"><c:out value="${image.status}" /></b></p>
-                  <form action="${baseUrl}/dashboard/docker/image/<c:out value="${image.id}" />/stop" method="GET">
-                   <input type="submit" value="Stop Image" />        
-                  </form>
+                  <span class="active"><c:out value="${image.status}" /></span></p>
+                  <button id="<c:out value='${image.id}' />" class="stop">
+                   Stop Image      
+                  </button>
                  </c:otherwise>
                 </c:choose>
                </div>
@@ -90,13 +89,13 @@
                  <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image Visible to User: 
                  <c:choose>
                   <c:when test="${image.isDisplayImage eq 'false'}">
-				   <b class="inactive"><c:out value="${image.isDisplayImage}" /></b></p>
+                   <span class="inactive"><c:out value="${image.isDisplayImage}" /></span></p>
                    <form action="${baseUrl}/dashboard/docker/image/userDisplay/add/<c:out value="${image.id}" />" method="GET">
                     <input type="submit" value="Show to User" />        
                    </form>
                   </c:when>
                   <c:otherwise>
-				   <b class="active"><c:out value="${image.isDisplayImage}" /></b></p>
+                   <span class="active"><c:out value="${image.isDisplayImage}" /></span></p>
                    <form action="${baseUrl}/dashboard/docker/image/userDisplay/remove/<c:out value="${image.id}" />" method="GET">
                     <input type="submit" value="Hide from User" />        
                    </form>
@@ -115,8 +114,8 @@
                   <input type="submit" value="Custom" />        
                  </form>  
                 </div>  
-				
-				
+                
+                
                 <div class="left"> 
                  <p class="tooltip block" title="<b>Share</b> the image by tagging it to a repository or pushing it on to a registry.">Share Image:</p>      
                  <form action="${baseUrl}/dashboard/docker/image/tag/<c:out value="${image.id}" />" method="GET">
@@ -126,7 +125,7 @@
                   <input type="submit" value="Push to Registry" />        
                  </form>
                 </div>
-				
+                
                 <div class="right"> 
                  <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the docker file system.">Danger Zone:</p>      
                  <form action="${baseUrl}/dashboard/docker/image/delete/<c:out value="${image.id}" />" method="GET">
@@ -161,5 +160,7 @@
         </sec:authorize>
        </c:otherwise>
       </c:choose>
-	  
-	  <div id="dialog"></div>
+      
+      <div id="dialog"></div>
+      <div id="wait"></div>
+      
