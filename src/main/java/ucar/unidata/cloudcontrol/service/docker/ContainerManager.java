@@ -3,8 +3,7 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import java.util.List;
 import java.util.Map;
 
-// importing these for ability to start and stop images.  Will convert them 
-// to their _Obj instances and remove them.
+import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
@@ -70,4 +69,13 @@ public interface ContainerManager {
 	 * @return  The whether the container has been started or not. 
      */
     public boolean stopContainer(String imageId);
+	
+    /**
+     * Returns a requested InspectContainerResponse.
+     *
+     * @param dockerClient  The DockerClient object to use.
+     * @param containerId  The Container ID to inspect.
+     * @return  The InspectContainerResponse.
+     */
+    public InspectContainerResponse inspectContainer(DockerClient dockerClient, String containerId);
 }

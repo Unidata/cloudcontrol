@@ -244,7 +244,7 @@ public class ContainerManagerImpl implements ContainerManager {
     public _InspectContainerResponse convertInspectContainerResponse(InspectContainerResponse inspectContainerResponse) {
         Function<InspectContainerResponse, _InspectContainerResponse> mapInspectContainerResponseTo_InspectContainerResponse = new Function<InspectContainerResponse, _InspectContainerResponse>() {
             public _InspectContainerResponse apply(InspectContainerResponse i) {
-				_InspectContainerResponse _inspectContainerResponse = new _InspectContainerResponse();
+                _InspectContainerResponse _inspectContainerResponse = new _InspectContainerResponse();
                 _inspectContainerResponse.setArgs(i.getArgs());
                 //_inspectContainerResponse.setConfig(i.getConfig()));
                 _inspectContainerResponse.setCreated(i.getCreated());
@@ -274,7 +274,7 @@ public class ContainerManagerImpl implements ContainerManager {
         _InspectContainerResponse _inspectContainerResponse = mapInspectContainerResponseTo_InspectContainerResponse.apply(inspectContainerResponse);
         return _inspectContainerResponse;
     }
-	
+    
     /**
      * Converts a com.github.dockerjava.api.command.InspectContainerResponse.ContainerState object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._ContainerState object.
@@ -303,7 +303,7 @@ public class ContainerManagerImpl implements ContainerManager {
         _InspectContainerResponse._ContainerState _containerState = mapContainerStateTo_ContainerState.apply(containerState);
         return _containerState;
     }
-	
+    
     /**
      * Utility method to process a List of com.github.dockerjava.api.command.InspectContainerResponse.Mount objects
      * to a corresponding List of edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount objects.
@@ -319,7 +319,7 @@ public class ContainerManagerImpl implements ContainerManager {
         }
         return _mounts;
     }
-	
+    
     /**
      * Converts a com.github.dockerjava.api.command.InspectContainerResponse.Mount object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount object.
@@ -353,7 +353,7 @@ public class ContainerManagerImpl implements ContainerManager {
     public _Volume convertVolume(Volume volume) {
         Function<Volume, _Volume> mapVolumeTo_Volume = new Function<Volume, _Volume>() {
             public _Volume apply(Volume v) {
-				_Volume _volume = new _Volume();
+                _Volume _volume = new _Volume();
                 _volume.setPath(v.getPath());
                 return _volume;
             }
@@ -454,23 +454,24 @@ public class ContainerManagerImpl implements ContainerManager {
      * Starts a Docker container.
      *
      * @param imageId  The ID of the Image in which to start the container.
-	 * @return  The whether the container has been started or not. 
+     * @return  The whether the container has been started or not. 
      */
     public boolean startContainer(String imageId) {
-		boolean isRunning = false;
+        boolean isRunning = false;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
-    	    CreateContainerResponse createContainerResponse = createContainer(dockerClient, imageId); 
-			String containerId = createContainerResponse.getId();
-			dockerClient.startContainerCmd(containerId).exec();
-			
-			// further checking to see if it's running. 
-			InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, containerId);
-	        if (! inspectContainerResponse.getState().getRunning().equals("true")) {
-	            logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
-	        } else{
-	        	isRunning = true;
-	        }   
+            CreateContainerResponse createContainerResponse = createContainer(dockerClient, imageId); 
+            String containerId = createContainerResponse.getId();
+            dockerClient.startContainerCmd(containerId).exec(); 
+            
+            // further checking to see if it's running. 
+            InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, containerId);
+            if (!inspectContainerResponse.getState().getStatus().equals("running")) {
+                logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
+            } else{
+                isRunning = true;
+            }   
+                        
         } catch (NotModifiedException e) {
             logger.error("Container is already running: " + e);    
         } catch (NotFoundException e) {
@@ -478,46 +479,45 @@ public class ContainerManagerImpl implements ContainerManager {
         } catch (Exception e) {
             logger.error("Unable to start Container: " + e);
         } 
-		return isRunning;          
+        return isRunning;          
     }
     
     /**
      * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
      *
      * @param imageId  The ID of the Image in which resides the _Container to stop.
-	 * @return  The whether the container has been started or not. 
+     * @return  The whether the container has been started or not. 
      */
     public boolean stopContainer(String imageId) {
-		boolean isStopped = false;
+        boolean isStopped = false;
         List<_Container> _containers = getRunningContainerListByImage(imageId);  
-		if (_containers.isEmpty()) {
+        if (_containers.isEmpty()) {
             logger.error("Unable to find any running containers for image: " + imageId); 
-		} else {
-			_Container _container = null;
-			for (_Container c : _containers) {
-				_container = c;  // ugh.  Assuming there is only one container for now.
-			}
-            try {		
-				DockerClient dockerClient = clientManager.initializeDockerClient();	
-			    dockerClient.stopContainerCmd(_container.getId()).exec();
-			
-			    // further checking to see if it's stopped running.
-	            //_InspectContainerResponse _inspectContainerResponse = inspectContainer(dockerClient, _container.getId()); 
-				_InspectContainerResponse _inspectContainerResponse = inspectContainerCC(dockerClient, _container.getId());
-	            if (_inspectContainerResponse.getState().getRunning().equals("true")) {
-	                logger.error("Container " + _container.getId() + " is still running when it should not be: " + _inspectContainerResponse.getState().getExitCode());
-	            } else {
-	            	isStopped = true;
-	            }
-	        } catch (NotModifiedException e) {
-	                logger.error("Container is still running: " + e);    
-	        } catch (NotFoundException e) {
-	                logger.error("Unable to find and stop container: " + e);   
-		    } catch (Exception e) {
-		            logger.error("Unable to stop Container: " + e);
-		    }
+        } else {
+            _Container _container = null;
+            for (_Container c : _containers) {
+                _container = c;  // ugh.  Assuming there is only one container for now.
+            }
+            try {        
+                DockerClient dockerClient = clientManager.initializeDockerClient();    
+                dockerClient.stopContainerCmd(_container.getId()).exec();
+            
+                // further checking to see if it's stopped running.
+                InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, _container.getId());
+                if (inspectContainerResponse.getState().getStatus().equals("running")) {
+                    logger.error("Container " + _container.getId() + " is still running when it should not be: " + inspectContainerResponse.getState().getExitCode());
+                } else {
+                    isStopped = true;
+                }
+            } catch (NotModifiedException e) {
+                    logger.error("Container is still running: " + e);    
+            } catch (NotFoundException e) {
+                    logger.error("Unable to find and stop container: " + e);   
+            } catch (Exception e) {
+                    logger.error("Unable to stop Container: " + e);
+            }
         }   
-		return isStopped;        
+        return isStopped;        
     }
 
     
@@ -540,7 +540,7 @@ public class ContainerManagerImpl implements ContainerManager {
      /**
       * Returns a requested InspectContainerResponse.
       *
-	  * @param dockerClient  The DockerClient object to use.
+      * @param dockerClient  The DockerClient object to use.
       * @param containerId  The Container ID to inspect.
       * @return  The InspectContainerResponse.
       */
@@ -551,23 +551,5 @@ public class ContainerManagerImpl implements ContainerManager {
              logger.error("Unable to inspect Container: " + e);
              return null;
          }    
-     }
-	 
-    
-     /**
-      * Returns a requested _InspectContainerResponse.
-      *
-	  * @param dockerClient  The DockerClient object to use.
-      * @param containerId  The Container ID to inspect.
-      * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse.
-      */
-     public _InspectContainerResponse inspectContainerCC(DockerClient dockerClient, String containerId) {
-         try{
-             return convertInspectContainerResponse(dockerClient.inspectContainerCmd(containerId).exec());
-         } catch (Exception e) {
-             logger.error("Unable to inspect Container: " + e);
-             return null;
-         }    
-     }
-        
+     }  
 }
