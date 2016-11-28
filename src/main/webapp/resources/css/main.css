@@ -72,10 +72,10 @@ h3 {
 
 /* Used in image management display */
 .inactive {
- color:#FF0000;
+ color:#828282;
 }
 .active {
- color:#00FF00;
+ color:#0057b1;
 }
 
 /* Page layout */
@@ -251,6 +251,7 @@ button {
  width:auto;
  border:none;
  cursor:pointer;
+ float:left;
 }
 input[type=submit].disabled{
  color:#696969;
@@ -298,6 +299,19 @@ input[type=hidden] {
 .action,
 .open {
  margin-right:10px !important;
+}
+
+#doubleColumn #wait {
+ background:url('../images/loading.gif') no-repeat 0px 0px;
+ width:128px;
+ height:134px;
+ margin:0;
+ padding:0;
+ position:relative;
+ top:-325px;
+ left:30%;
+ z-index: 101;
+ display:none;
 }
 
 
