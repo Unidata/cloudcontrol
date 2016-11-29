@@ -18,7 +18,7 @@
              </th>
              <sec:authorize access="hasRole('ROLE_ADMIN')">
               <th>
-               Visible to User
+               Image Accessibility
               </th>
              </sec:authorize>
             </tr>
@@ -38,7 +38,14 @@
               </td>
               <sec:authorize access="hasRole('ROLE_ADMIN')">
                <td>
-                <c:out value="${image.isDisplayImage}" />
+                <c:choose>
+                 <c:when test="${image.isDisplayImage eq 'false'}">
+                  Hidden from Users
+                 </c:when>
+                 <c:otherwise>
+                  Visible to Users
+                 </c:otherwise>
+                </c:choose>
                </td>
               </sec:authorize>
              </tr>
@@ -86,44 +93,21 @@
                <sec:authorize access="hasRole('ROLE_ADMIN')">
 
                 <div class="left">
-                 <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image Visible to User: 
+                 <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image accessibility: 
                  <c:choose>
                   <c:when test="${image.isDisplayImage eq 'false'}">
-                   <span class="inactive"><c:out value="${image.isDisplayImage}" /></span></p>
-                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/add/<c:out value="${image.id}" />" method="GET">
-                    <input type="submit" value="Show to User" />        
-                   </form>
+                   <span class="inactive">Hidden from Users</span></p>
+                   <button id="<c:out value='${image.id}' />" class="show">
+                    Show to Users     
+                   </button>
                   </c:when>
                   <c:otherwise>
-                   <span class="active"><c:out value="${image.isDisplayImage}" /></span></p>
-                   <form action="${baseUrl}/dashboard/docker/image/userDisplay/remove/<c:out value="${image.id}" />" method="GET">
-                    <input type="submit" value="Hide from User" />        
-                   </form>
+                   <span class="active">Visible to Users</span></p>
+                   <button id="<c:out value='${image.id}' />" class="show">
+                    Hide from Users     
+                   </button>
                   </c:otherwise>
                  </c:choose>
-                </div>
-                <div class="right"> 
-                 <p class="tooltip block" title="The <b>image output</b> option determines how to handle the output of the image after it is run.">Image Output:</p>
-                 <form action="${baseUrl}/dashboard/docker/image/output/shell/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Shell" />        
-                 </form>    
-                 <form action="${baseUrl}/dashboard/docker/image/output/browser/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Browser" />        
-                 </form>
-                 <form action="${baseUrl}/dashboard/docker/image/output/custom/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Custom" />        
-                 </form>  
-                </div>  
-                
-                
-                <div class="left"> 
-                 <p class="tooltip block" title="<b>Share</b> the image by tagging it to a repository or pushing it on to a registry.">Share Image:</p>      
-                 <form action="${baseUrl}/dashboard/docker/image/tag/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Tag Image" />        
-                 </form>
-                 <form action="${baseUrl}/dashboard/docker/image/push/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Push to Registry" />        
-                 </form>
                 </div>
                 
                 <div class="right"> 

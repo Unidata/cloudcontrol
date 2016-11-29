@@ -81,7 +81,7 @@ function toggleTheThings () {
 function imageAjaxRequest(button) {
     var imageId = $(button).attr("id");
     var action = $(button).attr("class");
-    var url = "/dashboard/docker/image/" + imageId + "/" + action;
+	var url = "/dashboard/docker/image/" + imageId + "/" + action;
     $.ajax({
         url: url
     })
@@ -102,37 +102,52 @@ function imageAjaxRequest(button) {
                 }
             });
         } else {
-            if (action === "stop" || action === "start") {
-                if (!data.includes("Error")) {
-                    if (action === "start") {
-                        $(button).html("Stop Image");
-                        $(button).attr("class", "stop");
-                        $(button).prev().children('span').attr('class', 'active');
-                    } else {
-                        $(button).html("Start Image");
-                        $(button).attr("class", "start");
-                        $(button).prev().children('span').attr('class', 'inactive');
-                    }
-                    $(button).prev().children('span').html(data);
-                    var selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(3)"
-                    $(selector).html(data);
-                } else {
-                    $("#dialog").dialog({
-                        modal: true,
-                        open: function () {
-                            $(this).text(data);
-                        },   
-                        title: "Error",
-                        height: 200,
-                        width: 200,
-                        buttons: { 
-                            Close: function() {
-                                $(this).dialog("close");
-                            }
+            if (!data.includes("Error")){
+                if (action === "start"){
+                    $(button).html("Stop Image");
+                    $(button).attr("class", "stop");
+                    $(button).prev().children('span').attr('class', 'active');
+                } 
+				if (action === "stop"){
+                    $(button).html("Start Image");
+                    $(button).attr("class", "start");
+                    $(button).prev().children('span').attr('class', 'inactive');
+                }
+				if (action === "show"){
+                    $(button).html("Hide from Users");
+                    $(button).attr("class", "hide");
+                    $(button).prev().children('span').attr('class', 'active');
+                }
+				if (action === "hide"){
+                    $(button).html("Show to Users");
+                    $(button).attr("class", "show");
+                    $(button).prev().children('span').attr('class', 'inactive');
+                }
+                $(button).prev().children('span').html(data);
+				var selector;
+				if (action === "start" || action === "stop") {
+                    selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(3)"
+			    }
+				if (action === "show" || action === "hide") {
+                    selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(4)"
+			    }
+				$(selector).html(data);
+            } else { // generic error message 
+                $("#dialog").dialog({
+                    modal: true,
+                    open: function () {
+                        $(this).text(data);
+                    },   
+                    title: "Error",
+                    height: 200,
+                    width: 200,
+                    buttons: { 
+                        Close: function() {
+                            $(this).dialog("close");
                         }
-                    });
-                }            
-            }
+                    }
+                });
+            }            
         }
     })
     .fail(function(data){

@@ -157,7 +157,7 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/list/status", method=RequestMethod.GET)
     public Map<String,String> getImageList(Authentication authentication) { 
         List<_Image> _images; 
-		Map<String,String> statusMap;
+        Map<String,String> statusMap;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); 
@@ -169,7 +169,7 @@ public class ImageController implements HandlerExceptionResolver {
         } else {
             statusMap = new HashMap<String, String>();
         }      
-		return statusMap;  
+        return statusMap;  
     }
     
     /**
@@ -212,34 +212,22 @@ public class ImageController implements HandlerExceptionResolver {
      * Accepts a GET request to add an Image to the user display.  
      * By default, images are not shown in user display until added by admin. 
      *
-     * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  
-     *
      * Only Users with the role of 'ROLE_ADMIN' can add an Image to the user display.
      * 
      * @param id  The Image ID. 
-     * @param model  The Model used by the View.
-     * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to create a DisplayImage.
+     * @return  Whether the Image is visible to the User or not (if successful), or an error message.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value="/dashboard/docker/image/userDisplay/add/{id}", method=RequestMethod.GET)
-    public ModelAndView addDisplayImage(@PathVariable String id, Model model) { 
-        try {
-            DisplayImage displayImage = new DisplayImage();
-            displayImage.setImageId(id);
-            imageManager.createDisplayImage(displayImage);  
-            
-            List<_Image> _images = imageManager.getImageList(); 
-            if (!Objects.isNull(_images)) {
-                 model.addAttribute("imageList", _images);  
-                 model.addAttribute("action", "listImages");       
-            } else {
-                throw new RuntimeException("An error occurred whilst processing addDisplayImage request.  Image List is null.");
-            }
-            return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
-        } catch (RecoverableDataAccessException e) {
-            throw new RuntimeException("Unable to create new DisplayImage: " + e);
+    @ResponseBody 
+    @RequestMapping(value="/dashboard/docker/image/{id}/show", method=RequestMethod.GET)
+    public String addDisplayImage(@PathVariable String id) { 
+        DisplayImage displayImage = new DisplayImage();
+        displayImage.setImageId(id);
+        imageManager.createDisplayImage(displayImage);  
+        if (imageManager.isDisplayImage(id)) {
+            return "Visible to Users";
+        } else {
+            return "Error: Unable to add image to user view.";
         }        
     }
     
@@ -247,32 +235,21 @@ public class ImageController implements HandlerExceptionResolver {
      * Accepts a GET request to remove an Image to the user display.  
      * By default, images are not shown in user display until added by admin. 
      *
-     * The view is the dashboard.  The model contains the image List
-     * which will be loaded and displayed in the view via jspf.  
-     *
      * Only Users with the role of 'ROLE_ADMIN' can remove an Image to the user display.
      * 
      * @param id  The Image ID. 
-     * @param model  The Model used by the View.
-     * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to create a DisplayImage.
+     * @return  Whether the Image is visible to the User or not (if successful), or an error message.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value="/dashboard/docker/image/userDisplay/remove/{id}", method=RequestMethod.GET)
-    public ModelAndView removeDisplayImage(@PathVariable String id, Model model) { 
-        try {
-            imageManager.deleteDisplayImage(id);  
+    @ResponseBody 
+    @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
+    public String removeDisplayImage(@PathVariable String id) { 
+        imageManager.deleteDisplayImage(id);  
             
-            List<_Image> _images = imageManager.getImageList(); 
-            if (!Objects.isNull(_images)) {
-                 model.addAttribute("imageList", _images);  
-                 model.addAttribute("action", "listImages");       
-            } else {
-                throw new RuntimeException("An error occurred whilst processing removeDisplayImage request.  Image List is null.");
-            }
-            return new ModelAndView(new RedirectView("/dashboard/docker/image/list", true)); 
-        } catch (RecoverableDataAccessException e) {
-            throw new RuntimeException("Unable to delete DisplayImage: " + e);
+        if (imageManager.isDisplayImage(id)) {
+            return "Error: Unable to hide image from user view.";
+        } else {
+            return "Hidden from Users";
         }        
     }
     
