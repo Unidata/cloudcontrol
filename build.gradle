@@ -1,5 +1,6 @@
 apply plugin: "java"
 apply plugin: "war"
+apply plugin: "jetty"
 
 compileJava {
      options.compilerArgs << '-Xlint:deprecation' << '-Xlint:unchecked'
