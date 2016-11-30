@@ -54,7 +54,6 @@ dependencies {
     compile "org.springframework.security:spring-security-taglibs:$springSecurityVersion"
 
     // others
-
     compile "commons-dbcp:commons-dbcp:1.4"
 
     compile "com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.6.4"
@@ -72,8 +71,8 @@ dependencies {
     compile "org.apache.commons:commons-lang3:3.4"
     compile "commons-io:commons-io:2.4"
     
-    compile "org.slf4j:slf4j-api:1.7.5"
-    compile "org.slf4j:jcl-over-slf4j:1.7.12"
+    compile "org.slf4j:slf4j-api:1.7.21"
+	compile "org.slf4j:slf4j-simple:1.7.21"
     
     compile "com.google.guava:guava:18.0"
     compile "org.bouncycastle:bcpkix-jdk15on:1.51"
