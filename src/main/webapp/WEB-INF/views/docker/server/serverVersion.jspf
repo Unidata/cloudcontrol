@@ -99,7 +99,7 @@
        </c:when>
        <c:otherwise>
         <p>Unable to display Docker server version.</p>
-        <p>Cloud Control is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the Cloud Control Docker client in order to continue.</p>
+        <p>CloudControl is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the CloudControl Docker client in order to continue.</p>
        </c:otherwise>
       </c:choose>
 

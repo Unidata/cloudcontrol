@@ -143,7 +143,7 @@
        <c:otherwise>
         <sec:authorize access="hasRole('ROLE_ADMIN')">   
          <p>Unable to display Docker images.</p>
-         <p>Cloud Control is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the Cloud Control Docker client in order to continue.</p>
+         <p>CloudControl is not currently connected to a Docker server.  Please <b><a href="${baseUrl}/dashboard/docker/client/configure">configure</a></b> the CloudControl Docker client in order to continue.</p>
         </sec:authorize>
         <sec:authorize access="hasRole('ROLE_USER')">
          <p>Nothing to see here.  The site administrator has not yet connected to a Docker server.  Try back later.</p>

@@ -1,4 +1,4 @@
-#Getting Started With Cloud Control
+#Getting Started With CloudControl
 
 Want to check out this project? Great!  Use the following steps to get going:
 
@@ -10,9 +10,9 @@ Docker needs to be installed and running on your local system for this to work. 
 * <a href="https://docs.docker.com/windows/">Windows</a>
 * <a href="https://docs.docker.com/mac/">Mac OS X</a>
 
-WARNING: Cloud Control uses this super awesome <a href="https://github.com/docker-java/docker-java">Java Docker API client</a> which follows a precedence of where it gets its configs from.  You enter the Docker client settings in the web application, but if the Docker system environment variables  (<code>DOCKER_HOST</code> and <code>DOCKER_CERT_PATH</code>) are visible to the user running the servlet container, the Java Docker API client will glom onto the environment variable settings and use them first.
+NOTE: CloudControl uses this super awesome <a href="https://github.com/docker-java/docker-java">Java Docker API client</a> which follows a precedence of where it gets its configs from.  You enter the Docker client settings in the web application, but if the Docker system environment variables  (<code>DOCKER_HOST</code> and <code>DOCKER_CERT_PATH</code>) are visible to the user running the servlet container, the Java Docker API client will glom onto the environment variable settings and use them first.
 
-#### 2. <a href="https://github.com/Unidata/cloudcontrol">Download</a> Cloud Control source code from GitHub.
+#### 2. <a href="https://github.com/Unidata/cloudcontrol">Download</a> CloudControl    source code from GitHub.
  
 #### 3. Modify <code>applications.properties</code>
 Find the <code>src/main/webapp/WEB-INF/classes/applications.properties</code> file and make any modifications to the <code>cloudcontrol.home</code> as needed.

@@ -1,8 +1,8 @@
-# Run Cloud Control in Docker
+# Run CloudControl in Docker
 
-This directory contains the necessary files to build and run Cloud Control in  a docker-based tomcat instance.  This is a utility for ease-of-use and may eventually be removed.
+This directory contains the necessary files to build and run CloudControl in  a docker-based tomcat instance.  This is a utility for ease-of-use and may eventually be removed.
 
-The following steps are used to build cloudcontrol, build the docker container, then run the docker container.
+The following steps are used to build CloudControl, build the docker container, then run the docker container.
 
 **Note**: Run all commands from the root cloudcontrol/ directory.
 

@@ -8,7 +8,7 @@
 
   <display-name>cloudcontrol</display-name>
   <description>
-    Cloud Control front end interface.
+    CloudControl web-dashboard for Docker.
   </description>
 
   <welcome-file-list>

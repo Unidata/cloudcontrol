@@ -13,7 +13,7 @@
           <form:errors path="dockerHost" cssClass="error" />
          </li>
          <li>
-          <label for="dockerTlsVerify" class="tooltip" title="Whether TLS verification is required for access.  Always true in Cloud Control. The same as the DOCKER_TLS_Verify value (if applicable).">
+          <label for="dockerTlsVerify" class="tooltip" title="Whether TLS verification is required for access.  Always true in CloudControl. The same as the DOCKER_TLS_Verify value (if applicable).">
            Docker TLS Verify
           </label>
           <form:input path="dockerTlsVerify" cssClass="fieldDisabled" disabled="true" value="1"/>

@@ -1,11 +1,11 @@
       <%-- This view is only available to the admin. --%>
-      <h3>Cloud Control Status</h3>
+      <h3>CloudControl Status</h3>
 
       <sec:authorize access="hasRole('ROLE_ADMIN')"> 
-	   <p>It looks like Cloud Control is connected to a Docker server.  You're ready to go!</p>
+	   <p>It looks like CloudControl is connected to a Docker server.  You're ready to go!</p>
 	  
-       <p>Use the menu on the left to control what goes on in Cloud Control.</p>
+       <p>Use the menu on the left to control what goes on in CloudControl.</p>
       </sec:authorize> 
       <sec:authorize access="hasRole('ROLE_USER')"> 
-       <p>Use the menu on the left to get started with Cloud Control.</p>
+       <p>Use the menu on the left to get started with CloudControl.</p>
       </sec:authorize>

@@ -6,7 +6,7 @@
         </sec:authorize>
        </c:when> 
        <c:otherwise> 
-        <h3>Register with Cloud Control</h3>   
+        <h3>Register with CloudControl</h3>   
        </c:otherwise>
       </c:choose> 
    

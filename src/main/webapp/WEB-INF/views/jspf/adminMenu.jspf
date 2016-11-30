@@ -14,7 +14,7 @@
        <li><a href="${baseUrl}/dashboard/user">Manage Users</a></li>
        <li><a href="${baseUrl}/dashboard/user/create">Create New User</a></li>
       </ul>
-      <h3>Cloud Control Settings</h3>
+      <h3>CloudControl Settings</h3>
       <ul>
        <li><a href="${baseUrl}/dashboard/docker/client">Docker Client Configuration</a></li>
       </ul>
