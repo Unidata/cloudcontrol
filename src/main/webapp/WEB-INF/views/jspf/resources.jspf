@@ -22,5 +22,5 @@
 <script type="text/javascript" src="${baseUrl}/resources/js/main.js"></script>
 
 <script>
-  var someText = '<c:out value="${baseUrl}" />';
+  var baseUrl = '<c:out value="${baseUrl}" />';
 </script>
