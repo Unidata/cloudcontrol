@@ -37,7 +37,7 @@ $(document).ready(function() {
     
     /* AJAX requests */
     $("button").on( "click", function() {
-        imageAjaxRequest($(this));
+        imageAction($(this));
     });
   
     $(document).ajaxSend(function( event, jqxhr, settings ){
@@ -50,9 +50,9 @@ $(document).ready(function() {
     });
     
     /* image status refresh */
-    setInterval(function () {
-        refreshData();
-    }, 10000); // refresh every 30 seconds
+//    setInterval(function () {
+//        refreshData();
+//    }, 10000); // refresh every 10 seconds
 
 });
 
@@ -78,10 +78,36 @@ function toggleTheThings () {
 
 
 
-function imageAjaxRequest(button) {
-    var imageId = $(button).attr("id");
+function imageAction(button) {
     var action = $(button).attr("class");
-	var url = "/dashboard/docker/image/" + imageId + "/" + action;
+    var reposTags = $("tr#" + $(button).attr("id").replace(":", "") + "Toggle td:nth-child(1)").text().trim();
+    if (action === "remove") {
+        $("#dialog").dialog({
+            modal: true,
+            open: function () {
+                $(this).html("WARNING: This action will remove the image from the Docker server. <br/><br/>Press <b>Remove Image</b> if you wish to continue.");
+            },  
+            width: 300,
+            height: 200,
+            title: "Remove Image " + reposTags,
+            buttons: { 
+                "Remove Image": function() {
+                    imageAjaxRequest(button, reposTags, action);
+                    $(this).dialog( "close" );
+                },
+                Cancel: function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    } else {
+        imageAjaxRequest(button, reposTags, action);
+    }
+}
+
+function imageAjaxRequest(button, reposTags, action) {
+    var imageId = $(button).attr("id");
+    var url = "/dashboard/docker/image/" + imageId + "/" + action;
     $.ajax({
         url: url
     })
@@ -92,9 +118,9 @@ function imageAjaxRequest(button) {
                 open: function () {
                     $(this).load(url);
                 },   
-                title: "Inspection Details for Image " + imageId,
-                height: 300,
-                width: 800,
+                width: 600,
+                height: 500,
+                title: "Inspection Details for Image " + reposTags,
                 buttons: { 
                     Close: function() {
                         $(this).dialog("close");
@@ -108,39 +134,45 @@ function imageAjaxRequest(button) {
                     $(button).attr("class", "stop");
                     $(button).prev().children('span').attr('class', 'active');
                 } 
-				if (action === "stop"){
+                if (action === "stop"){
                     $(button).html("Start Image");
                     $(button).attr("class", "start");
                     $(button).prev().children('span').attr('class', 'inactive');
                 }
-				if (action === "show"){
+                if (action === "show"){
                     $(button).html("Hide from Users");
                     $(button).attr("class", "hide");
                     $(button).prev().children('span').attr('class', 'active');
                 }
-				if (action === "hide"){
+                if (action === "hide"){
                     $(button).html("Show to Users");
                     $(button).attr("class", "show");
                     $(button).prev().children('span').attr('class', 'inactive');
                 }
-                $(button).prev().children('span').html(data);
-				var selector;
-				if (action === "start" || action === "stop") {
-                    selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(3)"
-			    }
-				if (action === "show" || action === "hide") {
-                    selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(4)"
-			    }
-				$(selector).html(data);
+                if (action !== "remove"){
+                    $(button).prev().children('span').html(data);
+                    var selector;
+                    if (action === "start" || action === "stop") {
+                        selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(3)"
+                    }
+                    if (action === "show" || action === "hide") {
+                        selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(4)"
+                    }
+                    $(selector).html(data);
+                }     
+				
+				if (action === "remove") {
+		            location.reload();
+				} 
             } else { // generic error message 
                 $("#dialog").dialog({
                     modal: true,
                     open: function () {
                         $(this).text(data);
                     },   
-                    title: "Error",
+                    width: 300,
                     height: 200,
-                    width: 200,
+                    title: "Error",
                     buttons: { 
                         Close: function() {
                             $(this).dialog("close");
@@ -156,9 +188,9 @@ function imageAjaxRequest(button) {
             open: function () {
                 $(this).text("Unable to " + action + " image.  Please contact the site administrator.");
             },   
-            title: "Error",
+            width: 300,
             height: 200,
-            width: 200,
+            title: "Error",
             buttons: { 
                 Close: function() {
                     $(this).dialog("close");
@@ -167,6 +199,7 @@ function imageAjaxRequest(button) {
         });
     });
 }
+
 
 function refreshData() {
     $.ajax({

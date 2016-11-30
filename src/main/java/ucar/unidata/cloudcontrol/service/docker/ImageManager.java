@@ -93,5 +93,13 @@ public interface ImageManager {
      */
     public Map<String, String> getImageStatusMap(List<_Image> images);
 	
+    /**
+     * Removes an Image from the Docker instance.
+     *
+     * @param imageId  The ID of the Image to remove.
+	 * @return  The whether the Image was successfully removed or not. 
+     */
+    public boolean removeImage(String imageId);
+	
 	
 }

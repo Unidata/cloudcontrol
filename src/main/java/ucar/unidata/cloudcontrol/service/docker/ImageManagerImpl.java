@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Resource;
@@ -81,7 +80,7 @@ public class ImageManagerImpl implements ImageManager {
         List<_Image> _images = new ArrayList<_Image>(images.size());
         for (Image image : images) {
             _Image _image = convertImage(image);
-            if (!Objects.isNull(_image)) {
+            if (_image != null) {
                 _images.add(_image);
             }
         }
@@ -117,7 +116,7 @@ public class ImageManagerImpl implements ImageManager {
         Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
         if (_containerStatusMap != null) { //coverity 
             _image = mapImageTo_Image.apply(image);
-            if (!Objects.isNull(_image)) {
+            if (_image != null) {
                 if (_containerStatusMap.containsKey(_image.getId())) {
                     _image.setStatus(_containerStatusMap.get(_image.getId())); 
                 }
@@ -154,7 +153,7 @@ public class ImageManagerImpl implements ImageManager {
     public List<_Image> filterByDisplayImage() {
         List<_Image> displayImages = new ArrayList<_Image>();
         List<_Image> _images = getImageList();
-        if (!Objects.isNull(_images)) {
+        if (_images != null) {
             for (_Image _image : _images) {
                 if (_image.getIsDisplayImage()) {
                     displayImages.add(_image);
@@ -171,7 +170,7 @@ public class ImageManagerImpl implements ImageManager {
      * @return  Whether the Image is a DisplayImage or not.
      */
     public Boolean isDisplayImage(String imageId){
-        if (!Objects.isNull(lookupDisplayImage(imageId))) {
+        if (lookupDisplayImage(imageId) != null) {
             return true;
         } else {
             return false;
@@ -243,7 +242,7 @@ public class ImageManagerImpl implements ImageManager {
      */
     public _InspectImageResponse convertInspectImageResponse(InspectImageResponse inspectImageResponse) {
         Function<InspectImageResponse, _InspectImageResponse> mapInspectImageResponseTo_InspectImageResponse = new Function<InspectImageResponse, _InspectImageResponse>() {
-		    public _InspectImageResponse apply(InspectImageResponse i) {
+            public _InspectImageResponse apply(InspectImageResponse i) {
               _InspectImageResponse _inspectImageResponse = new _InspectImageResponse();
               _inspectImageResponse.setArch(i.getArch());
               _inspectImageResponse.setAuthor(i.getAuthor());
@@ -267,7 +266,7 @@ public class ImageManagerImpl implements ImageManager {
         _InspectImageResponse _inspectImageResponse = mapInspectImageResponseTo_InspectImageResponse.apply(inspectImageResponse);
         return _inspectImageResponse;
     }
-	
+    
     /**
      * Converts a com.github.dockerjava.api.command.GraphDriver object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._GraphDriver object.
@@ -278,16 +277,16 @@ public class ImageManagerImpl implements ImageManager {
     public _GraphDriver convertGraphDriver(GraphDriver graphDriver) {
         Function<GraphDriver, _GraphDriver> mapGraphDriverTo_GraphDriver = new Function<GraphDriver, _GraphDriver>() {
             public _GraphDriver apply(GraphDriver g) {
-				_GraphDriver _graphDriver = new _GraphDriver();
+                _GraphDriver _graphDriver = new _GraphDriver();
                 _graphDriver.setName(g.getName());
-				_graphDriver.setData(convertGraphData(g.getData()));
+                _graphDriver.setData(convertGraphData(g.getData()));
                 return _graphDriver;
             }
         };
         _GraphDriver _graphDriver = mapGraphDriverTo_GraphDriver.apply(graphDriver);
         return _graphDriver;
     }
-	
+    
     /**
      * Converts a com.github.dockerjava.api.command.GraphData object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._GraphData object.
@@ -309,41 +308,70 @@ public class ImageManagerImpl implements ImageManager {
         _GraphData _graphData = mapGraphDataTo_GraphData.apply(graphData);
         return _graphData;
     }
-	
+    
     /**
      * Requests a Map of the statuses of all available _Image objects.
      *
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap() {
-		Map<String, String> idStatusMap = new HashMap<String, String>();
+        Map<String, String> idStatusMap = null;
         List<_Image> _images = getImageList();
-        for (_Image _image : _images) {
-            if (!Objects.isNull(_image)) {
-                idStatusMap.put(_image.getId(), _image.getStatus());
+        if (!_images.isEmpty()) {
+            for (_Image _image : _images) {
+                if (_image != null) {
+                    idStatusMap = new HashMap<String, String>();
+                    idStatusMap.put(_image.getId(), _image.getStatus());
+                }
             }
-        }
-        if (idStatusMap.isEmpty()) {
-            idStatusMap = null;
+            if (idStatusMap.isEmpty()) {
+                idStatusMap = null;
+            }
         }
         return idStatusMap;
     }
-	
+    
     /**
      * Requests a Map of the statuses of the provided List of _Image objects.
      *
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap(List<_Image> _images) {
-		Map<String, String> idStatusMap = new HashMap<String, String>();
-        for (_Image _image : _images) {
-            if (!Objects.isNull(_image)) {
-                idStatusMap.put(_image.getId(), _image.getStatus());
+        Map<String, String> idStatusMap = null;
+        if (!_images.isEmpty()) {
+            for (_Image _image : _images) {
+                if (_image != null) {
+                    idStatusMap = new HashMap<String, String>();
+                    idStatusMap.put(_image.getId(), _image.getStatus());
+                }
+            }
+            if (idStatusMap.isEmpty()) {
+                idStatusMap = null;
             }
         }
-        if (idStatusMap.isEmpty()) {
-            idStatusMap = null;
-        }
         return idStatusMap;
+    }
+    
+    /**
+     * Removes an Image from the Docker instance.
+     *
+     * @param imageId  The ID of the Image to remove.
+     * @return  The whether the Image was successfully removed or not. 
+     */
+    public boolean removeImage(String imageId) {
+        boolean imageRemoved = true;
+        if (!containerManager.removeContainersFromImage(imageId)) {
+            logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
+        }    
+        if (isDisplayImage(imageId)) {
+            deleteDisplayImage(imageId);
+        }
+        DockerClient dockerClient = clientManager.initializeDockerClient();
+        dockerClient.removeImageCmd(imageId).withForce(true).exec();
+        _Image _image = getImage(imageId);
+        if (_image != null) {
+            imageRemoved = false;
+        } 
+        return imageRemoved;
     }
 }

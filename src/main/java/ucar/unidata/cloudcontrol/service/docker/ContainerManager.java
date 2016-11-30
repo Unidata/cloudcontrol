@@ -22,22 +22,22 @@ public interface ContainerManager {
      * @return  A a List edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
     public List<_Container> getContainerList();
-    
+	
     /**
      * Requests a List of all available containers corresponding to an image.
      *
-     * @param image  The container's image.
+     * @param imageId  The container's Image ID.
      * @return  A List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
-    public List<_Container> getContainerListByImage(String image);
+    public List<_Container> getContainerListByImage(String imageId);
     
     /**
      * Requests a List of all available RUNNING containers corresponding to an image.
      *
-     * @param image  The container's image.
-     * @return  A List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
+     * @param imageId  The container's Image ID.
+     * @return  A List of running edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
-    public List<_Container> getRunningContainerListByImage(String image);
+    public List<_Container> getRunningContainerListByImage(String imageId);
     
     /**
      * Requests a Map of container statuses.
@@ -61,6 +61,15 @@ public interface ContainerManager {
 	 * @return  The whether the container has been started or not. 
      */
     public boolean startContainer(String imageId);
+	
+    /**
+     * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.
+     *
+     * @param id  The ID of the _Container to check.
+     * @param dockerClient  The initialized DockerClient to use.
+     * @return  The whether the container is running or not. 
+     */
+    public boolean containerIsRunning(DockerClient dockerClient, String id);
     
     /**
      * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
@@ -78,4 +87,12 @@ public interface ContainerManager {
      * @return  The InspectContainerResponse.
      */
     public InspectContainerResponse inspectContainer(DockerClient dockerClient, String containerId);
+	
+    /**
+     * Removes all Containers from an Image.
+     *
+     * @param imageId  The ID of the Image whose Containers need to be removed.
+     * @return  The whether the Containers were successfully removed or not. 
+     */
+    public boolean removeContainersFromImage(String imageId);
 }

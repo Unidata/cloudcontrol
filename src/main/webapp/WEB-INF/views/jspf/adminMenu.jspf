@@ -6,6 +6,8 @@
       <h3>Image Administration</h3>
       <ul>
        <li><a href="${baseUrl}/dashboard/docker/image/list">List Images</a></li>
+	   <li>Pull Image</li>
+	   <li>Create Image</li>
       </ul>
       <h3>User Management</h3>
       <ul>

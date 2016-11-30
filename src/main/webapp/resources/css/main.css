@@ -71,10 +71,7 @@ h3 {
 }
 
 /* Used in image management display */
-.inactive {
- color:#828282;
-}
-.active {
+p.tooltip span {
  color:#0057b1;
 }
 

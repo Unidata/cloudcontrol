@@ -61,20 +61,26 @@
                <div class="left">
                 <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status: 
                 <c:choose>
-                 <c:when test="${fn:contains(image.status, 'Inactive')}">
-                  <span class="inactive"><c:out value="${image.status}" /></span></p>
+                 <c:when test="${fn:contains(image.status, 'Not Initialized')}">
+                  <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="start">
                    Start Image      
                   </button>
                  </c:when>
                  <c:when test="${fn:contains(image.status, 'Exited')}">
-                  <span class="inactive"><c:out value="${image.status}" /></span></p>
+                  <span><c:out value="${image.status}" /></span></p>
+                  <button id="<c:out value='${image.id}' />" class="start">
+                   Start Image      
+                  </button>
+                 </c:when>
+                 <c:when test="${fn:contains(image.status, 'Created')}">
+                  <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="start">
                    Start Image      
                   </button>
                  </c:when>
                  <c:otherwise>
-                  <span class="active"><c:out value="${image.status}" /></span></p>
+                  <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="stop">
                    Stop Image      
                   </button>
@@ -96,13 +102,13 @@
                  <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image accessibility: 
                  <c:choose>
                   <c:when test="${image.isDisplayImage eq 'false'}">
-                   <span class="inactive">Hidden from Users</span></p>
+                   <span>Hidden from Users</span></p>
                    <button id="<c:out value='${image.id}' />" class="show">
                     Show to Users     
                    </button>
                   </c:when>
                   <c:otherwise>
-                   <span class="active">Visible to Users</span></p>
+                   <span>Visible to Users</span></p>
                    <button id="<c:out value='${image.id}' />" class="show">
                     Hide from Users     
                    </button>
@@ -111,10 +117,10 @@
                 </div>
                 
                 <div class="right"> 
-                 <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the docker file system.">Danger Zone:</p>      
-                 <form action="${baseUrl}/dashboard/docker/image/delete/<c:out value="${image.id}" />" method="GET">
-                  <input type="submit" value="Delete Image" />        
-                 </form>
+                 <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the Docker file system.">Danger Zone:</p>      
+                 <button id="<c:out value='${image.id}' />" class="remove">
+                  Remove Image from Docker   
+                 </button>
                 </div>
                
                </sec:authorize>
@@ -126,10 +132,10 @@
          </c:when>
          <c:otherwise>
          <sec:authorize access="hasRole('ROLE_ADMIN')">   
-          <p>No images are available in this docker instance yet. Add some!</p>
+          <p>No images are available in this Docker instance yet. Add some!</p>
          </sec:authorize>
          <sec:authorize access="hasRole('ROLE_USER')">
-          <p>No images are available in this docker instance yet. The site administrator has yet to add any.</p>
+          <p>No images are available in this Docker instance yet. The site administrator has yet to add any.</p>
          </sec:authorize>
          </c:otherwise>
         </c:choose>        

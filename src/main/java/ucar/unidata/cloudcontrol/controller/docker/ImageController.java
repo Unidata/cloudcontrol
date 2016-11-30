@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -84,12 +83,12 @@ public class ImageController implements HandlerExceptionResolver {
         } else {
             _images = imageManager.filterByDisplayImage(); 
         }
-        if (!Objects.isNull(_images)) {
+        if (_images != null) {
              model.addAttribute("imageList", _images);   
         } else {
             // see if server info image number jives 
             _Info _info = serverManager.getInfo(); 
-            if (!Objects.isNull(_info)) {
+            if (_info != null) {
                 if (Integer.parseInt(_info.getImages()) == 0) {
                     _images = new ArrayList<_Image>();
                     model.addAttribute("imageList", _images);   
@@ -139,7 +138,6 @@ public class ImageController implements HandlerExceptionResolver {
                return "Error: You are not allowed to start/stop this Image.  Please contact the site administrator if you have any questions.";
             }
         }
-        
         if (!containerManager.stopContainer(id)) {
             return "Error: Unable to stop image.  Please contact the site administrator."; 
         } else {
@@ -164,7 +162,7 @@ public class ImageController implements HandlerExceptionResolver {
         } else {
             _images = imageManager.filterByDisplayImage(); 
         }
-        if (!Objects.isNull(_images)) {
+        if (_images != null) {
             statusMap = imageManager.getImageStatusMap(_images);  
         } else {
             statusMap = new HashMap<String, String>();
@@ -245,12 +243,32 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
     public String removeDisplayImage(@PathVariable String id) { 
         imageManager.deleteDisplayImage(id);  
-            
         if (imageManager.isDisplayImage(id)) {
             return "Error: Unable to hide image from user view.";
         } else {
             return "Hidden from Users";
         }        
+    }
+    
+    /**
+     * Accepts a GET request to remove an Image from the Docker server.
+     *
+     * Only Users with the role of 'ROLE_ADMIN' can remove an Image.
+     * 
+     * @param id  The Image ID. 
+     * @param model  The Model used by the View.
+     * @return  Redirected view path for the ViewResolver.
+     */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+	@ResponseBody 
+    @RequestMapping(value="/dashboard/docker/image/{id}/remove", method=RequestMethod.GET)
+    public String removeImage(@PathVariable String id, Model model) { 
+        if (!imageManager.removeImage(id)) {
+			_Image _image = imageManager.getImage(id); 
+            return "Error: Unable to remove Image with ID: " + _image.getRepoTags();  
+        } else { 
+        	return "success";
+        }
     }
     
     /**
