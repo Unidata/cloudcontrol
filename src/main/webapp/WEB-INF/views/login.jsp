@@ -32,7 +32,7 @@
     </c:when>
    </c:choose>
     
-   <form action="/j_spring_security_check" method="POST">
+   <form action="${baseUrl}/j_spring_security_check" method="POST">
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <ul class="format">   
      <li>

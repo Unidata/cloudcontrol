@@ -107,7 +107,7 @@ function imageAction(button) {
 
 function imageAjaxRequest(button, reposTags, action) {
     var imageId = $(button).attr("id");
-    var url = "/dashboard/docker/image/" + imageId + "/" + action;
+    var url = baseUrl + "/dashboard/docker/image/" + imageId + "/" + action;
     $.ajax({
         url: url
     })
