@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -263,7 +264,9 @@ public class ImageController implements HandlerExceptionResolver {
 	@ResponseBody 
     @RequestMapping(value="/dashboard/docker/image/{id}/remove", method=RequestMethod.GET)
     public String removeImage(@PathVariable String id, Model model) { 
-        if (!imageManager.removeImage(id)) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    String userName = auth.getName(); //get logged in username
+        if (!imageManager.removeImage(id, userName)) {
 			_Image _image = imageManager.getImage(id); 
             return "Error: Unable to remove Image with ID: " + _image.getRepoTags();  
         } else { 

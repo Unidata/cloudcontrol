@@ -1,6 +1,8 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -356,10 +358,13 @@ public class ImageManagerImpl implements ImageManager {
      * Removes an Image from the Docker instance.
      *
      * @param imageId  The ID of the Image to remove.
+	 * @param userName  The userName of person who is removing the Image (for logging purposes)
      * @return  The whether the Image was successfully removed or not. 
      */
-    public boolean removeImage(String imageId) {
+    public boolean removeImage(String imageId, String userName) {
         boolean imageRemoved = true;
+		_Image _image = getImage(imageId);
+		String repoTags = _image.getRepoTags();
         if (!containerManager.removeContainersFromImage(imageId)) {
             logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
         }    
@@ -369,10 +374,14 @@ public class ImageManagerImpl implements ImageManager {
 		try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             dockerClient.removeImageCmd(imageId).withForce(true).exec();
-            _Image _image = getImage(imageId);
+            _image = getImage(imageId);
             if (_image != null) {
                 imageRemoved = false;
-            } 
+            } else {
+	            Date d = new Date();
+	            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				logger.info("Image \"" + repoTags + "\" with ID of " + imageId + "has been removed on " + format.format(d) + " by user: " + userName );
+            }
         } catch (Exception e) {
             logger.error("Unable to remove Image: " + e);
         }            
