@@ -1,13 +1,17 @@
 <%@ include file="/WEB-INF/views/jspf/taglibs.jspf" %>
 <%-- This view is to show the results of an "Inspect Image" command.  (admin and authenticated users). --%>
-
+     <script>
+	    $(document).ready(function() {    
+	        $("table tbody tr:nth-child(odd)").addClass("odd");
+	    });
+     </script>
 
      <c:choose>
       <c:when test="${error ne null}">
      <c:out value="${error}" />
     </c:when>
     <c:otherwise>
-     <table> 
+     <table class="list"> 
       <tbody>
        <tr>
         <td>

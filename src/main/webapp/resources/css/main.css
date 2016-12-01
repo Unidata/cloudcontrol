@@ -298,6 +298,7 @@ input[type=hidden] {
  margin-right:10px !important;
 }
 
+/* loading spinner */
 #doubleColumn #wait {
  background:url('../images/loading.gif') no-repeat 0px 0px;
  width:128px;
@@ -307,9 +308,16 @@ input[type=hidden] {
  position:relative;
  top:-325px;
  left:30%;
- z-index: 101;
+ z-index:101;
  display:none;
 }
+
+/* custom dialog properties */
+.ui-widget-overlay {
+ opacity:.7;
+ background-color:#000000;
+}
+
 
 
 /* tables */
