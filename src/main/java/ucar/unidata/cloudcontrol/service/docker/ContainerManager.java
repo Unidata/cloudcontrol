@@ -95,4 +95,13 @@ public interface ContainerManager {
      * @return  The whether the Containers were successfully removed or not. 
      */
     public boolean removeContainersFromImage(String imageId);
+	
+    /**
+     * Removes a single Container from an Image.
+     *
+     * @param imageId  The ID of the Image corresponding to the Container.
+     * @param containerId  The ID of the Container to remove.
+     * @return  The whether the Container was successfully removed or not. 
+     */
+    public boolean removeSingleContainerFromImage(String imageId, String containerId);
 }

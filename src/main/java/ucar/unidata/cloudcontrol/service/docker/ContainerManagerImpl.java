@@ -420,11 +420,9 @@ public class ContainerManagerImpl implements ContainerManager {
     public Map<String, String> getContainerStatusMap() {
         Map<String, String> _containerStatusMap = null;
         List<_Container> _containers = getContainerList();  
-        //logger.info("all containers: " + new Integer(_containers.size()).toString()); 
         if (_containers != null) { 
             _containerStatusMap = new HashMap<String, String>();
             for (_Container c : _containers) {
-                //logger.info(c.getImage() + " = " + c.getStatus());
                 _containerStatusMap.put(c.getImage(), c.getStatus());
             }
         } 
@@ -528,7 +526,12 @@ public class ContainerManagerImpl implements ContainerManager {
                 if (containerIsRunning(dockerClient, _container.getId())) {
                     logger.error("Container " + _container.getId() + " is still running when it should not be.");
                 } else {
-                    isStopped = true;
+                    // now remove the container completely
+                    if (removeSingleContainerFromImage(imageId, _container.getId())) {
+                        isStopped = true;
+                    } else {
+                        logger.error("Unable stop and remove container");   
+                    }
                 }
             } catch (NotFoundException e) {
                 logger.error("Unable to find and stop container: " + e);   
@@ -580,23 +583,66 @@ public class ContainerManagerImpl implements ContainerManager {
       */
      public boolean removeContainersFromImage(String imageId) {
          boolean hasBeenRemoved = false;
-         DockerClient dockerClient = clientManager.initializeDockerClient();
-         List<_Container> _containers = getContainerListByImage(imageId);
-         if (!_containers.isEmpty()) {
-             for (_Container _container : _containers) {
-                 if (containerIsRunning(dockerClient, _container.getId())) {
-                     if (!stopContainer(_container.getId())) {
-                         logger.error("Unable to stop container:  " + _container.getId() + ". Will attempt to force the container removal.");
+         try {
+             DockerClient dockerClient = clientManager.initializeDockerClient();
+             List<_Container> _containers = getContainerListByImage(imageId);
+             if (!_containers.isEmpty()) {
+                 for (_Container _container : _containers) {
+                     if (containerIsRunning(dockerClient, _container.getId())) {
+                         if (!stopContainer(_container.getId())) {
+                             logger.error("Unable to stop container:  " + _container.getId() + ". Will attempt to force the container removal.");
+                         }
+                     }
+                     dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
+                     _Container _c = getContainer(_container.getId());
+                     if (_c == null) {
+                         hasBeenRemoved = true;
+                     } 
+                 }
+             } else {
+                 hasBeenRemoved = true;
+             }   
+         } catch (Exception e) {
+             logger.error("Unable to remove Container: " + e);
+         }
+         return hasBeenRemoved;
+     }
+     
+     /**
+      * Removes a single Container from an Image.
+      *
+      * @param imageId  The ID of the Image corresponding to the Container.
+      * @param containerId  The ID of the Container to remove.
+      * @return  The whether the Container was successfully removed or not. 
+      */
+     public boolean removeSingleContainerFromImage(String imageId, String containerId) {
+         boolean hasBeenRemoved = false;
+         try {
+             DockerClient dockerClient = clientManager.initializeDockerClient();
+             List<_Container> _containers = getContainerListByImage(imageId);
+             if (!_containers.isEmpty()) {
+                 for (_Container _container : _containers) {
+                     if (_container.getId().equals(containerId)) {
+						 
+                         if (containerIsRunning(dockerClient, _container.getId())) {
+                             if (!stopContainer(_container.getId())) {
+                                 logger.error("Unable to stop container:  " + _container.getId() + ". Will attempt to force the container removal.");
+                             }
+                         }
+                         dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
+                         _Container _c = getContainer(_container.getId());
+                         if (_c == null) {
+                             hasBeenRemoved = true;
+                         }
                      }
                  }
-                 dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
-                 _Container _c = getContainer(_container.getId());
-                 if (_c != null) {
-                     hasBeenRemoved = true;
-                 } 
-             }
-         } else {
-             hasBeenRemoved = true;
+             } else {
+                 logger.error("Unable to find and remove container");   
+             }   
+         } catch (NotFoundException e) {
+             logger.error("Unable to find and remove container: " + e);   
+         } catch (Exception e) {
+             logger.error("Unable to remove container: " + e);
          }
          return hasBeenRemoved;
      }
