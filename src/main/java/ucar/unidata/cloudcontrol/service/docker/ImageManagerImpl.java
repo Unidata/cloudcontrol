@@ -366,12 +366,16 @@ public class ImageManagerImpl implements ImageManager {
         if (isDisplayImage(imageId)) {
             deleteDisplayImage(imageId);
         }
-        DockerClient dockerClient = clientManager.initializeDockerClient();
-        dockerClient.removeImageCmd(imageId).withForce(true).exec();
-        _Image _image = getImage(imageId);
-        if (_image != null) {
-            imageRemoved = false;
-        } 
+		try {
+            DockerClient dockerClient = clientManager.initializeDockerClient();
+            dockerClient.removeImageCmd(imageId).withForce(true).exec();
+            _Image _image = getImage(imageId);
+            if (_image != null) {
+                imageRemoved = false;
+            } 
+        } catch (Exception e) {
+            logger.error("Unable to remove Image: " + e);
+        }            
         return imageRemoved;
     }
 }
