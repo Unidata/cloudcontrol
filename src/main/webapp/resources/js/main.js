@@ -12,7 +12,7 @@ $(document).ready(function() {
     /* horizontal nav drop down menu */
     $('ul.nav').dropit({ action: 'click', triggerEl: 'b' });
 
-    /**/
+    /* left nav menu */
     $('.accordion h3').click(function() {
        $(this).toggleClass('expand');
        $(this).next().toggle();
@@ -50,9 +50,9 @@ $(document).ready(function() {
     });
     
     /* image status refresh */
-//    setInterval(function () {
-//        refreshData();
-//    }, 10000); // refresh every 10 seconds
+    setInterval(function () {
+        refreshData();
+    }, 10000); // refresh every 10 seconds
 
 });
 
