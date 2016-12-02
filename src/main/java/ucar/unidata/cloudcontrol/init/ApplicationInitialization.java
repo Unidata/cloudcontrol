@@ -67,7 +67,7 @@ public class ApplicationInitialization implements ServletContextListener {
         logger.info("Application context initialization..."); 
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-	    File configFile = new File(classLoader.getResource("application.properties").getFile());
+        File configFile = new File(classLoader.getResource("application.properties").getFile());
             if (!configFile.exists()) {
                 logger.info("Configuration file not provided.");  
                 logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);    
@@ -206,8 +206,6 @@ public class ApplicationInitialization implements ServletContextListener {
                                          "dateCreated TIMESTAMP not null, " +
                                          "dateModified TIMESTAMP not null" +
                                          ")";
-
-        
             String createClientConfigTableSql = "CREATE TABLE clientConfig" +
                                                 "(" +
                                                 "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
@@ -225,6 +223,15 @@ public class ApplicationInitialization implements ServletContextListener {
                                                 "imageId VARCHAR(120) not null" +
                                                 ")";
             
+            String createContainerMappingSql = "CREATE TABLE containerMapping" +
+                                                "(" +
+                                                "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
+                                                "containerId VARCHAR(120) not null, " +
+                                                "imageId VARCHAR(120) not null, " +
+                                                "userName VARCHAR(50) not null, " +
+                                                "datePerformed TIMESTAMP not null " +
+                                                ")";
+            
             if (!new File(cloudcontrolHome + "/db/cloudcontrol").exists()) {
                 logger.info("Database does not exist yet.  Creating...");
                 try { 
@@ -238,6 +245,7 @@ public class ApplicationInitialization implements ServletContextListener {
                     addDefaultAdminUser(derbyDriver, derbyUrl + ";create=true", null, null);
                     createTables(createClientConfigTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     createTables(createDisplayImageTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
+					createTables(createContainerMappingSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     
                     connection = DriverManager.getConnection(derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
@@ -294,7 +302,6 @@ public class ApplicationInitialization implements ServletContextListener {
             } catch (SQLException e) {
                 logger.error("Unable to establish database connection: " + e); 
             } 
-            
             preparedStatement = connection.prepareStatement(createSql);
             preparedStatement.executeUpdate();
 
@@ -360,7 +367,7 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
-			
+            
             preparedStatement = connection.prepareStatement(insertSql);
             preparedStatement.setString(1, "testUser");
             preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");

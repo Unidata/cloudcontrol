@@ -43,6 +43,7 @@ import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.DisplayImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
@@ -64,6 +65,9 @@ public class ImageController implements HandlerExceptionResolver {
     
     @Resource(name="containerManager")
     private ContainerManager containerManager;
+	
+    @Resource(name = "displayImageManager")
+    private DisplayImageManager displayImageManager;
     
     /**
      * Accepts a GET request for a List of Docker images.
@@ -82,7 +86,7 @@ public class ImageController implements HandlerExceptionResolver {
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); 
         } else {
-            _images = imageManager.filterByDisplayImage(); 
+            _images = displayImageManager.filterByDisplayImage(imageManager.getImageList()); 
         }
         if (_images != null) {
              model.addAttribute("imageList", _images);   
@@ -112,7 +116,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String startImage(@PathVariable String id, Authentication authentication) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageManager.isDisplayImage(id)) {       
+            if (!displayImageManager.isDisplayImage(id)) {       
                return "Error: You are not allowed to start this Image.  Please contact the site administrator if you have any questions.";
             }
         }
@@ -135,7 +139,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String stopImage(@PathVariable String id, Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageManager.isDisplayImage(id)) {       
+            if (!displayImageManager.isDisplayImage(id)) {       
                return "Error: You are not allowed to start/stop this Image.  Please contact the site administrator if you have any questions.";
             }
         }
@@ -161,7 +165,7 @@ public class ImageController implements HandlerExceptionResolver {
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); 
         } else {
-            _images = imageManager.filterByDisplayImage(); 
+            _images = displayImageManager.filterByDisplayImage(imageManager.getImageList()); 
         }
         if (_images != null) {
             statusMap = imageManager.getImageStatusMap(_images);  
@@ -187,7 +191,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageManager.isDisplayImage(id)) {       
+            if (!displayImageManager.isDisplayImage(id)) {       
                 model.addAttribute("error", "Permissions Error!  You are not allowed to access this Image.  Please contact the site administrator if you have any questions.");
             }
         }
@@ -222,8 +226,8 @@ public class ImageController implements HandlerExceptionResolver {
     public String addDisplayImage(@PathVariable String id) { 
         DisplayImage displayImage = new DisplayImage();
         displayImage.setImageId(id);
-        imageManager.createDisplayImage(displayImage);  
-        if (imageManager.isDisplayImage(id)) {
+        displayImageManager.createDisplayImage(displayImage);  
+        if (displayImageManager.isDisplayImage(id)) {
             return "Visible to Users";
         } else {
             return "Error: Unable to add image to user view.";
@@ -243,8 +247,8 @@ public class ImageController implements HandlerExceptionResolver {
     @ResponseBody 
     @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
     public String removeDisplayImage(@PathVariable String id) { 
-        imageManager.deleteDisplayImage(id);  
-        if (imageManager.isDisplayImage(id)) {
+        displayImageManager.deleteDisplayImage(id);  
+        if (displayImageManager.isDisplayImage(id)) {
             return "Error: Unable to hide image from user view.";
         } else {
             return "Hidden from Users";

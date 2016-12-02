@@ -133,7 +133,7 @@
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   
-  <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl">
+  <bean id="displayImageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.DisplayImageManagerImpl">
     <property name="displayImageDao" ref="displayImageDao"/>
   </bean>
 
@@ -142,7 +142,8 @@
   </bean>
   
   <!-- Declaration for Resource use -->
-  <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" />  
+  <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" /> 
+  <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl" />   
   <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />   
   
   <!-- Declare a datasource that has pooling capabilities--> 

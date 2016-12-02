@@ -46,7 +46,7 @@ public class JdbcDisplayImageDao extends JdbcDaoSupport implements DisplayImageD
      * @return  The List of DisplayImages.   
      */
     public List<DisplayImage> getAllDisplayImages() {
-        String sql = "SELECT * FROM displayImages ORDER BY dateCreated DESC";  
+        String sql = "SELECT * FROM displayImages";  
         List<DisplayImage> displayImages = getJdbcTemplate().query(sql, new DisplayImageMapper());         
         return displayImages;
     }
