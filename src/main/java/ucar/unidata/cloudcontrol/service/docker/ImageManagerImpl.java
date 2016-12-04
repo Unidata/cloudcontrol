@@ -65,6 +65,8 @@ public class ImageManagerImpl implements ImageManager {
 	                if (_containerStatusMap.containsKey(i.getId())) {
 	                    i.setStatus(_containerStatusMap.get(i.getId())); 
 	                }
+					// get attached containers
+					i.setAttachedContainers(containerManager.getContainerListByImage(i.getId()));
 					_images.add(i); 
 		        }
 			}

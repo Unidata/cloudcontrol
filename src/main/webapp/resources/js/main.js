@@ -112,6 +112,7 @@ function imageAjaxRequest(button, reposTags, action) {
         url: url
     })
     .done(function(data){
+		console.log(data);
         if (action === "inspect") {
             $("#dialog").dialog({
                 modal: true,
@@ -133,6 +134,10 @@ function imageAjaxRequest(button, reposTags, action) {
                     $(button).html("Stop Image");
                     $(button).attr("class", "stop");
                     $(button).prev().children('span').attr('class', 'active');
+					if (reposTags.includes("cloudidv")) {
+						var url = "http://192.168.99.100:6080";
+						launch(url);
+					}
                 } 
                 if (action === "stop"){
                     $(button).html("Start Image");
@@ -216,6 +221,13 @@ function refreshData() {
         }        
     });
 
+}
+
+function launch(url) {
+	setTimeout(function(){
+	    window.open(url);
+	}, 5000);
+	return false;
 }
 
 if (!String.prototype.splice) {

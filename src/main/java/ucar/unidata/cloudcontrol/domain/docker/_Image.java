@@ -30,7 +30,7 @@ public class _Image implements Serializable {
     private String virtualSize;                     // Changed from Long
     private String status = "Not Initialized";      // CloudControl attribute
     private boolean isVisibleToUsers = false;       // CloudControl attribute
-	private List<_Container> _containers;           // CloudControl attribute
+	private List<_Container> attachedContainers;    // CloudControl attribute
 
     public String getCreated() {
         return created;
@@ -154,6 +154,14 @@ public class _Image implements Serializable {
     
     public void setIsVisibleToUsers(boolean isVisibleToUsers) {
         this.isVisibleToUsers = isVisibleToUsers;      
+    }
+	
+    public List<_Container> getAttachedContainers() {
+        return attachedContainers;
+    }
+    
+    public void setAttachedContainers(List<_Container> attachedContainers) {
+        this.attachedContainers = attachedContainers;      
     }
     
     @Override
