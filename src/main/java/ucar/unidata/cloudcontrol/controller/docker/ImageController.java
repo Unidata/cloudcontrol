@@ -4,6 +4,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,13 +38,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.view.RedirectView;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
+import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
+import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.DisplayImageManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
@@ -66,8 +68,8 @@ public class ImageController implements HandlerExceptionResolver {
     @Resource(name="containerManager")
     private ContainerManager containerManager;
 	
-    @Resource(name = "displayImageManager")
-    private DisplayImageManager displayImageManager;
+    @Resource(name = "imageMappingManager")
+    private ImageMappingManager imageMappingManager;
     
     /**
      * Accepts a GET request for a List of Docker images.
@@ -86,7 +88,7 @@ public class ImageController implements HandlerExceptionResolver {
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); 
         } else {
-            _images = displayImageManager.filterByDisplayImage(imageManager.getImageList()); 
+            _images = imageMappingManager.filterByImageMapping(imageManager.getImageList()); 
         }
         if (_images != null) {
              model.addAttribute("imageList", _images);   
@@ -116,11 +118,16 @@ public class ImageController implements HandlerExceptionResolver {
     public String startImage(@PathVariable String id, Authentication authentication) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!displayImageManager.isDisplayImage(id)) {       
+            if (!imageMappingManager.isVisibleToUsers(id)) {       
                return "Error: You are not allowed to start this Image.  Please contact the site administrator if you have any questions.";
             }
         }
-        if (!containerManager.startContainer(id)) {
+		ContainerMapping containerMapping = new ContainerMapping(); 
+		containerMapping.setImageId(id);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		containerMapping.setUserName(auth.getName());
+		containerMapping.setDatePerformed(new Date());
+        if (!containerManager.startContainer(id, containerMapping)) {
             return "Error: Unable to start image.  Please contact the site administrator."; 
         } else {
             return imageManager.getImage(id).getStatus();  
@@ -139,7 +146,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String stopImage(@PathVariable String id, Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!displayImageManager.isDisplayImage(id)) {       
+            if (!imageMappingManager.isVisibleToUsers(id)) {       
                return "Error: You are not allowed to start/stop this Image.  Please contact the site administrator if you have any questions.";
             }
         }
@@ -165,7 +172,7 @@ public class ImageController implements HandlerExceptionResolver {
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); 
         } else {
-            _images = displayImageManager.filterByDisplayImage(imageManager.getImageList()); 
+            _images = imageMappingManager.filterByImageMapping(imageManager.getImageList()); 
         }
         if (_images != null) {
             statusMap = imageManager.getImageStatusMap(_images);  
@@ -191,7 +198,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!displayImageManager.isDisplayImage(id)) {       
+            if (!imageMappingManager.isVisibleToUsers(id)) {       
                 model.addAttribute("error", "Permissions Error!  You are not allowed to access this Image.  Please contact the site administrator if you have any questions.");
             }
         }
@@ -223,11 +230,11 @@ public class ImageController implements HandlerExceptionResolver {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody 
     @RequestMapping(value="/dashboard/docker/image/{id}/show", method=RequestMethod.GET)
-    public String addDisplayImage(@PathVariable String id) { 
-        DisplayImage displayImage = new DisplayImage();
-        displayImage.setImageId(id);
-        displayImageManager.createDisplayImage(displayImage);  
-        if (displayImageManager.isDisplayImage(id)) {
+    public String addImageMapping(@PathVariable String id) { 
+        ImageMapping imageMapping = new ImageMapping();
+        imageMapping.setImageId(id);
+        imageMappingManager.createImageMapping(imageMapping);  
+        if (imageMappingManager.isVisibleToUsers(id)) {
             return "Visible to Users";
         } else {
             return "Error: Unable to add image to user view.";
@@ -246,9 +253,9 @@ public class ImageController implements HandlerExceptionResolver {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody 
     @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
-    public String removeDisplayImage(@PathVariable String id) { 
-        displayImageManager.deleteDisplayImage(id);  
-        if (displayImageManager.isDisplayImage(id)) {
+    public String removeImageMapping(@PathVariable String id) { 
+        imageMappingManager.deleteImageMapping(id);  
+        if (imageMappingManager.isVisibleToUsers(id)) {
             return "Error: Unable to hide image from user view.";
         } else {
             return "Hidden from Users";

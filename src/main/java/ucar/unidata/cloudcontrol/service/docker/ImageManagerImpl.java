@@ -16,13 +16,14 @@ import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.model.Image;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker.DisplayImage;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.DisplayImageManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.converters.ImageConverter;
 
 /**
@@ -37,8 +38,8 @@ public class ImageManagerImpl implements ImageManager {
     @Resource(name = "clientManager")
     private ClientManager clientManager;
     
-    @Resource(name = "displayImageManager")
-    private DisplayImageManager displayImageManager;
+    @Resource(name = "imageMappingManager")
+    private ImageMappingManager imageMappingManager;
 
 
     /**
@@ -47,7 +48,7 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> getImageList() {
-		List<DisplayImage> displayImages = displayImageManager.getAllDisplayImages();
+		List<ImageMapping> imageMappings = imageMappingManager.getAllImageMappings();
         List<_Image> _images = null;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
@@ -58,8 +59,8 @@ public class ImageManagerImpl implements ImageManager {
 				Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
 				_images = new ArrayList<_Image>(_convertedImages.size());
 		        for (_Image i : _convertedImages) {
-					// check db and see if is a DisplayImage
-                    i.setIsDisplayImage(displayImageManager.isDisplayImage(i.getId())); 
+					// check db and see if is a visible to users
+                    i.setIsVisibleToUsers(imageMappingManager.isVisibleToUsers(i.getId())); 
 					// find the status info of the container to see if the image is running.
 	                if (_containerStatusMap.containsKey(i.getId())) {
 	                    i.setStatus(_containerStatusMap.get(i.getId())); 
@@ -169,8 +170,8 @@ public class ImageManagerImpl implements ImageManager {
         if (!containerManager.removeContainersFromImage(imageId)) {
             logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
         }    
-        if (displayImageManager.isDisplayImage(imageId)) {
-            displayImageManager.deleteDisplayImage(imageId);
+        if (imageMappingManager.isVisibleToUsers(imageId)) {
+            imageMappingManager.deleteImageMapping(imageId);
         }
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();

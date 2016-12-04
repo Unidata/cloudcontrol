@@ -18,8 +18,10 @@ import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Container;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.converters.ContainerConverter;
 
 /**
@@ -31,6 +33,9 @@ public class ContainerManagerImpl implements ContainerManager {
 
     @Resource(name = "clientManager")
     private ClientManager clientManager;
+	
+    @Resource(name = "containerMappingManager")
+    private ContainerMappingManager containerMappingManager;
     
     /**
      * Requests a List of all available containers.
@@ -141,9 +146,10 @@ public class ContainerManagerImpl implements ContainerManager {
      * Starts a Docker container.
      *
      * @param imageId  The ID of the Image in which to start the container.
+	 * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
      * @return  The whether the container has been started or not. 
      */
-    public boolean startContainer(String imageId) {
+    public boolean startContainer(String imageId, ContainerMapping containerMapping) {
         boolean isRunning = false;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
@@ -156,6 +162,8 @@ public class ContainerManagerImpl implements ContainerManager {
             if (!inspectContainerResponse.getState().getStatus().equals("running")) {
                 logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
             } else{
+				containerMapping.setContainerId(containerId);
+				containerMappingManager.createContainerMapping(containerMapping);
                 isRunning = true;
             }   
                         

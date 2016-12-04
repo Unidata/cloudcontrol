@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -28,7 +29,8 @@ public class _Image implements Serializable {
     private String size;                            // Changed from Long
     private String virtualSize;                     // Changed from Long
     private String status = "Not Initialized";      // CloudControl attribute
-    private boolean isDisplayImage = false;         // CloudControl attribute
+    private boolean isVisibleToUsers = false;       // CloudControl attribute
+	private List<_Container> _containers;           // CloudControl attribute
 
     public String getCreated() {
         return created;
@@ -146,12 +148,12 @@ public class _Image implements Serializable {
         }        
     }
     
-    public boolean getIsDisplayImage() {
-        return isDisplayImage;
+    public boolean getIsVisibleToUsers() {
+        return isVisibleToUsers;
     }
     
-    public void setIsDisplayImage(boolean isDisplayImage) {
-        this.isDisplayImage = isDisplayImage;      
+    public void setIsVisibleToUsers(boolean isVisibleToUsers) {
+        this.isVisibleToUsers = isVisibleToUsers;      
     }
     
     @Override

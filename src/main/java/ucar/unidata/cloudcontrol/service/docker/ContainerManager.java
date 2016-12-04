@@ -8,6 +8,7 @@ import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 
 
@@ -58,9 +59,10 @@ public interface ContainerManager {
      * Starts a Docker container.
      *
      * @param imageId  The ID of the Image in which to start the container.
-	 * @return  The whether the container has been started or not. 
+	 * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
+     * @return  The whether the container has been started or not. 
      */
-    public boolean startContainer(String imageId);
+    public boolean startContainer(String imageId, ContainerMapping containerMapping);
 	
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.

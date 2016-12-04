@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Object representing an image the admin has flaged for display in the user interface.
  */
 
-public class DisplayImage implements Serializable {
+public class ImageMapping implements Serializable {
 
     private int id;
     private String imageId;

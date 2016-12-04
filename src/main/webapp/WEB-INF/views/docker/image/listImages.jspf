@@ -39,7 +39,7 @@
               <sec:authorize access="hasRole('ROLE_ADMIN')">
                <td>
                 <c:choose>
-                 <c:when test="${image.isDisplayImage eq 'false'}">
+                 <c:when test="${image.isVisibleToUsers eq 'false'}">
                   Hidden from Users
                  </c:when>
                  <c:otherwise>
@@ -101,7 +101,7 @@
                 <div class="left">
                  <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image accessibility: 
                  <c:choose>
-                  <c:when test="${image.isDisplayImage eq 'false'}">
+                  <c:when test="${image.isVisibleToUsers eq 'false'}">
                    <span>Hidden from Users</span></p>
                    <button id="<c:out value='${image.id}' />" class="show">
                     Show to Users     

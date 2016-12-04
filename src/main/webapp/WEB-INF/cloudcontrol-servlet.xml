@@ -133,11 +133,19 @@
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   
-  <bean id="displayImageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.DisplayImageManagerImpl">
-    <property name="displayImageDao" ref="displayImageDao"/>
+  <bean id="imageMappingManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManagerImpl">
+    <property name="imageMappingDao" ref="imageMappingDao"/>
   </bean>
 
-  <bean id="displayImageDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcDisplayImageDao">
+  <bean id="imageMappingDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcImageMappingDao">
+    <property name="dataSource" ref="dbDataSource"/>
+  </bean>
+  
+  <bean id="containerMappingManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManagerImpl">
+    <property name="containerMappingDao" ref="containerMappingDao"/>
+  </bean>
+
+  <bean id="containerMappingDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcContainerMappingDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
   

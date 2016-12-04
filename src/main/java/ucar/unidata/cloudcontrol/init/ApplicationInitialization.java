@@ -217,7 +217,7 @@ public class ApplicationInitialization implements ServletContextListener {
                                                 "dateCreated TIMESTAMP not null, " +
                                                 "dateModified TIMESTAMP not null" +
                                                 ")";
-            String createDisplayImageTableSql = "CREATE TABLE displayImages" +
+            String createImageMappingTableSql = "CREATE TABLE imageMapping" +
                                                 "(" +
                                                 "id INTEGER primary key not null GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), " +
                                                 "imageId VARCHAR(120) not null" +
@@ -244,7 +244,7 @@ public class ApplicationInitialization implements ServletContextListener {
                     createTables(createUsersTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     addDefaultAdminUser(derbyDriver, derbyUrl + ";create=true", null, null);
                     createTables(createClientConfigTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
-                    createTables(createDisplayImageTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
+                    createTables(createImageMappingTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
 					createTables(createContainerMappingSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     
                     connection = DriverManager.getConnection(derbyUrl + ";shutdown=true");
