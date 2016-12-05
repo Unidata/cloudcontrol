@@ -57,7 +57,34 @@
              <sec:authorize access="hasRole('ROLE_USER')">
               <td colspan="3">
              </sec:authorize>    
-             
+
+
+<c:if test="${image.attachedContainers ne null}">
+               <ul>
+               <c:forEach items="${image.attachedContainers}" var="attachedContainer">
+                 <li>
+                 COMMAND:  <c:out value="${attachedContainer.command}" /><br>
+                 CREATED:  <c:out value="${attachedContainer.created}" /><br>          
+                 ID:  <c:out value="${attachedContainer.id}" /><br>
+                 IMAGE:  <c:out value="${attachedContainer.image}" /><br>
+                 IMAGE ID:  <c:out value="${attachedContainer.imageId}" /><br>
+                 NAME:  <c:out value="${attachedContainer.names}" /><br>            
+                 PORTS:  <c:out value="${attachedContainer.ports}" /><br>            
+                 LABELS:  <c:out value="${attachedContainer.labels}" /><br>           
+                 STATUS:  <c:out value="${attachedContainer.status}" /><br>
+                 SIZE RW:  <c:out value="${attachedContainer.sizeRw}" /><br>           
+                 SIZE ROOT FS:  <c:out value="${attachedContainer.sizeRootFs}" /><br>       
+                 HOST CONFIG:  <c:out value="${attachedContainer.hostConfig}" /><br>       
+                 NETWORK SETTING:  <c:out value="${attachedContainer.networkSettings}" /><br>  
+              
+                 </li>
+               </c:forEach>
+               </ul>
+</c:if>
+
+
+
+
                <div class="left">
                 <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status: 
                 <c:choose>

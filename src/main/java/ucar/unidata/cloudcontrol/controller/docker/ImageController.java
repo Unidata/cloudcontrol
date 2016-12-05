@@ -127,8 +127,7 @@ public class ImageController implements HandlerExceptionResolver {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		containerMapping.setUserName(auth.getName());
 		containerMapping.setDatePerformed(new Date());
-		_Image _image = imageManager.getImage(id); // remove aftrer demo
-        if (!containerManager.startContainer(_image, containerMapping)) { // change back to imageId after demo
+        if (!containerManager.startContainer(id, containerMapping)) { 
             return "Error: Unable to start image.  Please contact the site administrator."; 
         } else {
 			logger.info("here: " + containerMapping.getContainerId());

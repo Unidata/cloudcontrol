@@ -10,7 +10,6 @@ import com.github.dockerjava.api.model.Container;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Image; //remove after demo
 
 
 /**
@@ -63,12 +62,7 @@ public interface ContainerManager {
 	 * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
      * @return  The whether the container has been started or not. 
      */
-  //  public boolean startContainer(String imageId, ContainerMapping containerMapping);
-	
-    /**
-     * remove after demo
-     */
-    public boolean startContainer(_Image _image, ContainerMapping containerMapping);
+    public boolean startContainer(String imageId, ContainerMapping containerMapping);	
 	
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.

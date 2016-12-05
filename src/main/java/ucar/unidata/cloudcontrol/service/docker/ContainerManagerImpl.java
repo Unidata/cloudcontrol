@@ -23,7 +23,6 @@ import com.github.dockerjava.api.model.Ports.Binding;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Image; //remove after demo
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.converters.ContainerConverter;
@@ -153,7 +152,6 @@ public class ContainerManagerImpl implements ContainerManager {
      * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
      * @return  The whether the container has been started or not. 
      */
-		/*
     public boolean startContainer(String imageId, ContainerMapping containerMapping) {
         boolean isRunning = false;
         try {
@@ -180,40 +178,7 @@ public class ContainerManagerImpl implements ContainerManager {
             logger.error("Unable to start Container: " + e);
         } 
         return isRunning;          
-    }
-    */
-    
-    /**
-     * remove after demo
-     */
-    public boolean startContainer(_Image _image, ContainerMapping containerMapping) {
-        boolean isRunning = false;
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            CreateContainerResponse createContainerResponse = createContainer(dockerClient, _image); 
-            String containerId = createContainerResponse.getId();
-            dockerClient.startContainerCmd(containerId).exec(); 
-            
-            // further checking to see if it's running. 
-            InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, containerId);
-            if (!inspectContainerResponse.getState().getStatus().equals("running")) {
-                logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
-            } else{
-                containerMapping.setContainerId(containerId);
-                containerMappingManager.createContainerMapping(containerMapping);
-                isRunning = true;
-            }   
-                        
-        } catch (NotModifiedException e) {
-            logger.error("Container is already running: " + e);    
-        } catch (NotFoundException e) {
-            logger.error("Unable to find and start container: " + e); 
-        } catch (Exception e) {
-            logger.error("Unable to start Container: " + e);
-        } 
-        return isRunning;          
-    }
-    
+    }   
     
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.
@@ -279,29 +244,6 @@ public class ContainerManagerImpl implements ContainerManager {
     }
 
     
-    /**
-     * remove after demo
-     */
-     public CreateContainerResponse createContainer(DockerClient dockerClient, _Image _image) {
-         try {
-             if(StringUtils.containsIgnoreCase(_image.getRepoTags(), "cloudidv")){
-				 logger.info("cloudidv");
-                 ExposedPort cloudIDVPort = ExposedPort.tcp(6080);
-
-                 Ports portBindings = new Ports();
-                 portBindings.bind(cloudIDVPort, Binding.bindPort(6080));
-                 
-                 return dockerClient.createContainerCmd(_image.getId()).withExposedPorts(cloudIDVPort).withPortBindings(portBindings).exec();
-             } else {
-				  logger.info("other");
-                 return dockerClient.createContainerCmd(_image.getId()).exec();
-             }
-         } catch (Exception e) {
-             logger.error("Unable to create a Container: " + e);
-             return null;
-         }    
-     }
-     
      /**
       * Returns a CreateContainerResponse object.
       *

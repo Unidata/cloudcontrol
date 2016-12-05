@@ -374,7 +374,7 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, 1);
             preparedStatement.setString(5, "testUser@foo.bar.baz");
-            preparedStatement.setString(6, "CTest User");
+            preparedStatement.setString(6, "Test User");
             preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
