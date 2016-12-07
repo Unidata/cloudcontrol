@@ -1,6 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 
 import org.apache.log4j.Logger;
+
+import org.springframework.dao.RecoverableDataAccessException;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.CreateContainerResponse;
@@ -130,14 +133,14 @@ public class ContainerManagerImpl implements ContainerManager {
     /**
      * Requests a single _Container object.
      * 
-     * @param id  The container ID.
+     * @param containerId  The container ID.
      * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._Container object.   
      */
-    public _Container getContainer(String id) {
-        List<_Container> _containers = getContainerList();   
+    public _Container getContainer(String containerId) {
+        List<_Container> _containers = getContainerList();  
         _Container _container = null;
         for (_Container c : _containers) {
-            if (id.equals(c.getId())) {
+            if (containerId.equals(c.getId())) {
                 _container = c; 
                 break;
             }
@@ -148,38 +151,79 @@ public class ContainerManagerImpl implements ContainerManager {
     /**
      * Starts a Docker container.
      *
-     * @param imageId  The ID of the Image in which to start the container.
-     * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
-     * @return  The whether the container has been started or not. 
+     * @param imageId  The ID of the image in which to start the container.
+     * @param authenticatedUser  The user that the started container.
+     * @return  The ID of the container that has been started (or null if unsuccessful). 
      */
-    public boolean startContainer(String imageId, ContainerMapping containerMapping) {
-        boolean isRunning = false;
+    public String startContainer(String imageId, String authenticatedUser) {
+        String containerId = null;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             CreateContainerResponse createContainerResponse = createContainer(dockerClient, imageId); 
-            String containerId = createContainerResponse.getId();
+            containerId = createContainerResponse.getId().substring(0,12);
             dockerClient.startContainerCmd(containerId).exec(); 
             
-            // further checking to see if it's running. 
+            // further checking to see if the container is running
             InspectContainerResponse inspectContainerResponse = inspectContainer(dockerClient, containerId);
             if (!inspectContainerResponse.getState().getStatus().equals("running")) {
+                containerId = null;
                 logger.error("Container " + containerId + " is not running when it should be: " + inspectContainerResponse.getState().getExitCode());
-            } else{
-                containerMapping.setContainerId(containerId);
-                containerMappingManager.createContainerMapping(containerMapping);
-                isRunning = true;
+            } else {
+                try {
+					// add mapping 
+                    ContainerMapping containerMapping = new ContainerMapping(); 
+                    containerMapping.setContainerId(containerId);
+                    containerMapping.setImageId(imageId);
+                    containerMapping.setUserName(authenticatedUser);
+                    containerMapping.setDatePerformed(new Date());
+                    containerMappingManager.createContainerMapping(containerMapping);
+				} catch (RecoverableDataAccessException e) {
+					// can't add mapping, stop the container
+					logger.info("Stopping container " + containerId + ": " + e);
+					stopContainer(containerId);
+				}
             }   
-                        
         } catch (NotModifiedException e) {
-            logger.error("Container is already running: " + e);    
+            logger.error("Container " + containerId + " is already running: " + e);    
         } catch (NotFoundException e) {
-            logger.error("Unable to find and start container: " + e); 
+            logger.error("Unable to find and start container " + containerId + ": " + e);
         } catch (Exception e) {
-            logger.error("Unable to start Container: " + e);
+            logger.error("Unable to start container " + containerId + ": " + e);
         } 
-        return isRunning;          
+        return containerId;          
     }   
     
+    /**
+     * Stops a Docker container.
+     *
+     * @param containerId  The ID of the container to stop.
+     * @return  The whether the container has been started or not. 
+     */
+    public boolean stopContainer(String containerId) {
+        boolean isStopped = false;
+        try {        
+            DockerClient dockerClient = clientManager.initializeDockerClient();    
+            dockerClient.stopContainerCmd(containerId).exec();
+            
+            // further checking to confirm the container has stopped running
+            if (containerIsRunning(dockerClient, containerId)) {
+                logger.error("Container " + containerId + " is still running when it should not be.");
+            } else {
+                // remove the container completely
+                if (removeSingleContainerFromImage(getContainer(containerId).getImageId(), containerId)) {
+                    isStopped = true;
+                } else {
+                    logger.error("Unable stop and remove container " + containerId);   
+                }
+            }
+        } catch (NotFoundException e) {
+            logger.error("Unable to find and stop container " + containerId + ": " + e);
+        } catch (Exception e) {
+            logger.error("Unable to stop container " + containerId + ": " + e);
+        }
+        return isStopped;        
+    }
+
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.
      *
@@ -200,50 +244,9 @@ public class ContainerManagerImpl implements ContainerManager {
             logger.error("Unable to stop Container: " + e);
         }
         return isStopped;   
-    }
-    
-    
-    /**
-     * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
-     *
-     * @param imageId  The ID of the Image in which resides the _Container to stop.
-     * @return  The whether the container has been started or not. 
-     */
-    public boolean stopContainer(String imageId) {
-        boolean isStopped = false;
-        List<_Container> _containers = getRunningContainerListByImage(imageId);  
-        if (_containers.isEmpty()) {
-            logger.error("Unable to find any running containers for image: " + imageId); 
-        } else {
-            _Container _container = null;
-            for (_Container c : _containers) {
-                _container = c;  // ugh.  Assuming there is only one container for now.
-            }
-            try {        
-                DockerClient dockerClient = clientManager.initializeDockerClient();    
-                dockerClient.stopContainerCmd(_container.getId()).exec();
-            
-                // further checking to see if it's stopped running.
-                if (containerIsRunning(dockerClient, _container.getId())) {
-                    logger.error("Container " + _container.getId() + " is still running when it should not be.");
-                } else {
-                    // now remove the container completely
-                    if (removeSingleContainerFromImage(imageId, _container.getId())) {
-                        isStopped = true;
-                    } else {
-                        logger.error("Unable stop and remove container");   
-                    }
-                }
-            } catch (NotFoundException e) {
-                logger.error("Unable to find and stop container: " + e);   
-            } catch (Exception e) {
-                logger.error("Unable to stop Container: " + e);
-            }
-        }   
-        return isStopped;        
-    }
-
-    
+	}
+	
+	
      /**
       * Returns a CreateContainerResponse object.
       *

@@ -60,7 +60,7 @@ public class ImageManagerImpl implements ImageManager {
 				_images = new ArrayList<_Image>(_convertedImages.size());
 		        for (_Image i : _convertedImages) {
 					// check db and see if is a visible to users
-                    i.setIsVisibleToUsers(imageMappingManager.isVisibleToUsers(i.getId())); 
+                    i.setIsVisibleToUsers(imageMappingManager.isVisibleToUser(i.getId())); 
 					// find the status info of the container to see if the image is running.
 	                if (_containerStatusMap.containsKey(i.getId())) {
 	                    i.setStatus(_containerStatusMap.get(i.getId())); 
@@ -172,7 +172,7 @@ public class ImageManagerImpl implements ImageManager {
         if (!containerManager.removeContainersFromImage(imageId)) {
             logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
         }    
-        if (imageMappingManager.isVisibleToUsers(imageId)) {
+        if (imageMappingManager.isVisibleToUser(imageId)) {
             imageMappingManager.deleteImageMapping(imageId);
         }
         try {

@@ -58,11 +58,19 @@ public interface ContainerManager {
     /**
      * Starts a Docker container.
      *
-     * @param imageId  The ID of the Image in which to start the container.
-	 * @param containerMapping  The ContainerMapping object needed to associate the user with the started container.
+     * @param imageId  The ID of the image in which to start the container.
+     * @param authenticatedUser  The user that the started container.
+     * @return  The ID of the container that has been started (or null if unsuccessful). 
+     */
+    public String startContainer(String imageId, String authenticatedUser);	
+    
+    /**
+     * Stops a Docker container.
+     *
+     * @param containerId  The ID of the container to stop.
      * @return  The whether the container has been started or not. 
      */
-    public boolean startContainer(String imageId, ContainerMapping containerMapping);	
+    public boolean stopContainer(String containerId);
 	
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.
@@ -72,14 +80,6 @@ public interface ContainerManager {
      * @return  The whether the container is running or not. 
      */
     public boolean containerIsRunning(DockerClient dockerClient, String id);
-    
-    /**
-     * Stops a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
-     *
-     * @param imageId  The ID of the Image in which resides the _Container to stop.
-	 * @return  The whether the container has been started or not. 
-     */
-    public boolean stopContainer(String imageId);
 	
     /**
      * Returns a requested InspectContainerResponse.

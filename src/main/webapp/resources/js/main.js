@@ -50,9 +50,9 @@ $(document).ready(function() {
     });
     
     /* image status refresh */
-    setInterval(function () {
-        refreshData();
-    }, 10000); // refresh every 10 seconds
+//    setInterval(function () {
+//        refreshData();
+//    }, 10000); // refresh every 10 seconds
 
 });
 
@@ -106,8 +106,7 @@ function imageAction(button) {
 }
 
 function imageAjaxRequest(button, reposTags, action) {
-    var imageId = $(button).attr("id");
-    var url = baseUrl + "/dashboard/docker/image/" + imageId + "/" + action;
+    var url = baseUrl + "/dashboard/docker/image/" + $(button).attr("id") + "/" + action;
     $.ajax({
         url: url
     })
@@ -133,35 +132,35 @@ function imageAjaxRequest(button, reposTags, action) {
                 if (action === "start"){
                     $(button).html("Stop Image");
                     $(button).attr("class", "stop");
-                    $(button).prev().children('span').attr('class', 'active');
-					if (reposTags.includes("cloudidv")) {
-						var url = "http://192.168.99.100:6080";
-						launch(url);
-					}
+                    $(button).attr("id", data);
+			//		if (reposTags.includes("cloudidv")) {
+			//			var url = "http://192.168.99.100:6080";
+			//			launch(url);
+			//		}
                 } 
                 if (action === "stop"){
                     $(button).html("Start Image");
                     $(button).attr("class", "start");
-                    $(button).prev().children('span').attr('class', 'inactive');
+                    $(button).attr("id", data);
                 }
                 if (action === "show"){
                     $(button).html("Hide from Users");
                     $(button).attr("class", "hide");
-                    $(button).prev().children('span').attr('class', 'active');
+                    
                 }
                 if (action === "hide"){
                     $(button).html("Show to Users");
                     $(button).attr("class", "show");
-                    $(button).prev().children('span').attr('class', 'inactive');
+                    
                 }
                 if (action !== "remove"){
                     $(button).prev().children('span').html(data);
                     var selector;
                     if (action === "start" || action === "stop") {
-                        selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(3)"
+                        selector = "tr#" + $(button).attr("id").replace(":", "") + "Toggle td:nth-child(3)"
                     }
                     if (action === "show" || action === "hide") {
-                        selector = "tr#" + imageId.replace(":", "") + "Toggle td:nth-child(4)"
+                        selector = "tr#" + $(button).attr("id").replace(":", "") + "Toggle td:nth-child(4)"
                     }
                     $(selector).html(data);
                 }     

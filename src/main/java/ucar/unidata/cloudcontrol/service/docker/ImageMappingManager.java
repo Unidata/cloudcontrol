@@ -54,5 +54,5 @@ public interface ImageMappingManager {
      * @param imageId   The ID of the Image (will be unique for each ImageMapping). 
      * @return  Whether the Image is a ImageMapping or not.
      */
-    public boolean isVisibleToUsers(String imageId);
+    public boolean isVisibleToUser(String imageId);
 }

@@ -40,7 +40,7 @@
          </li>  
         </ul>
        </nav>
-	  
+      
        <div class="title">
         <c:choose>
          <c:when test="${baseUrl == ''}">
@@ -52,7 +52,7 @@
         </c:choose>
        </div>   
       </header>
-	  
+      
       <div id="content" class="clearfix">
 
   

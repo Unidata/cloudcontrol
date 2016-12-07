@@ -4,7 +4,6 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +37,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.view.RedirectView;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
@@ -70,6 +69,9 @@ public class ImageController implements HandlerExceptionResolver {
 	
     @Resource(name = "imageMappingManager")
     private ImageMappingManager imageMappingManager;
+	
+    @Resource(name = "containerMappingManager")
+    private ContainerMappingManager containerMappingManager;
     
     /**
      * Accepts a GET request for a List of Docker images.
@@ -77,7 +79,7 @@ public class ImageController implements HandlerExceptionResolver {
      * The view is the dashboard.  The model contains the image List
      * which will be loaded and displayed in the view via jspf.  
      * 
-     * @param authentication  The Authentication object to check roles with. 
+     * @param authentication  The Authentication object to check user roles. 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
@@ -109,59 +111,76 @@ public class ImageController implements HandlerExceptionResolver {
     /**
      * Accepts an AJAX GET request start a Docker image.
      * 
-     * @param id  The Image ID.
-     * @param authentication  The Authentication object to check roles with. 
-     * @return  The status of the started Image (if successful), or an error message.
+     * @param imageId  The image ID.
+     * @param authentication  The Authentication object to check user roles. 
+     * @return  The ID of the image container that has been started (if successful), or an error message.
      */
-    @RequestMapping(value="/dashboard/docker/image/{id}/start", method=RequestMethod.GET)
+    @RequestMapping(value="/dashboard/docker/image/{imageId}/start", method=RequestMethod.GET)
     @ResponseBody
-    public String startImage(@PathVariable String id, Authentication authentication) { 
+    public String startImage(@PathVariable String imageId, Authentication authentication) { 
+		// check to see if user is allow to access/manipulate this image
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageMappingManager.isVisibleToUsers(id)) {       
-               return "Error: You are not allowed to start this Image.  Please contact the site administrator if you have any questions.";
+            if (!imageMappingManager.isVisibleToUser(imageId)) {       
+				logger.info("User " + authentication.getName() + " does not have permission to start image " + imageId); 
+                return "Error: you are not allowed to start this image.  Please contact the site administrator if you have any questions.";
             }
         }
-		ContainerMapping containerMapping = new ContainerMapping(); 
-		containerMapping.setImageId(id);
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		containerMapping.setUserName(auth.getName());
-		containerMapping.setDatePerformed(new Date());
-        if (!containerManager.startContainer(id, containerMapping)) { 
-            return "Error: Unable to start image.  Please contact the site administrator."; 
+	    // start an image container
+		String containerId = containerManager.startContainer(imageId, authentication.getName());
+        if (containerId == null) { 
+			logger.error("Unable to start container for image " + imageId); 
+            return "Error: unable to start image.  Please contact the site administrator."; 
         } else {
-			logger.info("here: " + containerMapping.getContainerId());
-            return imageManager.getImage(id).getStatus();  
+			logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
+            return containerId;  
         }
     }
     
     /**
      * Accepts an AJAX GET request stop a Docker image.
      *
-     * @param id  The Image ID.
-     * @param authentication  The Authentication object to check roles with. 
-     * @return  The status of the started Image (if successful), or an error message.
+     * @param containerId  The ID of the image container to stop.
+     * @param authentication  The Authentication object to check user roles. 
+     * @return  The image ID of the container that was stopped (if successful), or an error message.
      */
     @ResponseBody
-    @RequestMapping(value="/dashboard/docker/image/{id}/stop", method=RequestMethod.GET)
-    public String stopImage(@PathVariable String id, Authentication authentication) {
+    @RequestMapping(value="/dashboard/docker/image/{containerId}/stop", method=RequestMethod.GET)
+    public String stopImage(@PathVariable String containerId, Authentication authentication) {
+		// check to see if user is allow to access/manipulate this image
+		_Container _container = containerManager.getContainer(containerId);
+		if (_container == null) {
+			logger.error("Unable to find container " + containerId + " to stop.");
+			return "Error: unable to find image container " + containerId + ".  Please contact the site administrator."; 
+		}
+		String imageId = _container.getImageId();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageMappingManager.isVisibleToUsers(id)) {       
-               return "Error: You are not allowed to start/stop this Image.  Please contact the site administrator if you have any questions.";
+            if (!imageMappingManager.isVisibleToUser(imageId)) { 
+			    logger.info("User " + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
+                return "Error: you are not allowed to start/stop this image.  Please contact the site administrator if you have any questions.";
             }
         }
-        if (!containerManager.stopContainer(id)) {
-            return "Error: Unable to stop image.  Please contact the site administrator."; 
-        } else {
-            return imageManager.getImage(id).getStatus();  
-        }
+		// see if user making the request is the same as the one in the mapping
+		String userName = containerMappingManager.lookupContainerMappingbyContainer(_container).getUserName();
+		if (authentication.getName().equals(userName) || authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+	        if (!containerManager.stopContainer(containerId)) {
+				logger.error("Unable to stop image container " + containerId);   
+	            return "Error: unable to stop image container.  Please contact the site administrator."; 
+	        } else {
+				logger.info("User " + authentication.getName() + " has successfully stopped container " + containerId + " in image " + imageId);
+	            return _container.getImageId();  
+	        }
+		} else {
+			logger.info("User" + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
+			return "Error: you are not allowed to start/stop this image container.  Please contact the site administrator.";
+		}
     }
     
     /**
      * Accepts an AJAX GET request for a Map of Docker image status information. 
      * 
-     * @param authentication  The Authentication object to check roles with. 
+     * @param authentication  The Authentication object to check user roles. 
      * @return  The Map of Docker image statuses.
      */
     @ResponseBody 
@@ -191,7 +210,7 @@ public class ImageController implements HandlerExceptionResolver {
      * which will be loaded and displayed in the view via jspf.  
      * 
      * @param id  The Image ID.
-     * @param authentication  The Authentication object to check roles with. 
+     * @param authentication  The Authentication object to check user roles. 
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
@@ -199,8 +218,8 @@ public class ImageController implements HandlerExceptionResolver {
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) { 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
-            if (!imageMappingManager.isVisibleToUsers(id)) {       
-                model.addAttribute("error", "Permissions Error!  You are not allowed to access this Image.  Please contact the site administrator if you have any questions.");
+            if (!imageMappingManager.isVisibleToUser(id)) {       
+                model.addAttribute("error", "Permissions Error!  You are not allowed to access this image.  Please contact the site administrator if you have any questions.");
             }
         }
         _InspectImageResponse _inspectImageResponse = imageManager.inspectImage(id);   
@@ -235,7 +254,7 @@ public class ImageController implements HandlerExceptionResolver {
         ImageMapping imageMapping = new ImageMapping();
         imageMapping.setImageId(id);
         imageMappingManager.createImageMapping(imageMapping);  
-        if (imageMappingManager.isVisibleToUsers(id)) {
+        if (imageMappingManager.isVisibleToUser(id)) {
             return "Visible to Users";
         } else {
             return "Error: Unable to add image to user view.";
@@ -256,7 +275,7 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
     public String removeImageMapping(@PathVariable String id) { 
         imageMappingManager.deleteImageMapping(id);  
-        if (imageMappingManager.isVisibleToUsers(id)) {
+        if (imageMappingManager.isVisibleToUser(id)) {
             return "Error: Unable to hide image from user view.";
         } else {
             return "Hidden from Users";

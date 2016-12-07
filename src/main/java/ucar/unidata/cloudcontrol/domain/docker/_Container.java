@@ -72,7 +72,7 @@ public class _Container implements Serializable {
         if (Objects.isNull(id)) {
             this.id = "";
         } else {
-            this.id = id.substring(0,11);
+            this.id = id.substring(0,12);
         }    
     }
     
