@@ -1,5 +1,5 @@
       <%-- This view is for displaying details for a single user.  Admin access or authenticated user access. --%>
-      <h3>Viewing User: <c:out value="${user.userName}" /></h3>
+      <h3>Viewing User:  <c:out value="${user.fullName}" /> (<c:out value="${user.userName}" />)</h3>
 
       <ul class="format thirds">
        <li>      

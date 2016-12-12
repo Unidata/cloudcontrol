@@ -7,7 +7,7 @@
          <c:choose>
           <c:when test="${loggedIn}">
            <li>
-            <b>${authUserName}</b>
+            <b>${authFullName} (${authUserName})</b>
             <c:url var="logoutUrl" value="/j_spring_security_logout" />
             <ul>
              <li>
@@ -16,7 +16,7 @@
               </form>
              </li>
              <li>
-              <form action="${baseUrl}/dashboard/user/password/${authUserName}" method="GET">
+              <form action="${baseUrl}/dashboard/user/password/${authUserName}" msrc/main/java/ucar/unidata/cloudcontrol/service/user/UserDetailsServiceImpl.javaethod="GET">
                <input type="submit" value="Change Password" />
               </form>
              </li>

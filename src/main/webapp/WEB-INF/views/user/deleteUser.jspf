@@ -1,7 +1,7 @@
       <%-- This view is for confirmation before deleting a User (Admin access only). --%>
       <h3>Delete User</h3>
       
-      <p>Are you certain you wish to delete user: <c:out value="${user.userName}" /> ?</p>
+      <p>Are you certain you wish to delete user: <c:out value="${user.fullName}" /> (<c:out value="${user.userName}" />)?</p>
       
       <form:form action="${baseUrl}/dashboard/user/delete" commandName="user" method="POST">
        <form:hidden path="userId" />

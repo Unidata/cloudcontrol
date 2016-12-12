@@ -18,9 +18,11 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -117,6 +119,9 @@ public class EditUserController implements HandlerExceptionResolver {
                     u.setAccountStatus(user.getAccountStatus());
                 }
                 userManager.updateUser(u);  
+                // update the session
+                Authentication auth = new UsernamePasswordAuthenticationToken(u, u.getPassword(), u.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(auth);
                 return new ModelAndView(new RedirectView("/dashboard/user/view/" + userName, true));   
             } catch (RecoverableDataAccessException e) {
                 throw new RuntimeException("Unable to edit user: " +  userName);
