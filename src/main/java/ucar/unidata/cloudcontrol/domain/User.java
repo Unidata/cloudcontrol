@@ -1,9 +1,18 @@
 package edu.ucar.unidata.cloudcontrol.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
 
 /**
  * Object representing a User.  
@@ -12,14 +21,14 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * User attributes, with the exception of the confirmPassword 
  * attribute, correspond to database columns.
  */
-public class User implements Serializable {
+public class User implements UserDetails, Serializable {
 
     private int userId;
     private String userName;
     private String fullName;
     private String password;
     private String confirmPassword;
-    private int accessLevel = 1; // default access level is User
+    private int accessLevel = 1;   // default access level is User
     private int accountStatus = 1; // default account status is enabled
     private String emailAddress;
     private Date dateCreated;
@@ -66,6 +75,7 @@ public class User implements Serializable {
      * 
      * @return  The User's password.  
      */
+    @Override
     public String getPassword() {
         return password;
     }
@@ -204,6 +214,49 @@ public class User implements Serializable {
      */    
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        if (getAccountStatus() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public String getUsername() {
+        return getUserName();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+        // User access 
+        if (getAccessLevel() == 1) {
+            roles.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        // Admin access
+        if (getAccessLevel() == 2) {
+            roles.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        } 
+        return roles;
     }
 	
     @Override

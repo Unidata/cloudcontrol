@@ -15,5 +15,8 @@
   <c:set var="authUserName">
    <sec:authentication property="principal.username" /> 
   </c:set>
+  <c:set var="authFullName">
+   <sec:authentication property="principal.fullName" /> 
+  </c:set>
  </c:when>
 </c:choose>
