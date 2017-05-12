@@ -1,4 +1,4 @@
-#Getting Started With CloudControl
+# Getting Started With CloudControl
 
 Want to check out this project? Great!  Use the following steps to get going:
 
