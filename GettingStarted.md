@@ -40,16 +40,12 @@ Follow the instructions in the <a href="https://github.com/Unidata/cloudcontrol/
  
 #### 7. Test away!
 
-Some functionality doesn't exist yet, but it will shortly. Default logins for the admin and test user are as follows:
+Some functionality doesn't exist yet, but it will shortly. Default login for the admin is as follows:
  
     login: admin
     password: changeme
 
-   and
-
-     login: testUser
-     password: changeme
-
+  
 Feel free to send us comments at <a href="mailto:support@unidata.ucar.edu">support@unidata.ucar.edu</a>
 
  Be sure to check out the <a href="https://github.com/Unidata/cloudcontrol/issues">GitHub issues</a> associated with this project for an idea of the TODO list to see if something on your want-list is there. 
