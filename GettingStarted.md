@@ -8,6 +8,7 @@ You will need to have access to an instance Docker Engine running on some machin
 
 If you are <a href="https://docs.docker.com/engine/installation/">installing Docker</a> from scratch, Docker runs a variety of <a href="https://docs.docker.com/engine/installation/">platforms</a>.  Follow the appropriate Docker <a href="https://docs.docker.com/engine/installation/">installation instructions</a> for your operating system.
 
+CloudControl communicates with a remote instance of Docker over specified ports (usually 2375 or 2376 by default).  Be sure those ports are open on the machine running Docker Machine.  (Consult your systems administrator if you are unfamiliar with modifying firewall rules, etc.)
 
 NOTE: CloudControl uses this super awesome <a href="https://github.com/docker-java/docker-java">Java Docker API client</a> which follows a precedence of where it gets its configs from.  You enter the Docker client settings in the web application, but if the Docker system environment variables  (<code>DOCKER_HOST</code> and <code>DOCKER_CERT_PATH</code>) are visible to the user running the servlet container, the Java Docker API client will glom onto the environment variable settings and use them first.
 
