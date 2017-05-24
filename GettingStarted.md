@@ -2,13 +2,12 @@
 
 Want to check out this project? Great!  Use the following steps to get going:
 
-#### 1. Confirm Docker is installed and running.
+#### 1. Accessing Docker Engine
 
-Docker needs to be installed and running on your local system for this to work.  Use the appropriate link below for Docker (or Docker Machine) installation and operating instructions based on your operating system: 
+You will need to have access to an instance Docker Engine running on some machine somewhere (local or remote).  
 
-* <a href="https://docs.docker.com/engine/installation/linux/ubuntu/">Linux (Ubuntu)</a>
-* <a href="https://docs.docker.com/docker-for-windows/">Windows</a>
-* <a href="https://docs.docker.com/docker-for-mac/">Mac OS X</a>
+If you are <a href="https://docs.docker.com/engine/installation/">installing Docker</a> from scratch, Docker runs a variety of <a href="https://docs.docker.com/engine/installation/">platforms</a>.  Follow the appropriate Docker <a href="https://docs.docker.com/engine/installation/">installation instructions</a> for your operating system.
+
 
 NOTE: CloudControl uses this super awesome <a href="https://github.com/docker-java/docker-java">Java Docker API client</a> which follows a precedence of where it gets its configs from.  You enter the Docker client settings in the web application, but if the Docker system environment variables  (<code>DOCKER_HOST</code> and <code>DOCKER_CERT_PATH</code>) are visible to the user running the servlet container, the Java Docker API client will glom onto the environment variable settings and use them first.
 
