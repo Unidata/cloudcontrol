@@ -66,10 +66,10 @@ public class ImageController implements HandlerExceptionResolver {
     
     @Resource(name="containerManager")
     private ContainerManager containerManager;
-	
+    
     @Resource(name = "imageMappingManager")
     private ImageMappingManager imageMappingManager;
-	
+    
     @Resource(name = "containerMappingManager")
     private ContainerMappingManager containerMappingManager;
     
@@ -118,21 +118,21 @@ public class ImageController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/image/{imageId}/start", method=RequestMethod.GET)
     @ResponseBody
     public String startImage(@PathVariable String imageId, Authentication authentication) { 
-		// check to see if user is allow to access/manipulate this image
+        // check to see if user is allow to access/manipulate this image
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
             if (!imageMappingManager.isVisibleToUser(imageId)) {       
-				logger.info("User " + authentication.getName() + " does not have permission to start image " + imageId); 
+                logger.info("User " + authentication.getName() + " does not have permission to start image " + imageId); 
                 return "Error: you are not allowed to start this image.  Please contact the site administrator if you have any questions.";
             }
         }
-	    // start an image container
-		String containerId = containerManager.startContainer(imageId, authentication.getName());
+        // start an image container
+        String containerId = containerManager.startContainer(imageId, authentication.getName());
         if (containerId == null) { 
-			logger.error("Unable to start container for image " + imageId); 
+            logger.error("Unable to start container for image " + imageId); 
             return "Error: unable to start image.  Please contact the site administrator."; 
         } else {
-			logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
+            logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
             return containerId;  
         }
     }
@@ -147,34 +147,34 @@ public class ImageController implements HandlerExceptionResolver {
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{containerId}/stop", method=RequestMethod.GET)
     public String stopImage(@PathVariable String containerId, Authentication authentication) {
-		// check to see if user is allow to access/manipulate this image
-		_Container _container = containerManager.getContainer(containerId);
-		if (_container == null) {
-			logger.error("Unable to find container " + containerId + " to stop.");
-			return "Error: unable to find image container " + containerId + ".  Please contact the site administrator."; 
-		}
-		String imageId = _container.getImageId();
+        // check to see if user is allow to access/manipulate this image
+        _Container _container = containerManager.getContainer(containerId);
+        if (_container == null) {
+            logger.error("Unable to find container " + containerId + " to stop.");
+            return "Error: unable to find image container " + containerId + ".  Please contact the site administrator."; 
+        }
+        String imageId = _container.getImageId();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {         
             if (!imageMappingManager.isVisibleToUser(imageId)) { 
-			    logger.info("User " + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
+                logger.info("User " + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
                 return "Error: you are not allowed to start/stop this image.  Please contact the site administrator if you have any questions.";
             }
         }
-		// see if user making the request is the same as the one in the mapping
-		String userName = containerMappingManager.lookupContainerMappingbyContainer(_container).getUserName();
-		if (authentication.getName().equals(userName) || authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-	        if (!containerManager.stopContainer(containerId)) {
-				logger.error("Unable to stop image container " + containerId);   
-	            return "Error: unable to stop image container.  Please contact the site administrator."; 
-	        } else {
-				logger.info("User " + authentication.getName() + " has successfully stopped container " + containerId + " in image " + imageId);
-	            return _container.getImageId();  
-	        }
-		} else {
-			logger.info("User" + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
-			return "Error: you are not allowed to start/stop this image container.  Please contact the site administrator.";
-		}
+        // see if user making the request is the same as the one in the mapping
+        String userName = containerMappingManager.lookupContainerMappingbyContainer(_container).getUserName();
+        if (authentication.getName().equals(userName) || authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            if (!containerManager.stopContainer(containerId)) {
+                logger.error("Unable to stop image container " + containerId);   
+                return "Error: unable to stop image container.  Please contact the site administrator."; 
+            } else {
+                logger.info("User " + authentication.getName() + " has successfully stopped container " + containerId + " in image " + imageId);
+                return _container.getImageId();  
+            }
+        } else {
+            logger.info("User" + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);    
+            return "Error: you are not allowed to start/stop this image container.  Please contact the site administrator.";
+        }
     }
     
     /**
@@ -292,16 +292,16 @@ public class ImageController implements HandlerExceptionResolver {
      * @return  Redirected view path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-	@ResponseBody 
+    @ResponseBody 
     @RequestMapping(value="/dashboard/docker/image/{id}/remove", method=RequestMethod.GET)
     public String removeImage(@PathVariable String id, Model model) { 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-	    String userName = auth.getName(); //get logged in username
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String userName = auth.getName(); //get logged in username
         if (!imageManager.removeImage(id, userName)) {
-			_Image _image = imageManager.getImage(id); 
+            _Image _image = imageManager.getImage(id); 
             return "Error: Unable to remove Image with ID: " + _image.getRepoTags();  
         } else { 
-        	return "success";
+            return "success";
         }
     }
     
