@@ -48,28 +48,27 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> getImageList() {
-		List<ImageMapping> imageMappings = imageMappingManager.getAllImageMappings();
         List<_Image> _images = null;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             List<Image> images = dockerClient.listImagesCmd().withShowAll(false).exec();
             ImageConverter imageConverter = new ImageConverter();
             List<_Image> _convertedImages = imageConverter.processImageList(images); 
-			if (_convertedImages != null) {
-				Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
-				_images = new ArrayList<_Image>(_convertedImages.size());
-		        for (_Image i : _convertedImages) {
-					// check db and see if is a visible to users
+            if (_convertedImages != null) {
+                Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
+                _images = new ArrayList<_Image>(_convertedImages.size());
+                for (_Image i : _convertedImages) {
+                    // check db and see if is a visible to users
                     i.setIsVisibleToUsers(imageMappingManager.isVisibleToUser(i.getId())); 
-					// find the status info of the container to see if the image is running.
-	                if (_containerStatusMap.containsKey(i.getId())) {
-	                    i.setStatus(_containerStatusMap.get(i.getId())); 
-	                }
-					// get attached containers
-					i.setAttachedContainers(containerManager.getContainerListByImage(i.getId()));
-					_images.add(i); 
-		        }
-			}
+                    // find the status info of the container to see if the image is running.
+                    if (_containerStatusMap.containsKey(i.getId())) {
+                        i.setStatus(_containerStatusMap.get(i.getId())); 
+                    }
+                    // get attached containers
+                    i.setAttachedContainers(containerManager.getContainerListByImage(i.getId()));
+                    _images.add(i); 
+                }
+            }
         } catch (Exception e) {
             logger.error("Unable to get list of Images: " + e);
         }            
@@ -83,14 +82,16 @@ public class ImageManagerImpl implements ImageManager {
      * @return  The _Image.   
      */
     public _Image getImage(String imageId) {
-        List<_Image> _images = getImageList(); 
         _Image _image = null;
-        for (_Image i : _images) {
-            if (imageId.equals(i.getId())) {
-                _image = i; 
-                break;
+        List<_Image> _images = getImageList(); 
+        if (_images != null) {
+            for (_Image i : _images) {
+                if (imageId.equals(i.getId())) {
+                    _image = i; 
+                    break;
+                }
             }
-        } 
+        }  
         return _image;
     }
     
@@ -122,15 +123,19 @@ public class ImageManagerImpl implements ImageManager {
     public Map<String, String> getImageStatusMap() {
         Map<String, String> idStatusMap = null;
         List<_Image> _images = getImageList();
-        if (!_images.isEmpty()) {
-            for (_Image _image : _images) {
-                if (_image != null) {
-                    idStatusMap = new HashMap<String, String>();
-                    idStatusMap.put(_image.getId(), _image.getStatus());
+        if (_images != null) {
+            if (!_images.isEmpty()) {
+                for (_Image _image : _images) {
+                    if (_image != null) {
+                        idStatusMap = new HashMap<String, String>();
+                        idStatusMap.put(_image.getId(), _image.getStatus());
+                    }
                 }
-            }
-            if (idStatusMap.isEmpty()) {
-                idStatusMap = null;
+                if (idStatusMap != null) {
+                    if (idStatusMap.isEmpty()) {
+                        idStatusMap = null;
+                    }
+                }            
             }
         }
         return idStatusMap;
@@ -151,8 +156,10 @@ public class ImageManagerImpl implements ImageManager {
                     idStatusMap.put(_image.getId(), _image.getStatus());
                 }
             }
-            if (idStatusMap.isEmpty()) {
-                idStatusMap = null;
+            if (idStatusMap != null) {
+                if (idStatusMap.isEmpty()) {
+                    idStatusMap = null;
+                }
             }
         }
         return idStatusMap;
@@ -168,27 +175,29 @@ public class ImageManagerImpl implements ImageManager {
     public boolean removeImage(String imageId, String userName) {
         boolean imageRemoved = true;
         _Image _image = getImage(imageId);
-        String repoTags = _image.getRepoTags();
-        if (!containerManager.removeContainersFromImage(imageId)) {
-            logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
-        }    
-        if (imageMappingManager.isVisibleToUser(imageId)) {
-            imageMappingManager.deleteImageMapping(imageId);
-        }
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            dockerClient.removeImageCmd(imageId).withForce(true).exec();
-            _image = getImage(imageId);
-            if (_image != null) {
-                imageRemoved = false;
-            } else {
-                Date d = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                logger.info("Image \"" + repoTags + "\" with ID of " + imageId + "has been removed on " + format.format(d) + " by user: " + userName );
+        if (_image != null) {
+            String repoTags = _image.getRepoTags();
+            if (!containerManager.removeContainersFromImage(imageId)) {
+                logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
+            }    
+            if (imageMappingManager.isVisibleToUser(imageId)) {
+                imageMappingManager.deleteImageMapping(imageId);
             }
-        } catch (Exception e) {
-            logger.error("Unable to remove Image: " + e);
-        }            
+            try {
+                DockerClient dockerClient = clientManager.initializeDockerClient();
+                dockerClient.removeImageCmd(imageId).withForce(true).exec();
+                _image = getImage(imageId);
+                if (_image != null) {
+                    imageRemoved = false;
+                } else {
+                    Date d = new Date();
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    logger.info("Image \"" + repoTags + "\" with ID of " + imageId + "has been removed on " + format.format(d) + " by user: " + userName );
+                }
+            } catch (Exception e) {
+                logger.error("Unable to remove Image: " + e);
+            } 
+        }           
         return imageRemoved;
     }
 }

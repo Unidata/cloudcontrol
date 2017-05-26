@@ -7,7 +7,7 @@ compileJava {
 }
 
 ext {
-    springVersion = "4.2.4.RELEASE"
+    springVersion = "4.3.8.RELEASE"
     springSecurityVersion = "4.0.3.RELEASE"
     dockerJavaVersion = "3.0.3"
     glassFishVersion = "2.11"
@@ -46,6 +46,7 @@ dependencies {
     compile "org.springframework:spring-context:$springVersion"
     compile "org.springframework:spring-core:$springVersion"
     compile "org.springframework:spring-expression:$springVersion"
+    compile "org.springframework:spring-test:$springVersion"
     compile "org.springframework:spring-web:$springVersion"
     compile "org.springframework:spring-webmvc:$springVersion"
 
@@ -73,7 +74,7 @@ dependencies {
     compile "commons-io:commons-io:2.4"
     
     compile "org.slf4j:slf4j-api:1.7.21"
-	compile "org.slf4j:slf4j-simple:1.7.21"
+    compile "org.slf4j:slf4j-simple:1.7.21"
     
     compile "com.google.guava:guava:18.0"
     compile "org.bouncycastle:bcpkix-jdk15on:1.51"
@@ -86,6 +87,10 @@ dependencies {
     compile "log4j:log4j:1.2.17"
 
     compile "org.apache.derby:derby:10.12.1.1"
+
+    compile "org.hamcrest:hamcrest-all:1.3"
+    compile "org.mockito:mockito-core:2.7.22"
+    compile "com.jayway.jsonpath:json-path-assert:2.2.0"
 
     compile "com.github.docker-java:docker-java:$dockerJavaVersion"
 }

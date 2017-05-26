@@ -368,28 +368,6 @@ public class ApplicationInitialization implements ServletContextListener {
             preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
             preparedStatement.executeUpdate();
             
-            preparedStatement = connection.prepareStatement(insertSql);
-            preparedStatement.setString(1, "testUser1");
-            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
-            preparedStatement.setInt(3, 1);
-            preparedStatement.setInt(4, 1);
-            preparedStatement.setString(5, "testUser@foo.bar.baz");
-            preparedStatement.setString(6, "Test User 1");
-            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.executeUpdate();
-			
-            preparedStatement = connection.prepareStatement(insertSql);
-            preparedStatement.setString(1, "testUser2");
-            preparedStatement.setString(2, "$2a$10$gJ4ITtIMNpxsU0xmx6qoE.0MGZ2fv8HpoaL1IlgNdhBlUgmcVwRDO");
-            preparedStatement.setInt(3, 1);
-            preparedStatement.setInt(4, 1);
-            preparedStatement.setString(5, "testUser@foo.bar.baz");
-            preparedStatement.setString(6, "Test User 2");
-            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.executeUpdate();
-            
         } catch (SQLException e) { 
             logger.error("Unable to prepare and/or execute prepared statement: " + e); 
         } finally { 

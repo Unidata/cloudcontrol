@@ -151,7 +151,7 @@ public class ImageController implements HandlerExceptionResolver {
         _Container _container = containerManager.getContainer(containerId);
         if (_container == null) {
             logger.error("Unable to find container " + containerId + " to stop.");
-            return "Error: unable to find image container " + containerId + ".  Please contact the site administrator."; 
+            return "Error: unable to find image container.  Please contact the site administrator."; 
         }
         String imageId = _container.getImageId();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -298,8 +298,7 @@ public class ImageController implements HandlerExceptionResolver {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName(); //get logged in username
         if (!imageManager.removeImage(id, userName)) {
-            _Image _image = imageManager.getImage(id); 
-            return "Error: Unable to remove Image with ID: " + _image.getRepoTags();  
+            return "Error: Unable to remove Image.";  
         } else { 
             return "success";
         }

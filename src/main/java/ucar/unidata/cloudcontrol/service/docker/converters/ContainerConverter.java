@@ -229,7 +229,7 @@ public class ContainerConverter {
                 _inspectContainerResponse.setProcessLabel(i.getProcessLabel());
                 _inspectContainerResponse.setResolvConfPath(i.getResolvConfPath());
                 _inspectContainerResponse.setExecIds(i.getExecIds());
-                _inspectContainerResponse.setState(convertContainerState(_inspectContainerResponse, i.getState()));
+                //_inspectContainerResponse.setState(convertContainerState(_inspectContainerResponse, i.getState()));
                 //_inspectContainerResponse.setVolumes(i.getVolumes());
                 //_inspectContainerResponse.setVolumesRW(i.getVolumesRW());
                 _inspectContainerResponse.setMounts(processMountList(i.getMounts()));
@@ -247,6 +247,7 @@ public class ContainerConverter {
      * @param containerState  A com.github.dockerjava.api.command.InspectContainerResponse.ContainerState object to convert.
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._ContainerState object.
      */
+/*
     public _InspectContainerResponse._ContainerState convertContainerState(_InspectContainerResponse _inspectContainerResponse, InspectContainerResponse.ContainerState containerState) {
         Function<InspectContainerResponse.ContainerState, _InspectContainerResponse._ContainerState> mapContainerStateTo_ContainerState = new Function<InspectContainerResponse.ContainerState, _InspectContainerResponse._ContainerState>() {
             public _InspectContainerResponse._ContainerState apply(InspectContainerResponse.ContainerState c) {
@@ -268,6 +269,7 @@ public class ContainerConverter {
         _InspectContainerResponse._ContainerState _containerState = mapContainerStateTo_ContainerState.apply(containerState);
         return _containerState;
     }
+*/
     
     /**
      * Utility method to process a List of com.github.dockerjava.api.command.InspectContainerResponse.Mount objects

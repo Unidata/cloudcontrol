@@ -40,7 +40,7 @@ public class _InspectContainerResponse implements Serializable {
     private String processLabel;
     private String resolvConfPath;
     private String execIds;
-    private _ContainerState state;
+//    private _ContainerState state;
 //    private VolumeBinds volumes;
 //    private VolumesRW volumesRW;
     private String mounts;
@@ -303,7 +303,7 @@ public class _InspectContainerResponse implements Serializable {
             }
         }
     }
-    
+  /*  
     public _ContainerState getState() {
         return state;
     }
@@ -311,7 +311,6 @@ public class _InspectContainerResponse implements Serializable {
     public void setState(_ContainerState state) {
          this.state = state;
     }
-	/*
     public String getVolumes() {
         return volumes;
     }
@@ -359,7 +358,7 @@ public class _InspectContainerResponse implements Serializable {
             }
         }
     }
-
+/*
     public class _ContainerState {
         private String status;
         private String running;
@@ -384,147 +383,148 @@ public class _InspectContainerResponse implements Serializable {
                 this.status = status;
             }
         }
-		
+        
         public String getRunning() {
             return running;
         }
-		
-	    public void setRunning(Boolean running) {
-	        if (Objects.isNull(running)) {
-	            this.running = "";
-	        } else {
-	            this.running = String.valueOf(running);
-	        }
-	    }
-		
+        
+        public void setRunning(Boolean running) {
+            if (Objects.isNull(running)) {
+                this.running = "";
+            } else {
+                this.running = String.valueOf(running);
+            }
+        }
+        
         public String getPaused() {
             return paused;
         }
-		
-	    public void setPaused(Boolean paused) {
-	        if (Objects.isNull(paused)) {
-	            this.paused = "";
-	        } else {
-	            this.paused = String.valueOf(paused);
-	        }
-	    }
-		
+        
+        public void setPaused(Boolean paused) {
+            if (Objects.isNull(paused)) {
+                this.paused = "";
+            } else {
+                this.paused = String.valueOf(paused);
+            }
+        }
+        
         public String getRestarting() {
             return restarting;
         }
-		
-	    public void setRestarting(Boolean restarting) {
-	        if (Objects.isNull(restarting)) {
-	            this.restarting = "";
-	        } else {
-	            this.restarting = String.valueOf(restarting);
-	        }
-	    }
-		
+        
+        public void setRestarting(Boolean restarting) {
+            if (Objects.isNull(restarting)) {
+                this.restarting = "";
+            } else {
+                this.restarting = String.valueOf(restarting);
+            }
+        }
+        
         public String getOomKilled() {
             return oomKilled;
         }
-		
-	    public void setOomKilled(Boolean oomKilled) {
-	        if (Objects.isNull(oomKilled)) {
-	            this.oomKilled = "";
-	        } else {
-	            this.oomKilled = String.valueOf(oomKilled);
-	        }
-	    }
-		
+        
+        public void setOomKilled(Boolean oomKilled) {
+            if (Objects.isNull(oomKilled)) {
+                this.oomKilled = "";
+            } else {
+                this.oomKilled = String.valueOf(oomKilled);
+            }
+        }
+        
         public String getDead() {
             return dead;
         }
-		
-	    public void setDead(Boolean dead) {
-	        if (Objects.isNull(dead)) {
-	            this.dead = "";
-	        } else {
-	            this.dead = String.valueOf(dead);
-	        }
-	    }
-		
+        
+        public void setDead(Boolean dead) {
+            if (Objects.isNull(dead)) {
+                this.dead = "";
+            } else {
+                this.dead = String.valueOf(dead);
+            }
+        }
+        
         public String getPid() {
             return pid;
         }
-		
-	    public void setPid(Integer pid) {
-	        if (Objects.isNull(pid)) {
-	            this.pid = "";
-	        } else {
-	            this.pid = String.valueOf(pid);
-	        }
-	    }
-		
+        
+        public void setPid(Integer pid) {
+            if (Objects.isNull(pid)) {
+                this.pid = "";
+            } else {
+                this.pid = String.valueOf(pid);
+            }
+        }
+        
         public String getExitCode() {
             return exitCode;
         }
-		
-	    public void setExitCode(Integer exitCode) {
-	        if (Objects.isNull(exitCode)) {
-	            this.exitCode = "";
-	        } else {
-	            this.exitCode = String.valueOf(exitCode);
-	        }
-	    }
-		
+        
+        public void setExitCode(Integer exitCode) {
+            if (Objects.isNull(exitCode)) {
+                this.exitCode = "";
+            } else {
+                this.exitCode = String.valueOf(exitCode);
+            }
+        }
+        
         public String getError() {
             return error;
         }
-		
-	    public void setError(String error) {
-	        if (Objects.isNull(error)) {
-	            this.error = "";
-	        } else {
-	            this.error = error;
-	        }
-	    }
-		
+        
+        public void setError(String error) {
+            if (Objects.isNull(error)) {
+                this.error = "";
+            } else {
+                this.error = error;
+            }
+        }
+        
         public String getStartedAt() {
             return startedAt;
         }
-		
-	    public void setStartedAt(String startedAt) {
-	        if (Objects.isNull(startedAt)) {
-	            this.startedAt = "";
-	        } else {
-	            this.startedAt = startedAt;
-	        }
-	    }
-		
+        
+        public void setStartedAt(String startedAt) {
+            if (Objects.isNull(startedAt)) {
+                this.startedAt = "";
+            } else {
+                this.startedAt = startedAt;
+            }
+        }
+        
         public String getFinishedAt() {
             return finishedAt;
         }
-		
-	    public void setFinishedAt(String finishedAt) {
-	        if (Objects.isNull(finishedAt)) {
-	            this.finishedAt = "";
-	        } else {
-	            this.finishedAt = finishedAt;
-	        }
-	    }
-		
-	    @Override
-	    public String toString() {
+        
+        public void setFinishedAt(String finishedAt) {
+            if (Objects.isNull(finishedAt)) {
+                this.finishedAt = "";
+            } else {
+                this.finishedAt = finishedAt;
+            }
+        }
+        
+        @Override
+        public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("&nbsp; &nbsp; &nbsp; status: " + state.getStatus() + "<br>");
             sb.append("&nbsp; &nbsp; &nbsp; running: " + state.getRunning() + "<br>");
             sb.append("&nbsp; &nbsp; &nbsp; paused: " + state.getPaused() + "<br>");
             sb.append("&nbsp; &nbsp; &nbsp; restarting: " + state.getRestarting() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; oomKilled: " + state.getOomKilled() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; dead: " + state.getDead() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; pid: " + state.getPid() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; exitCode: " + state.getExitCode() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; error: " + state.getError() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; startedAt: " + state.getStartedAt() + "<br>");
-			sb.append("&nbsp; &nbsp; &nbsp; finishedAt: " + state.getFinishedAt());
+            sb.append("&nbsp; &nbsp; &nbsp; oomKilled: " + state.getOomKilled() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; dead: " + state.getDead() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; pid: " + state.getPid() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; exitCode: " + state.getExitCode() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; error: " + state.getError() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; startedAt: " + state.getStartedAt() + "<br>");
+            sb.append("&nbsp; &nbsp; &nbsp; finishedAt: " + state.getFinishedAt());
             return sb.toString();
-	    }  
+        }  
     }
-	
-	public static class _Mount {
-		
+*/
+    
+    public static class _Mount {
+        
         private String name;
         private String source;
         private String destination;
@@ -543,7 +543,7 @@ public class _InspectContainerResponse implements Serializable {
                 this.name = name;
             }
         }
-		
+        
         public String getSource() {
             return source;
         }
@@ -555,7 +555,7 @@ public class _InspectContainerResponse implements Serializable {
                 this.source = source;
             }
         }
-		
+        
         public String getDestination() {
             return destination;
         }
@@ -567,7 +567,7 @@ public class _InspectContainerResponse implements Serializable {
                 this.destination = "&nbsp; &nbsp; &nbsp;  path: " + destination.getPath();
             }
         }
-		
+        
         public String getDriver() {
             return driver;
         }
@@ -579,7 +579,7 @@ public class _InspectContainerResponse implements Serializable {
                 this.driver = driver;
             }
         }
-		
+        
         public String getMode() {
             return mode;
         }
@@ -591,24 +591,24 @@ public class _InspectContainerResponse implements Serializable {
                 this.mode = mode;
             }
         }
-		
+        
         public String getRw() {
             return rw;
         }
-		
-	    public void setRw(Boolean rw) {
-	        if (Objects.isNull(rw)) {
-	            this.rw = "";
-	        } else {
-	            this.rw = String.valueOf(rw);
-	        }
-	    }
-		
-	    @Override
-	    public String toString() {
-	        return ToStringBuilder.reflectionToString(this);
-	    }  
-	}
+        
+        public void setRw(Boolean rw) {
+            if (Objects.isNull(rw)) {
+                this.rw = "";
+            } else {
+                this.rw = String.valueOf(rw);
+            }
+        }
+        
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this);
+        }  
+    }
 
     @Override
     public String toString() {
