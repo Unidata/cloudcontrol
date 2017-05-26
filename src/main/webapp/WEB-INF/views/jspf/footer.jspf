@@ -2,5 +2,6 @@
       </div> <!-- /#container -->   
      <footer>
 	  <%@ include file="/WEB-INF/views/EDIT/footerContent.jspf" %>
+      <p>Version: <%=Version.CURRENT_VERSION%></p>
      </footer>
     </div> <!-- /#wrap -->

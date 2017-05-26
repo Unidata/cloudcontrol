@@ -6,6 +6,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
+<%@ page import="edu.ucar.unidata.cloudcontrol.util.Version" %>
+
 <jsp:useBean id="myDate" class="java.util.Date"/>  
 
 <c:set var="baseUrl" value="${pageContext.request.contextPath}" />
