@@ -23,7 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -126,7 +126,7 @@ public class ClientController implements HandlerExceptionResolver {
      * View is the dashboard.  The model contains the 
      * requested ClientConfig displayed in the view via jspf.
      *    
-     * Only Users with the role of 'ROLE_ADMIN' can see Docker client configuration information.
+     * Only users with the role of 'ROLE_ADMIN' can see Docker client configuration information.
      * 
      * @param id  The id as provided by @PathVariable.
      * @param model  The Model used by the View.
@@ -154,7 +154,7 @@ public class ClientController implements HandlerExceptionResolver {
      * If we already have configuration data in the database, the model contains the 
      * requested ClientConfig displayed in the view via jspf.
      *
-     * Only Users with a role of 'ROLE_ADMIN' are allowed access
+     * Only users with a role of 'ROLE_ADMIN' are allowed access
      * to this view. 
      * 
      * @param model  The Model used by the View.
@@ -187,7 +187,7 @@ public class ClientController implements HandlerExceptionResolver {
      * 1) the newly created ClientConfig object (if successful) displayed in the view via jspf; or
      * 2) the web form to create a new ClientConfig if there are validation errors with the user input. 
      *
-     * Only Users with the role of 'ROLE_ADMIN' can configure a Docker Client.
+     * Only users with the role of 'ROLE_ADMIN' can configure a Docker Client.
      * 
      * @param clientConfig  The ClientConfig to persist. 
      * @param result  The BindingResult for error handling.
@@ -204,7 +204,7 @@ public class ClientController implements HandlerExceptionResolver {
            return new ModelAndView("dashboard"); 
         } else {
             try {
-                User authUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 clientConfig.setCreatedBy(authUser.getUsername());
                 clientConfig.setLastUpdatedBy(authUser.getUsername());
                 int id = clientManager.createClientConfig(clientConfig);  
@@ -221,7 +221,7 @@ public class ClientController implements HandlerExceptionResolver {
      * The view is the dashboard.  The model contains the ClientConfig object to edit
      * and the information which will be loaded and displayed in the view via jspf.
      *
-     * Only Users with the role of 'ROLE_ADMIN' can edit Docker Client Configuration information.
+     * Only users with the role of 'ROLE_ADMIN' can edit Docker Client Configuration information.
      * 
      * @param id  The id as provided by @PathVariable.
      * @param model  The Model used by the View.
@@ -243,7 +243,7 @@ public class ClientController implements HandlerExceptionResolver {
      * 1) the updated ClientConfig object (if successful) displayed in the view via jspf; or
      * 2) the web form to edit the ClientConfig if there are validation errors with the clientConfig input.
      *
-     * Only Users with the role of 'ROLE_ADMIN' can edit Docker Client Configuration information.
+     * Only users with the role of 'ROLE_ADMIN' can edit Docker Client Configuration information.
      * 
      * @param id  The id as provided by @PathVariable. 
      * @param clientConfig  The ClientConfig to edit. 
@@ -262,7 +262,7 @@ public class ClientController implements HandlerExceptionResolver {
             return new ModelAndView("dashboard"); 
         } else {   
             try {
-                User authUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 clientConfig.setLastUpdatedBy(authUser.getUsername());
                 ClientConfig dbClientConfig = clientManager.lookupById(id);
                 clientConfig.setCreatedBy(dbClientConfig.getCreatedBy());
