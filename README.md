@@ -1,9 +1,8 @@
 # CloudControl    <img src="https://github.com/Unidata/cloudcontrol/blob/master/src/main/webapp/resources/images/header.png" alt="CloudControl   "/>
-<a href="https://scan.coverity.com/projects/cloudcontrol">
-  <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/8628/badge.svg"/>
-</a>
 
+[![Travis Build Status](https://travis-ci.org/Unidata/cloudcontrol.svg?branch=master)](https://travis-ci.org/Unidata/cloudcontrol)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/8628/badge.svg)](https://scan.coverity.com/projects/cloudcontrol)
+       
 ### About CloudControl   
 
 CloudControl is a web-based dashboard which provides administrative controls to deploy and manage Docker images in the cloud.  In particular, the web interface makes it easy for users unfamiliar with Docker to utilize Docker docker-based technologies. Users of CloudControl do not need to possess in-depth knowledge of Docker commands.
