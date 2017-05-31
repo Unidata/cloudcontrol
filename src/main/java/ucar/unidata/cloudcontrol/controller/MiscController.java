@@ -23,7 +23,7 @@ public class MiscController {
     public String getWelcomePage(Model model) {
         return "welcome";
     }
-	
+    
     /**
      * Accepts a GET request for the gettingStarted page.  This page
      * is visible before the user is logged in.  View is the misc page. 
@@ -33,10 +33,10 @@ public class MiscController {
      */
     @RequestMapping(value = "/gettingStarted", method = RequestMethod.GET)
     public String gettingStarted(Model model) {
-		model.addAttribute("action", "gettingStarted");   
+        model.addAttribute("action", "gettingStarted");   
         return "misc";
     }
-	
+    
     /**
      * Accepts a GET request for the about page.  This page is 
      * visible before the user is logged in.  View is the misc page. 
@@ -46,7 +46,7 @@ public class MiscController {
      */
     @RequestMapping(value = "/about", method = RequestMethod.GET)
     public String about(Model model) {
-		model.addAttribute("action", "about");   
+        model.addAttribute("action", "about");   
         return "misc";
     }
     

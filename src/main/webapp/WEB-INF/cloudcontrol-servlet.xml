@@ -45,7 +45,7 @@
       login-page="/login"
       username-parameter="userName"
       password-parameter="password"
-	  authentication-success-handler-ref="customAuthenticationSuccessHandler"
+      authentication-success-handler-ref="customAuthenticationSuccessHandler"
       authentication-failure-handler-ref="authenticationFailureHandler"/>
     
     <security:logout
@@ -55,9 +55,9 @@
       
     <security:intercept-url pattern="/index.jsp" access="permitAll" />
     <security:intercept-url pattern="/welcome" access="permitAll" />
-	<security:intercept-url pattern="/welcome/register" access="permitAll" />
-	<security:intercept-url pattern="/about" access="permitAll" />
-	<security:intercept-url pattern="/gettingStarted" access="permitAll" />
+    <security:intercept-url pattern="/welcome/register" access="permitAll" />
+    <security:intercept-url pattern="/about" access="permitAll" />
+    <security:intercept-url pattern="/gettingStarted" access="permitAll" />
     <security:intercept-url pattern="/login/**" access="permitAll" />
     <security:intercept-url pattern="/denied" access="permitAll" />
     <security:intercept-url pattern="/**" access="isAuthenticated()" />
@@ -109,7 +109,7 @@
   <!-- Resolves view names to the .jsp resources within the /WEB-INF/views directory --> 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix" value="/WEB-INF/views/"></property>
-	<property name="suffix" value=".jsp"></property>        
+    <property name="suffix" value=".jsp"></property>        
   </bean>
   
   <!-- DAO injection -->  
