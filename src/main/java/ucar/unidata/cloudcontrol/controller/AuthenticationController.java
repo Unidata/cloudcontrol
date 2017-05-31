@@ -39,11 +39,11 @@ public class AuthenticationController {
     @RequestMapping(value = "/login/{error}", method = RequestMethod.GET)
     public String getLoginPage(@PathVariable String error, Model model) {
         if (error != null) {
-			model.addAttribute("error", error);
+            model.addAttribute("error", error);
         }
         return "login";
     }
-	
+    
     /**
      * Accepts a GET request for the login page.
      * View is the login page.
