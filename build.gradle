@@ -96,6 +96,8 @@ dependencies {
     testCompile "org.mockito:mockito-core:2.7.22"
     testCompile "junit:junit:4.12"
 
+    testCompile "de.bechte.junit:junit-hierarchicalcontextrunner:4.12.1"
+
 
     compile "com.github.docker-java:docker-java:$dockerJavaVersion"
 }
