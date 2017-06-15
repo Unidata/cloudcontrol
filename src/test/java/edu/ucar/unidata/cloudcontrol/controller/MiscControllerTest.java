@@ -1,5 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.controller;
 
+import edu.ucar.unidata.cloudcontrol.config.SecurityConfig;
 import edu.ucar.unidata.cloudcontrol.config.WebAppContext;
 
 import org.junit.Before;
@@ -19,9 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.hamcrest.Matchers.equalTo;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -31,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 //@ContextConfiguration("/applicationContext.xml")
-@ContextConfiguration(classes = {WebAppContext.class})
+@ContextConfiguration(classes = {WebAppContext.class, SecurityConfig.class})
 public class MiscControllerTest {
 
     private MockMvc mockMvc;
@@ -43,6 +44,7 @@ public class MiscControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
+            .apply(springSecurity())
             .build();
     }
 
@@ -54,7 +56,7 @@ public class MiscControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/welcome.jsp"));
         //    .andDo(print());
     }
-    
+
     @Test
     public void testGettingStarted() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
@@ -64,7 +66,7 @@ public class MiscControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
          //   .andDo(print());
     }
-    
+
     @Test
     public void testAbout() throws Exception {
     mockMvc.perform(get("/about"))
