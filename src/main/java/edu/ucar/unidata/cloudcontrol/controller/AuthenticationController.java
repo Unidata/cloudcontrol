@@ -2,7 +2,6 @@ package edu.ucar.unidata.cloudcontrol.controller;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import org.springframework.stereotype.Controller;
@@ -14,9 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.ui.Model;
 
-import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
-
 /**
  * Controller to handle User authentication.
  */
@@ -24,9 +20,6 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 @Controller
 public class AuthenticationController {
     protected static Logger logger = Logger.getLogger(AuthenticationController.class);
-
-    @Resource(name = "userManager")
-    private UserManager userManager;
 
     /**
      * Accepts a GET request for the login page.
