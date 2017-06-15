@@ -18,11 +18,11 @@
   <context:annotation-config />
 
   <!-- Scans the classpath of this application for @Components to deploy as beans -->
-  <context:component-scan base-package="edu.ucar.unidata.cloudcontrol" />
+  <context:component-scan base-package="edu.ucar.unidata" />
 
   <!-- Configures the @Controller programming model -->
   <mvc:annotation-driven />
-  
+
   <!-- Properties injection -->
   <bean id="applicationProperties" 
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
