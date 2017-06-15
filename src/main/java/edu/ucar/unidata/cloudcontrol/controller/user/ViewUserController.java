@@ -55,7 +55,7 @@ public class ViewUserController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/user", method=RequestMethod.GET)
     public String listUsers(Model model) { 
         List<User> users = userManager.getUserList();
-		model.addAttribute("action", "listUsers");               
+        model.addAttribute("action", "listUsers");               
         model.addAttribute("users", users); 
         return "dashboard";
     }
