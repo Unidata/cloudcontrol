@@ -1,22 +1,25 @@
 package edu.ucar.unidata.cloudcontrol.controller;
 
-import de.bechte.junit.runners.context.HierarchicalContextRunner;
-
-import edu.ucar.unidata.cloudcontrol.categories.UnitTest;
+import edu.ucar.unidata.cloudcontrol.config.WebAppContext;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static edu.ucar.unidata.cloudcontrol.config.ControllerTestConfig.jspViewResolver;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.equalTo;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -25,101 +28,50 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Tests for edu.ucar.unidata.cloudcontrol.controller.MiscController
  */
-@RunWith(HierarchicalContextRunner.class)
-@Category(UnitTest.class)
+@RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+//@ContextConfiguration("/applicationContext.xml")
+@ContextConfiguration(classes = {WebAppContext.class})
 public class MiscControllerTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private WebApplicationContext context;
+
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new MiscController())
-            .setViewResolvers(jspViewResolver())
+        mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
             .build();
     }
-/*
-        @Test
-        public void testShouldReturnHttpStatusCodeOk() throws Exception {
-            mockMvc.perform(get("/welcome"))
-                   .andExpect(status().isOk());
-        }
-*/
 
-    public class GetWelcomePage {
-        @Test
-        public void shouldReturnHttpStatusCodeOk() throws Exception {
-            mockMvc.perform(get("/welcome"))
-                   .andExpect(status().isOk());
-        }
-
-        @Test
-        public void shouldRenderWelcomeView() throws Exception {
-            mockMvc.perform(get("/welcome"))
-                  .andExpect(view().name("welcome"));
-        }
-
-        @Test
-        public void shouldForwardToWelcomeURL() throws Exception {
-            mockMvc.perform(get("/welcome"))
-                  .andExpect(forwardedUrl("/WEB-INF/views/welcome.jsp"));
-        }
+    @Test
+    public void testGetWelcomePage() throws Exception {
+        mockMvc.perform(get("/welcome"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("welcome"))
+            .andExpect(forwardedUrl("/WEB-INF/views/welcome.jsp"));
+        //    .andDo(print());
     }
-
-
-    public class GettingStarted {
-        @Test
-        public void shouldReturnHttpStatusCodeOk() throws Exception {
-            mockMvc.perform(get("/gettingStarted"))
-                   .andExpect(status().isOk());
-        }
-
-        @Test
-        public void shouldRenderMiscView() throws Exception {
-            mockMvc.perform(get("/gettingStarted"))
-                  .andExpect(view().name("misc"));
-        }
-
-        @Test
-        public void shouldHaveActionOfGettingStarted() throws Exception {
-            mockMvc.perform(get("/gettingStarted"))
-                  .andExpect(model().attribute("action", equalTo("gettingStarted")));
-        }
-
-        @Test
-        public void shouldForwardToMiscURL() throws Exception {
-            mockMvc.perform(get("/gettingStarted"))
-                  .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
-        }
+    
+    @Test
+    public void testGettingStarted() throws Exception {
+        mockMvc.perform(get("/gettingStarted"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("misc"))
+            .andExpect(model().attribute("action", equalTo("gettingStarted")))
+            .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
+         //   .andDo(print());
     }
-
-
-    public class About {
-        @Test
-        public void shouldReturnHttpStatusCodeOk() throws Exception {
-            mockMvc.perform(get("/about"))
-                   .andExpect(status().isOk());
-        }
-
-        @Test
-        public void shouldRenderMiscView() throws Exception {
-            mockMvc.perform(get("/about"))
-                  .andExpect(view().name("misc"));
-        }
-
-        @Test
-        public void shouldHaveActionOfAbout() throws Exception {
-            mockMvc.perform(get("/about"))
-                  .andExpect(model().attribute("action", equalTo("about")));
-        }
-
-        @Test
-        public void shouldForwardToMiscURL() throws Exception {
-            mockMvc.perform(get("/about"))
-                  .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
-        }
+    
+    @Test
+    public void testAbout() throws Exception {
+    mockMvc.perform(get("/about"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("misc"))
+            .andExpect(model().attribute("action", equalTo("about")))
+            .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
+          //  .andDo(print());
     }
-
-
-
-
 }
