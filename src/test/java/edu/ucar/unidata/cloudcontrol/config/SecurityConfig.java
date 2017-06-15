@@ -9,8 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -21,14 +22,14 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 
 @Configuration
-@EnableWebMvcSecurity
+@EnableWebSecurity
 @EnableWebMvc
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
    @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        Map failureUrlMap = new HashMap();
+        Map<String, String> failureUrlMap = new HashMap<String, String>();
         failureUrlMap.put("org.springframework.security.authentication.BadCredentialsException", "/login/badCredentials");
         failureUrlMap.put("org.springframework.security.authentication.LockedException", "/login/accountLocked");
         failureUrlMap.put("org.springframework.security.authentication.DisabledException", "/login/accountDisabled");
