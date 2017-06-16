@@ -20,7 +20,9 @@ import edu.ucar.unidata.cloudcontrol.service.user.validators.EditUserValidator;
 import edu.ucar.unidata.cloudcontrol.service.user.validators.PasswordValidator;
 
 
- 
+/**
+ * Mock objects used for controller tests
+ */
 @Configuration
 public class TestContext {
  
