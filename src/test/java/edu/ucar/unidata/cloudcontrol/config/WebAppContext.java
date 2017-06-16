@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.JstlView;
 import java.util.Properties;
 
 @Configuration
-@ImportResource("classpath:applicationContext.xml")
+@ImportResource("classpath:applicationContext-test.xml")
 public class WebAppContext {
 
     @Bean
