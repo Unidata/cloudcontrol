@@ -29,7 +29,6 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 /**
  * Controller to view a User or group of Users. 
  */
-
 @Controller
 public class ViewUserController implements HandlerExceptionResolver {
     
