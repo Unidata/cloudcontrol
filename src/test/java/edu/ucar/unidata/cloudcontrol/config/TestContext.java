@@ -21,7 +21,7 @@ import edu.ucar.unidata.cloudcontrol.service.user.validators.PasswordValidator;
 
 
 /**
- * Mock objects used for controller tests
+ * Mock object dependancies used for controller tests (found via component scan in applicationContext-test.xml)
  */
 @Configuration
 public class TestContext {
