@@ -104,7 +104,7 @@ public class ViewUserControllerTest {
     }
 
     @Test
-    public void testListUsers_ModelShouldContainActionListUsers() throws Exception {
+    public void testListUsers_ModelShouldContainListUsersAction() throws Exception {
         mockMvc.perform(get("/dashboard/user").with(user("admin").password("password").roles("ADMIN")))
             .andExpect(model().attribute("action", equalTo("listUsers")));
             //.andDo(print());

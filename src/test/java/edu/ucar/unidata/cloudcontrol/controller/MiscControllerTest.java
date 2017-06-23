@@ -50,7 +50,7 @@ public class MiscControllerTest {
     }
 
     @Test
-    public void testGetWelcomePage() throws Exception {
+    public void getWelcomePage_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/welcome"))
             .andExpect(status().isOk())
             .andExpect(view().name("welcome"))
@@ -59,22 +59,34 @@ public class MiscControllerTest {
     }
 
     @Test
-    public void testGettingStarted() throws Exception {
+    public void gettingStarted_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
             .andExpect(status().isOk())
             .andExpect(view().name("misc"))
-            .andExpect(model().attribute("action", equalTo("gettingStarted")))
             .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
          //   .andDo(print());
     }
 
     @Test
-    public void testAbout() throws Exception {
+    public void gettingStarted_ModelShouldContainGettingStartedAction() throws Exception {
+        mockMvc.perform(get("/gettingStarted"))
+            .andExpect(model().attribute("action", equalTo("gettingStarted")));
+         //   .andDo(print());
+    }
+
+    @Test
+    public void about_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
     mockMvc.perform(get("/about"))
             .andExpect(status().isOk())
             .andExpect(view().name("misc"))
-            .andExpect(model().attribute("action", equalTo("about")))
             .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
+          //  .andDo(print());
+    }
+
+    @Test
+    public void about_ModelShouldContainAboutAction() throws Exception {
+    mockMvc.perform(get("/about"))
+            .andExpect(model().attribute("action", equalTo("about")));
           //  .andDo(print());
     }
 }
