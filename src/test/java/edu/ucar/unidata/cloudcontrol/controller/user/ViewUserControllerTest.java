@@ -18,7 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.dao.RecoverableDataAccessException;
+
 import org.springframework.security.test.context.support.WithMockUser;
 
 import org.springframework.test.context.ContextConfiguration;
@@ -86,8 +88,9 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
     public void testListUsers_WithUnauthorizedUser() throws Exception {
-        mockMvc.perform(get("/dashboard/user").with(user("user").password("password").roles("USER")))
+        mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
             .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
@@ -95,8 +98,9 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testListUsers_WithAuthorizedUser() throws Exception {
-        mockMvc.perform(get("/dashboard/user").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
             .andExpect(forwardedUrl("/WEB-INF/views/dashboard.jsp"));
@@ -104,13 +108,15 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testListUsers_ModelShouldContainListUsersAction() throws Exception {
-        mockMvc.perform(get("/dashboard/user").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(model().attribute("action", equalTo("listUsers")));
             //.andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testListUsers_ShouldAddListOfUsersToModel() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -124,7 +130,7 @@ public class ViewUserControllerTest {
 
         when(userManagerMock.getUserList()).thenReturn(Arrays.asList(testUserOne, testUserTwo));
 
-        mockMvc.perform(get("/dashboard/user").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(model().attribute("users", hasSize(2)))
             .andExpect(model().attribute("users", hasItem(
                 allOf(
@@ -144,8 +150,9 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUserTwo", roles = {"USER"})
     public void testViewUser_WithUnauthorizedUser() throws Exception {
-        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(user("testUserTwo").password("password").roles("USER")))
+        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
             .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
@@ -153,8 +160,9 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void testViewUser_WithAuthorizedUser() throws Exception {
-        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(user("testUserOne").password("password").roles("USER")))
+        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
             .andExpect(forwardedUrl("/WEB-INF/views/dashboard.jsp"));
@@ -162,8 +170,9 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testViewUser_WithAdminAsAuthorizedUser() throws Exception {
-        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
             .andExpect(forwardedUrl("/WEB-INF/views/dashboard.jsp"));
@@ -172,6 +181,7 @@ public class ViewUserControllerTest {
 
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testViewUser_ShouldAddRequestedUserAndViewUserActionToModel() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -180,7 +190,7 @@ public class ViewUserControllerTest {
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
 
-        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(model().attribute("action", equalTo("viewUser")))
             .andExpect(model().attribute("user", theInstance(testUserOne)));
             //.andDo(print());
@@ -189,10 +199,11 @@ public class ViewUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testViewUser_UserNotFoundShouldThrowRunTimeException() throws Exception {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
 
-        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(user("admin").password("password").roles("ADMIN")))
+        mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
