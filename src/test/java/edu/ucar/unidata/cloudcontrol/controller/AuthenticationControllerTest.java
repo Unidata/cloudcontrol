@@ -8,13 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
@@ -58,8 +56,7 @@ public class AuthenticationControllerTest {
         mockMvc.perform(get("/dashboard"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
-            //.andDo(print());
-            
+          //.andDo(print());
     }
 
     @Test
@@ -67,14 +64,14 @@ public class AuthenticationControllerTest {
         mockMvc.perform(formLogin("/j_spring_security_check").user("userName","user").password("password","password"))
             .andExpect(status().is3xxRedirection())
             .andExpect(authenticated().withUsername("user"));
-            //.andDo(print());
+          //.andDo(print());
     }
 
     @Test
     public void postWithBadCSRFForbidden() throws Exception {
         mockMvc.perform(post("/j_spring_security_check").with(csrf().useInvalidToken()))
             .andExpect(status().isForbidden());
-            //.andDo(print());
+          //.andDo(print());
     }
 
     @Test
@@ -83,7 +80,7 @@ public class AuthenticationControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login/badCredentials"))
             .andExpect(unauthenticated());
-            //.andDo(print());
+          //.andDo(print());
     }
 
     @Test
@@ -92,7 +89,7 @@ public class AuthenticationControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login/accountLocked"))
             .andExpect(unauthenticated());
-            //.andDo(print());
+          //.andDo(print());
     }
 
     @Test
@@ -101,7 +98,7 @@ public class AuthenticationControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login/accountDisabled"))
             .andExpect(unauthenticated());
-            //.andDo(print());
+          //.andDo(print());
     }
 
     @Test
