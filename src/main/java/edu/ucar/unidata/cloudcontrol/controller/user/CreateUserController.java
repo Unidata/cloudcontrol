@@ -33,9 +33,8 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 import edu.ucar.unidata.cloudcontrol.service.user.validators.CreateUserValidator;
 
 /**
- * Controller to create a new User. 
+ * Controller to create a new User.
  */
-
 @Controller
 public class CreateUserController implements HandlerExceptionResolver {
 
@@ -51,11 +50,11 @@ public class CreateUserController implements HandlerExceptionResolver {
     public void initBinder(WebDataBinder binder) {
         StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(true);
         binder.registerCustomEditor(String.class, stringtrimmer);
-        binder.setValidator(createUserValidator);  
-    }   
+        binder.setValidator(createUserValidator);
+    }
 
     /**
-     * Accepts a GET request to create a new User object. 
+     * Accepts a GET request to create a new User object.
      *
      * The view is the dashboard.  The model contains a blank User and action
      * information which will be loaded and displayed in the view via jspf.
@@ -68,15 +67,15 @@ public class CreateUserController implements HandlerExceptionResolver {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/create", method=RequestMethod.GET)
-    public String createUser(Model model) {   
+    public String createUser(Model model) {
         User user = new User();
-        model.addAttribute("action", "createUser"); 
-        model.addAttribute("user", user);  
+        model.addAttribute("action", "createUser");
+        model.addAttribute("user", user);
         return "dashboard";
     }
-	
+
     /**
-     * Accepts a GET request to create a new User object via registration. 
+     * Accepts a GET request to create a new User object via registration.
      *
      * The view is the welcome.  The model contains a blank User and action
      * information which will be loaded and displayed in the view via jspf.
@@ -87,18 +86,18 @@ public class CreateUserController implements HandlerExceptionResolver {
      * @return  The path for the ViewResolver.
      */
     @RequestMapping(value="/welcome/register", method=RequestMethod.GET)
-    public String register(Model model) {   
+    public String register(Model model) {
         User user = new User();
-        model.addAttribute("action", "register"); 
-        model.addAttribute("user", user);  
+        model.addAttribute("action", "register");
+        model.addAttribute("user", user);
         return "welcome";
     }
-    
+
     /**
      * Accepts a POST request to create a new User object and persist it. 
      *
      * View is the dashboard.  The model contains:
-     * 1) the newly created User object (if successful) displayed in the view via jspf; or
+     * 1) the newly created User object (if successful) displayed in the view via jspf;or
      * 2) the web form to create a new User if there are validation errors with the user input. 
      * 
      * @param user  The User to persist. 
@@ -109,26 +108,25 @@ public class CreateUserController implements HandlerExceptionResolver {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/create", method=RequestMethod.POST)
-    public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {  
+    public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("action", "createUser");  
-           return new ModelAndView("dashboard"); 
+           model.addAttribute("action", "createUser");
+           return new ModelAndView("dashboard");
         } else {
             try {
-                userManager.createUser(user);  
-                return new ModelAndView(new RedirectView("/dashboard/user/view/" + user.getUserName(), true)); 
+                user = userManager.createUser(user);
+                return new ModelAndView(new RedirectView("/dashboard/user/view/" + user.getUserName(), true));
             } catch (RecoverableDataAccessException e) {
                 throw new RuntimeException("Unable to create new user: " + e);
             }
-        }         
+        }
     }
-
 
     /**
      * Accepts a POST request to create a new User object via registration and persist it. 
      *
      * View is the dashboard.  The model contains:
-     * 1) the newly created User object (if successful) displayed in the view via jspf; or
+     * 1) the newly created User object (if successful) displayed in the view via jspf;or
      * 2) the web form to create a new User if there are validation errors with the user input. 
      * 
      * @param user  The User to persist. 
@@ -138,18 +136,18 @@ public class CreateUserController implements HandlerExceptionResolver {
      * @throws RuntimeException  If unable to complete registration process.
      */
     @RequestMapping(value="/welcome/register", method=RequestMethod.POST)
-    public ModelAndView register(@Valid User user, BindingResult result, Model model) {  
+    public ModelAndView register(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("action", "register");  
-           return new ModelAndView("welcome"); 
+           model.addAttribute("action", "register");
+           return new ModelAndView("welcome");
         } else {
             try {
-                userManager.createUser(user);
-                return new ModelAndView(new RedirectView("/login", true)); 
-            } catch (RecoverableDataAccessException e) {
+                user = userManager.createUser(user);
+                return new ModelAndView(new RedirectView("/login", true));
+            }catch (RecoverableDataAccessException e) {
                 throw new RuntimeException("Unable to complete registration process: " + e);
             }
-        }         
+        }
     }
 
     /**
@@ -174,17 +172,16 @@ public class CreateUserController implements HandlerExceptionResolver {
         
         ModelAndView modelAndView = new ModelAndView();
         Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){ 
+        if (exception instanceof AccessDeniedException){
             message = exception.getMessage();
             modelAndView.setViewName("denied");
-        } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;  
-            modelAndView.setViewName("fatalError"); 
+        }else  {
+            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
+            modelAndView.setViewName("fatalError");
         }
-        logger.error(message);       
+        logger.error(message);     
         model.put("message", message);
         modelAndView.addAllObjects(model);
         return modelAndView;
-    } 
-
+    }
 }

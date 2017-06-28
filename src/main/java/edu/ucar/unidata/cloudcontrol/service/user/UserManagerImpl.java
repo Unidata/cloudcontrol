@@ -9,17 +9,17 @@ import edu.ucar.unidata.cloudcontrol.domain.User;
 import edu.ucar.unidata.cloudcontrol.repository.UserDao;
 
 /**
- * Service for processing User objects. 
+ * Service for processing User objects.
  */
-public class UserManagerImpl implements UserManager { 
-    
+public class UserManagerImpl implements UserManager {
+
     private UserDao userDao;
 
     /**
-     * Sets the data access object which will acquire and persist the data 
-     * passed to it via the methods of this UserManager. 
-     * 
-     * @param userDao  The service mechanism data access object representing a User. 
+     * Sets the data access object which will acquire and persist the data
+     * passed to it via the methods of this UserManager.
+     *
+     * @param userDao  The service mechanism data access object representing a User.
      */
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -27,9 +27,9 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Looks up and retrieves a User using the userId.
-     * 
-     * @param userId  The userId of the User to locate (will be unique for each User). 
-     * @return  The User.   
+     *
+     * @param userId  The userId of the User to locate (will be unique for each User).
+     * @return  The User.
      */
     public User lookupUser(int userId) {
         return userDao.lookupUser(userId);
@@ -37,28 +37,28 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Looks up and retrieves a User using the userName.
-     * 
-     * @param userName  The userName of the User to locate (will be unique for each User). 
-     * @return  The User.   
+     *
+     * @param userName  The userName of the User to locate (will be unique for each User).
+     * @return  The User.
      */
     public User lookupUser(String userName){
         return userDao.lookupUser(userName);
     }
-    
+
     /**
      * Looks up and retrieves a User using the emailAddress.
-     * 
-     * @param emailAddress The emailAddress of the User to locate (will be unique for each User). 
-     * @return  The User.   
+     *
+     * @param emailAddress The emailAddress of the User to locate (will be unique for each User).
+     * @return  The User.
      */
     public User lookupUserByEmailAddress(String emailAddress) {
         return userDao.lookupUserByEmailAddress(emailAddress);
     }
-    
+
     /**
      * Requests a List of all Users.
-     * 
-     * @return  A List of Users.   
+     *
+     * @return  A List of Users.
      */
     public List<User> getUserList() {
         return userDao.getUserList();
@@ -66,8 +66,8 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Finds and removes the User using the userId.
-     * 
-     * @param userId  The userId of the User to locate (will be unique for each User). 
+     *
+     * @param userId  The userId of the User to locate (will be unique for each User).
      */
     public void deleteUser(int userId) {
         userDao.deleteUser(userId);
@@ -75,8 +75,8 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Finds and removes the User using the userName.
-     * 
-     * @param userName  The userName of the User to locate (will be unique for each User). 
+     *
+     * @param userName  The userName of the User to locate (will be unique for each User).
      */
     public void deleteUser(String userName) {
         userDao.deleteUser(userName);
@@ -84,22 +84,23 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Creates a new User.
-     * 
-     * @param user  The User to be created. 
+     *
+     * @param user  The User to be created.
+     * @return  The User.
      */
-    public void createUser(User user) {
+    public User createUser(User user) {
         String password = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(password);
         Date now = new Date(System.currentTimeMillis());
         user.setDateCreated(now);
         user.setDateModified(now);
-        userDao.createUser(user);
+        return userDao.createUser(user);
     }
 
     /**
-     * Saves changes made to an existing User. 
-     * 
-     * @param user   The existing User with changes that needs to be saved. 
+     * Saves changes made to an existing User.
+     *
+     * @param user   The existing User with changes that needs to be saved.
      */
     public void updateUser(User user) {
         Date now = new Date(System.currentTimeMillis());
@@ -109,8 +110,8 @@ public class UserManagerImpl implements UserManager {
 
     /**
      * Updates the User's Password.
-     * 
-     * @param user  The User to whose password we need to update. 
+     *
+     * @param user  The User to whose password we need to update.
      */
     public void updatePassword(User user) {
         String password = new BCryptPasswordEncoder().encode(user.getPassword());
