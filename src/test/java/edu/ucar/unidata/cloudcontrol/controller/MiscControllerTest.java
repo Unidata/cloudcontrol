@@ -8,13 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -55,7 +53,7 @@ public class MiscControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("welcome"))
             .andExpect(forwardedUrl("/WEB-INF/views/welcome.jsp"));
-        //    .andDo(print());
+          //.andDo(print());
     }
 
     @Test
@@ -64,14 +62,14 @@ public class MiscControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("misc"))
             .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
-         //   .andDo(print());
+          //.andDo(print());
     }
 
     @Test
     public void gettingStarted_ModelShouldContainGettingStartedAction() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
             .andExpect(model().attribute("action", equalTo("gettingStarted")));
-         //   .andDo(print());
+          //.andDo(print());
     }
 
     @Test
@@ -80,13 +78,13 @@ public class MiscControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("misc"))
             .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
-          //  .andDo(print());
+          //.andDo(print());
     }
 
     @Test
     public void about_ModelShouldContainAboutAction() throws Exception {
     mockMvc.perform(get("/about"))
             .andExpect(model().attribute("action", equalTo("about")));
-          //  .andDo(print());
+          //.andDo(print());
     }
 }
