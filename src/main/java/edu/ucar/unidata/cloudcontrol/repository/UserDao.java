@@ -44,16 +44,10 @@ public interface UserDao {
     /**
      * Finds and removes the User from the persistence mechanism using the userId.
      *
-     * @param userId  The userId of the User to locate (will be unique for each User).
+     * @param userId   The userId of the User to locate (will be unique for each User).
+     * @throws RecoverableDataAccessException  If unable to find and delete the User.
      */
     public void deleteUser(int userId);
-
-    /**
-     * Finds and removes the User from the persistence mechanism using the userName.
-     *
-     * @param userName  The userName of the User to locate (will be unique for each User).
-     */
-    public void deleteUser(String userName);
 
     /**
      * Creates a new User in the persistence mechanism.

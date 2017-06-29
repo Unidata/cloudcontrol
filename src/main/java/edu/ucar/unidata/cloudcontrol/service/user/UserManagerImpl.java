@@ -74,15 +74,6 @@ public class UserManagerImpl implements UserManager {
     }
 
     /**
-     * Finds and removes the User using the userName.
-     *
-     * @param userName  The userName of the User to locate (will be unique for each User).
-     */
-    public void deleteUser(String userName) {
-        userDao.deleteUser(userName);
-    }
-
-    /**
      * Creates a new User.
      *
      * @param user  The User to be created.

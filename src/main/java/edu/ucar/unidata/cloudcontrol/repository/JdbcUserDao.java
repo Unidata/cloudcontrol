@@ -36,7 +36,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      */
     public User lookupUser(int userId) {
         String sql = "SELECT * FROM users WHERE userId = ?";
-        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userId);     
+        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userId);
         if (users.isEmpty()) {
             throw new RecoverableDataAccessException("Unable to find User with userId: " + new Integer(userId).toString());
         }
@@ -52,13 +52,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      */
     public User lookupUser(String userName) {
         String sql = "SELECT * FROM users WHERE userName = ?";
-        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);     
+        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);
         if (users.isEmpty()) {
             throw new RecoverableDataAccessException("Unable to find User with userName: " + userName);
         }
         return users.get(0);
     }
- 
+
     /**
      * Looks up and retrieves a User from the persistence mechanism using the emailAddress.
      *
@@ -68,7 +68,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      */
     public User lookupUserByEmailAddress(String emailAddress) {
         String sql = "SELECT * FROM users WHERE emailAddress = ?";
-        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);     
+        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);
         if (users.isEmpty()) {
             throw new RecoverableDataAccessException("Unable to find User with emailAddress: " + emailAddress);
         }
@@ -81,7 +81,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @return  A List of users.
      */
     public List<User> getUserList() {
-        String sql = "SELECT * FROM users ORDER BY dateCreated DESC";            
+        String sql = "SELECT * FROM users ORDER BY dateCreated DESC";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper());
         return users;
     }
@@ -101,20 +101,6 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
     }
 
     /**
-     * Finds and removes the User from the persistence mechanism using the userName.
-     *
-     * @param userName  The userName of the User to locate (will be unique for each User).
-     * @throws RecoverableDataAccessException  If unable to find and delete the User.
-     */
-    public void deleteUser(String userName) {
-        String sql = "DELETE FROM users WHERE userName = ?";
-        int rowsAffected  = getJdbcTemplate().update(sql, userName);
-        if (rowsAffected <= 0) {
-            throw new RecoverableDataAccessException("Unable to delete User. No User found with userName: " + userName);
-        }
-    }
-
-    /**
      * Creates a new User in the persistence mechanism.
      *
      * @param user  The User to be created.
@@ -123,7 +109,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      */
     public User createUser(User user) {
         String sql = "SELECT * FROM users WHERE userName = ?";
-        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), user.getUserName());     
+        List<User> users = getJdbcTemplate().query(sql, new UserMapper(), user.getUserName());
         if (!users.isEmpty()) {
             throw new RecoverableDataAccessException("User with userName \"" +  user.getUserName() + "\" already exists.");
         } else {
@@ -159,7 +145,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         });
         if (rowsAffected  <= 0) {
             throw new RecoverableDataAccessException("Unable to update User.  No User with userName: " + user.getUserName() + " found.");
-        }  
+        }
     }
 
     /**
@@ -178,7 +164,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         });
         if (rowsAffected  <= 0) {
             throw new RecoverableDataAccessException("Unable to update User's password.  User not found: " + user.toString());
-        }  
+        }
     }
 
 

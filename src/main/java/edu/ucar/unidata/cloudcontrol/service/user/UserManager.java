@@ -49,13 +49,6 @@ public interface UserManager {
     public void deleteUser(int userId);
 
     /**
-     * Finds and removes the User using the userName.
-     *
-     * @param userName  The userName of the User to locate (will be unique for each User).
-     */
-    public void deleteUser(String userName);
-
-    /**
      * Creates a new User.
      *
      * @param user  The User to be created.
