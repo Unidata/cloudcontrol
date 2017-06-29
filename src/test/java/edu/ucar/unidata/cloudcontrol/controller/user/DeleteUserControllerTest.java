@@ -198,8 +198,8 @@ public class DeleteUserControllerTest {
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(model().attribute("action", equalTo("listUsers")))
-            .andExpect(redirectedUrl("/dashboard/user?action=listUsers"))
-          .andDo(print());
+            .andExpect(redirectedUrl("/dashboard/user?action=listUsers"));
+          //.andDo(print());
 
         verify(userManagerMock, times(1)).deleteUser(testUserOne.getUserId());
         verify(userManagerMock, times(1)).getUserList();
