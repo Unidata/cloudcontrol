@@ -7,8 +7,6 @@ import edu.ucar.unidata.cloudcontrol.domain.UserBuilder;
 import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 import edu.ucar.unidata.cloudcontrol.service.user.validators.CreateUserValidator;
 
-import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,7 +90,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    public void createUser_AccessCreateUserFormWithUnauthorizedUser() throws Exception {
+    public void createUser_AccessToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -101,59 +99,13 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
-    public void createUser_PostToCreateUserFormWithUnauthorizedUser() throws Exception {
-        mockMvc.perform(post("/dashboard/user/create").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-                .param("fullName", "Test User One")
-                .param("emailAddress", "testUserOne@foo.bar")
-                .param("password", "password")
-                .param("confirmPassword", "password")
-                .param("accountStatus", "1")
-                .param("accessLevel", "1")
-                .sessionAttr("user", new User())
-             )
-            .andExpect(status().isOk())
-            .andExpect(view().name("denied"))
-            .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
-          //.andDo(print());
-    }
-
-    @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_AccessCreateUserFormWithAdminAsAuthorizedUser() throws Exception {
+    public void createUser_AccessToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
             .andExpect(forwardedUrl("/WEB-INF/views/dashboard.jsp"));
           //.andDo(print());
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_PostToCreateUserFormWithAdminAsAuthorizedUser() throws Exception {
-        User testUserOne = new UserBuilder()
-            .userId(1)
-            .userName("testUserOne")
-            .build();
-
-        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
-
-        mockMvc.perform(post("/dashboard/user/create").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-                .param("fullName", "Test User One")
-                .param("emailAddress", "testUserOne@foo.bar")
-                .param("password", "password")
-                .param("confirmPassword", "password")
-                .param("accountStatus", "1")
-                .param("accessLevel", "1")
-                .sessionAttr("user", new User())
-            )
-           .andExpect(status().is3xxRedirection())
-           .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
-         //.andDo(print());
     }
 
     @Test
@@ -175,7 +127,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
+    public void register_UnauthenticatedAccessToRegisterFormShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/welcome/register"))
             .andExpect(status().isOk())
             .andExpect(view().name("welcome"))
@@ -201,6 +153,52 @@ public class CreateUserControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    public void createUser_PostToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+        mockMvc.perform(post("/dashboard/user/create").with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("userName", "testUserOne")
+                .param("fullName", "Test User One")
+                .param("emailAddress", "testUserOne@foo.bar")
+                .param("password", "password")
+                .param("confirmPassword", "password")
+                .param("accountStatus", "1")
+                .param("accessLevel", "1")
+                .sessionAttr("user", new User())
+             )
+            .andExpect(status().isOk())
+            .andExpect(view().name("denied"))
+            .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
+          //.andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void createUser_PostToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+        User testUserOne = new UserBuilder()
+            .userId(1)
+            .userName("testUserOne")
+            .build();
+
+        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+
+        mockMvc.perform(post("/dashboard/user/create").with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("userName", "testUserOne")
+                .param("fullName", "Test User One")
+                .param("emailAddress", "testUserOne@foo.bar")
+                .param("password", "password")
+                .param("confirmPassword", "password")
+                .param("accountStatus", "1")
+                .param("accessLevel", "1")
+                .sessionAttr("user", new User())
+            )
+           .andExpect(status().is3xxRedirection())
+           .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
+         //.andDo(print());
+    }
+
+    @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createUser_UserValidationErrorShouldRenderCreateUserView() throws Exception {
 
@@ -208,7 +206,7 @@ public class CreateUserControllerTest {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Errors errors = (Errors) invocationOnMock.getArguments()[1];
-                errors.reject("forcing some error");
+                errors.reject("forcing a validation error");
                 return null;
             }
         }).when(createUserValidatorMock).validate(any(), any(Errors.class));
@@ -287,13 +285,38 @@ public class CreateUserControllerTest {
     }
 
     @Test
+    public void register_UnauthenticatedPostsToRegisterFormShouldBeSuccessful() throws Exception {
+        User testUserOne = new UserBuilder()
+            .userId(1)
+            .userName("testUserOne")
+            .build();
+
+        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+
+        mockMvc.perform(post("/welcome/register").with(csrf())
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("userName", "testUserOne")
+                .param("fullName", "Test User One")
+                .param("emailAddress", "testUserOne@foo.bar")
+                .param("password", "password")
+                .param("confirmPassword", "password")
+                .param("accountStatus", "1")
+                .param("accessLevel", "1")
+                .sessionAttr("user", new User())
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/login"));
+          //.andDo(print());
+    }
+
+    @Test
     public void register_UserValidationErrorShouldRenderCreateUserView() throws Exception {
 
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Errors errors = (Errors) invocationOnMock.getArguments()[1];
-                errors.reject("forcing some error");
+                errors.reject("forcing a validation error");
                 return null;
             }
         }).when(createUserValidatorMock).validate(any(), any(Errors.class));

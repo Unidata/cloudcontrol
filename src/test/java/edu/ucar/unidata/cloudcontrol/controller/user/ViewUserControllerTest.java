@@ -76,7 +76,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    public void testListUsers_WithUnauthorizedUser() throws Exception {
+    public void listUsers_AccessToUserListWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -86,7 +86,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testListUsers_WithAuthorizedUser() throws Exception {
+    public void listUsers_AccessToUserListWithAuthorizedUseShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -96,7 +96,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testListUsers_ModelShouldContainListUsersAction() throws Exception {
+    public void listUsers_ModelShouldContainListUsersAction() throws Exception {
         mockMvc.perform(get("/dashboard/user").with(csrf()))
             .andExpect(model().attribute("action", equalTo("listUsers")));
           //.andDo(print());
@@ -104,7 +104,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testListUsers_ShouldAddListOfUsersToModel() throws Exception {
+    public void listUsers_ShouldAddListOfUsersToModel() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
@@ -138,7 +138,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserTwo", roles = {"USER"})
-    public void testViewUser_WithUnauthorizedUser() throws Exception {
+    public void viewUser_AccessToUserInformationWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -148,7 +148,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void testViewUser_WithAuthorizedUser() throws Exception {
+    public void viewUser_AccessToUserInformationWithAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -158,7 +158,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testViewUser_WithAdminAsAuthorizedUser() throws Exception {
+    public void viewUser_WithAdminAsAuthorizedUser() throws Exception {
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -169,7 +169,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testViewUser_ShouldAddRequestedUserAndViewUserActionToModel() throws Exception {
+    public void viewUser_ShouldAddRequestedUserAndViewUserActionToModel() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
@@ -187,7 +187,7 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testViewUser_UserNotFoundShouldThrowRunTimeException() throws Exception {
+    public void viewUser_UserNotFoundShouldThrowRunTimeException() throws Exception {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
 
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
