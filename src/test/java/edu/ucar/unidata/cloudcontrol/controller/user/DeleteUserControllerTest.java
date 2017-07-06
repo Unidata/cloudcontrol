@@ -153,10 +153,7 @@ public class DeleteUserControllerTest {
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void deleteUser_PostsToDeleteUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
-        mockMvc.perform(post("/dashboard/user/delete").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-            )
+        mockMvc.perform(post("/dashboard/user/delete").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
             .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
@@ -166,10 +163,7 @@ public class DeleteUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void deleteUser_PostsToDeleteUserFormWithAdminAsAuthorizedUserShouldbeAllowed() throws Exception {
-        mockMvc.perform(post("/dashboard/user/delete").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userId", "1")
-            )
+        mockMvc.perform(post("/dashboard/user/delete").with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(model().attribute("action", equalTo("listUsers")))
             .andExpect(redirectedUrl("/dashboard/user?action=listUsers"));

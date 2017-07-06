@@ -155,17 +155,7 @@ public class CreateUserControllerTest {
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
     public void createUser_PostToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
-        mockMvc.perform(post("/dashboard/user/create").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-                .param("fullName", "Test User One")
-                .param("emailAddress", "testUserOne@foo.bar")
-                .param("password", "password")
-                .param("confirmPassword", "password")
-                .param("accountStatus", "1")
-                .param("accessLevel", "1")
-                .sessionAttr("user", new User())
-             )
+        mockMvc.perform(post("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
             .andExpect(forwardedUrl("/WEB-INF/views/denied.jsp"));
@@ -176,23 +166,12 @@ public class CreateUserControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createUser_PostToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
-            .userId(1)
             .userName("testUserOne")
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
 
-        mockMvc.perform(post("/dashboard/user/create").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-                .param("fullName", "Test User One")
-                .param("emailAddress", "testUserOne@foo.bar")
-                .param("password", "password")
-                .param("confirmPassword", "password")
-                .param("accountStatus", "1")
-                .param("accessLevel", "1")
-                .sessionAttr("user", new User())
-            )
+        mockMvc.perform(post("/dashboard/user/create").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
          //.andDo(print());
@@ -211,9 +190,7 @@ public class CreateUserControllerTest {
             }
         }).when(createUserValidatorMock).validate(any(), any(Errors.class));
 
-        mockMvc.perform(post("/dashboard/user/create").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            )
+        mockMvc.perform(post("/dashboard/user/create").with(csrf()))
             .andExpect(model().attribute("action", equalTo("createUser")))
             .andExpect(model().hasErrors());
           //.andDo(print());
@@ -238,7 +215,6 @@ public class CreateUserControllerTest {
                 .param("confirmPassword", "password")
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
-                .sessionAttr("user", new User())
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -272,7 +248,6 @@ public class CreateUserControllerTest {
                 .param("confirmPassword", "password")
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
-                .sessionAttr("user", new User())
             )
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
@@ -287,23 +262,12 @@ public class CreateUserControllerTest {
     @Test
     public void register_UnauthenticatedPostsToRegisterFormShouldBeSuccessful() throws Exception {
         User testUserOne = new UserBuilder()
-            .userId(1)
             .userName("testUserOne")
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
 
-        mockMvc.perform(post("/welcome/register").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userName", "testUserOne")
-                .param("fullName", "Test User One")
-                .param("emailAddress", "testUserOne@foo.bar")
-                .param("password", "password")
-                .param("confirmPassword", "password")
-                .param("accountStatus", "1")
-                .param("accessLevel", "1")
-                .sessionAttr("user", new User())
-            )
+        mockMvc.perform(post("/welcome/register").with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login"));
           //.andDo(print());
@@ -321,9 +285,7 @@ public class CreateUserControllerTest {
             }
         }).when(createUserValidatorMock).validate(any(), any(Errors.class));
 
-        mockMvc.perform(post("/welcome/register").with(csrf())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            )
+        mockMvc.perform(post("/welcome/register").with(csrf()))
             .andExpect(model().attribute("action", equalTo("register")))
             .andExpect(model().hasErrors());
           //.andDo(print());
@@ -347,7 +309,6 @@ public class CreateUserControllerTest {
                 .param("confirmPassword", "password")
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
-                .sessionAttr("user", new User())
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/login"));
@@ -380,7 +341,6 @@ public class CreateUserControllerTest {
                 .param("confirmPassword", "password")
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
-                .sessionAttr("user", new User())
             )
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
