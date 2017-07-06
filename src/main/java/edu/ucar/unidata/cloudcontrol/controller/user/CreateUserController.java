@@ -142,7 +142,7 @@ public class CreateUserController implements HandlerExceptionResolver {
            return new ModelAndView("welcome");
         } else {
             try {
-                user = userManager.createUser(user);
+                userManager.createUser(user);
                 return new ModelAndView(new RedirectView("/login", true));
             }catch (RecoverableDataAccessException e) {
                 throw new RuntimeException("Unable to complete registration process: " + e);
