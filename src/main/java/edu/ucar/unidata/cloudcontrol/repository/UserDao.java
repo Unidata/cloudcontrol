@@ -61,8 +61,10 @@ public interface UserDao {
      * Saves changes made to an existing User in the persistence mechanism.
      *
      * @param user   The existing User with changes that needs to be saved.
+     * @throws RecoverableDataAccessException  If unable to find the User to update.
+     * @return  The updated User.
      */
-    public void updateUser(User user);
+    public User updateUser(User user);
 
     /**
      * Updates the User's Password in the persistence mechanism.

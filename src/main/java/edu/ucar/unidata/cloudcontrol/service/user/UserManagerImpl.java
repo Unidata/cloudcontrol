@@ -92,11 +92,12 @@ public class UserManagerImpl implements UserManager {
      * Saves changes made to an existing User.
      *
      * @param user   The existing User with changes that needs to be saved.
+     * @return  The updated User.
      */
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         Date now = new Date(System.currentTimeMillis());
         user.setDateModified(now);
-        userDao.updateUser(user);
+        return userDao.updateUser(user);
     }
 
     /**

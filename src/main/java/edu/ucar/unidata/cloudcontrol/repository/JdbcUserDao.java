@@ -130,8 +130,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      *
      * @param user   The existing User with changes that needs to be saved.
      * @throws RecoverableDataAccessException  If unable to find the User to update.
+     * @return  The updated User.
      */
-    public void updateUser(User user)  {
+    public User updateUser(User user) {
         String sql = "UPDATE users SET userName = ?, emailAddress = ?, fullName = ?, accessLevel = ?, accountStatus = ?, dateModified = ? WHERE userId = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
@@ -146,6 +147,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         if (rowsAffected  <= 0) {
             throw new RecoverableDataAccessException("Unable to update User.  No User with userName: " + user.getUserName() + " found.");
         }
+        return user;
     }
 
     /**
@@ -154,7 +156,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @param user  The User whose password needs to be update.
      * @throws RecoverableDataAccessException  If unable to find the User to update.
      */
-    public void updatePassword(User user)  {
+    public void updatePassword(User user) {
         String sql = "UPDATE users SET password = ?, dateModified = ? WHERE userName = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here

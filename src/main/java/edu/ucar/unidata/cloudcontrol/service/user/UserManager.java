@@ -60,8 +60,9 @@ public interface UserManager {
      * Saves changes made to an existing User.
      *
      * @param user   The existing User with changes that needs to be saved.
+     * @return  The updated User.
      */
-    public void updateUser(User user);
+    public User updateUser(User user);
 
     /**
      * Updates the User's Password.
