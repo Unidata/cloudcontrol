@@ -58,7 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
- * Tests for edu.ucar.unidata.cloudcontrol.controller.ResetPasswordController
+ * Tests for edu.ucar.unidata.cloudcontrol.controller.user.ResetPasswordController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

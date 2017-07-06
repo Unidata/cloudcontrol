@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
- * Tests for edu.ucar.unidata.cloudcontrol.controller.DeleteUserController
+ * Tests for edu.ucar.unidata.cloudcontrol.controller.user.DeleteUserController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
