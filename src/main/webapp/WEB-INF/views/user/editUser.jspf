@@ -9,7 +9,7 @@
           <label for="userName" class="tooltip" title="The username cannot be changed.">
            Username
           </label>
-          <form:input path="userName" cssClass="fieldDisabled" disabled="true"/>
+          <form:input path="userName" cssClass="fieldDisabled" readonly="readonly"/>
           <form:errors path="userName" cssClass="error" />
       
           <label for="fullName" class="tooltip" title="The full name must be between 2 and 75 characters in length.">
