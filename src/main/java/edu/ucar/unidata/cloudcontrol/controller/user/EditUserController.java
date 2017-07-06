@@ -40,9 +40,8 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 import edu.ucar.unidata.cloudcontrol.service.user.validators.EditUserValidator;
 
 /**
- * Controller to edit/modify a User. 
+ * Controller to edit/modify a User.
  */
-
 @Controller
 public class EditUserController implements HandlerExceptionResolver {
 
@@ -50,7 +49,7 @@ public class EditUserController implements HandlerExceptionResolver {
 
     @Resource(name="userManager")
     private UserManager userManager;
-    
+
     @Autowired
     private EditUserValidator editUserValidator;
 
@@ -58,29 +57,29 @@ public class EditUserController implements HandlerExceptionResolver {
     public void initBinder(WebDataBinder binder) {
         StringTrimmerEditor stringtrimmer = new StringTrimmerEditor(true);
         binder.registerCustomEditor(String.class, stringtrimmer);
-        binder.setValidator(editUserValidator);  
-    }   
+        binder.setValidator(editUserValidator);
+    }
 
     /**
-     * Accepts a GET request to edit an existing User object. 
-     * 
+     * Accepts a GET request to edit an existing User object.
+     *
      * The view is the dashboard.  The model contains the User object to edit
      * and the information which will be loaded and displayed in the view via jspf.
      *
-     * Only the User/owner and Users with a role of 'ROLE_ADMIN' are 
+     * Only the User/owner and Users with a role of 'ROLE_ADMIN' are
      * allowed to edit the User account.
-     * 
-     * @param userName  The 'userName' as provided by @PathVariable. 
+     *
+     * @param userName  The 'userName' as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/dashboard/user/edit/{userName}", method=RequestMethod.GET)
-    public String editUser(@PathVariable String userName, Model model) {  
-        User user = userManager.lookupUser(userName);  
-        model.addAttribute("action", "editUser"); 
+    public String editUser(@PathVariable String userName, Model model) {
+        User user = userManager.lookupUser(userName);
+        model.addAttribute("action", "editUser");
         model.addAttribute("user", user);
-        return "dashboard";   
+        return "dashboard";
     }
 
     /**
@@ -90,12 +89,11 @@ public class EditUserController implements HandlerExceptionResolver {
      * 1) the updated User object (if successful) displayed in the view via jspf; or
      * 2) the web form to edit the User if there are validation errors with the user input.
      *
-     * Only the User/owner and Users with a role of 'ROLE_ADMIN' are 
+     * Only the User/owner and Users with a role of 'ROLE_ADMIN' are
      * allowed to edit the User account.
-     * 
-     * @param userName  The 'userName' as provided by @PathVariable. 
-     * @param user  The User to edit. 
-     * @param authentication  The Authentication object to check roles with. 
+     *
+     * @param user  The User to edit.
+     * @param authentication  The Authentication object to check roles with.
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
@@ -103,41 +101,42 @@ public class EditUserController implements HandlerExceptionResolver {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/dashboard/user/edit/{userName}", method=RequestMethod.POST)
-    public ModelAndView editUser(@PathVariable String userName, @Valid User user, Authentication authentication, BindingResult result, Model model) {
+    public ModelAndView editUser(@PathVariable String userName, @Valid User user, BindingResult result, Authentication authentication, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("action", "editUser");
-            model.addAttribute("user", user);  
-            return new ModelAndView("dashboard"); 
-        } else {   
-            try {
-                User u = userManager.lookupUser(userName);
-                u.setFullName(user.getFullName());
+            model.addAttribute("user", user);
+            return new ModelAndView("dashboard");
+        } else {
+            try {                
+                User u = userManager.lookupUser(user.getUserName());
+                String name = user.getFullName();
+                u.setFullName(name);
                 u.setEmailAddress(user.getEmailAddress());
                 Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
                 if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
                     u.setAccessLevel(user.getAccessLevel());
                     u.setAccountStatus(user.getAccountStatus());
                 }
-                userManager.updateUser(u);  
+                u = userManager.updateUser(u);
                 // update the session
                 Authentication auth = new UsernamePasswordAuthenticationToken(u, u.getPassword(), u.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
-                return new ModelAndView(new RedirectView("/dashboard/user/view/" + userName, true));   
+                return new ModelAndView(new RedirectView("/dashboard/user/view/" + userName, true));
             } catch (RecoverableDataAccessException e) {
                 throw new RuntimeException("Unable to edit user: " +  userName);
             }
-        }    
+        }
     }
 
     /**
      * This method gracefully handles any uncaught exception
      * that are fatal in nature and unresolvable by the user.
-     * 
+     *
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.  
+     * @param handler  The executed handler, or null if none chosen at the time of the exception.
      * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage. 
+     * @return  The error page containing the appropriate message to the dockerImage.
      */
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
@@ -148,20 +147,20 @@ public class EditUserController implements HandlerExceptionResolver {
         printWriter.flush();
 
         String stackTrace = writer.toString();
-        
+
         ModelAndView modelAndView = new ModelAndView();
         Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){ 
+        if (exception instanceof AccessDeniedException){
             message = exception.getMessage();
             modelAndView.setViewName("denied");
         } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;  
-            modelAndView.setViewName("fatalError"); 
+            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
+            modelAndView.setViewName("fatalError");
         }
-        logger.error(message);       
+        logger.error(message);
         model.put("message", message);
         modelAndView.addAllObjects(model);
         return modelAndView;
-    } 
+    }
 
 }
