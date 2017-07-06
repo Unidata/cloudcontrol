@@ -22,15 +22,15 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
  */
 @Component
 public class CreateUserValidator implements Validator  {
-  
+
     protected static Logger logger = Logger.getLogger(CreateUserValidator.class);
 
-    private String[] NAUGHTY_STRINGS = {"<script>", "../", "svg", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"}; 
-    private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"}; 
+    private String[] NAUGHTY_STRINGS = {"<script>", "../", "svg", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"};
+    private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"};
 
     private Pattern pattern;
     private Matcher matcher;
- 
+
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                                                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -39,10 +39,9 @@ public class CreateUserValidator implements Validator  {
     @Resource(name="userManager")
     private UserManager userManager;
 
-
     /**
      * Checks to see if Object class can be validated.
-     * 
+     *
      * @param clazz  The Object class to validate
      * @return true if class can be validated
      */
@@ -52,15 +51,15 @@ public class CreateUserValidator implements Validator  {
 
     /**
      * Validates the user input contained in the User object.
-     * 
+     *
      * @param obj  The target object to validate.
      * @param error  Object in which to store any validation errors.
      */
     public void validate(Object obj, Errors errors) {
         User user = (User) obj;
-        validateUserName(user.getUserName(), errors);  
-        validateFullName(user.getFullName(), errors); 
-        validatePassword("password",  user.getPassword(), errors); 
+        validateUserName(user.getUserName(), errors);
+        validateFullName(user.getFullName(), errors);
+        validatePassword("password",  user.getPassword(), errors);
         validatePassword("confirmPassword", user.getConfirmPassword(), errors);
         comparePasswords(user.getPassword(), user.getConfirmPassword(), errors);
         validateAccessLevel(user.getAccessLevel(), errors);
@@ -70,7 +69,7 @@ public class CreateUserValidator implements Validator  {
 
     /**
      * Validates the user input for the userName field.
-     * 
+     *
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -82,7 +81,7 @@ public class CreateUserValidator implements Validator  {
         if ((StringUtils.length(input) < 2) || (StringUtils.length(input) > 50)) {
             errors.rejectValue("userName", "userName.length");
             return;
-        }        
+        }
         pattern = Pattern.compile(USER_NAME_PATTERN);
         matcher = pattern.matcher(input);
         if (!matcher.matches()) {
@@ -90,7 +89,7 @@ public class CreateUserValidator implements Validator  {
             return;
         }
         try {
-            User user = userManager.lookupUser(input);        
+            User user = userManager.lookupUser(input);
             errors.rejectValue("userName", "userName.alreadyInUse");
             return;
         } catch (RecoverableDataAccessException e) {
@@ -100,7 +99,7 @@ public class CreateUserValidator implements Validator  {
 
     /**
      * Validates the user input for the fullName field.
-     * 
+     *
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -112,16 +111,16 @@ public class CreateUserValidator implements Validator  {
         if ((StringUtils.length(input) < 2) || (StringUtils.length(input) > 75)) {
             errors.rejectValue("fullName", "fullName.length");
             return;
-        }  
-        validateInput("fullName", input, errors); 
-    }    
-     
+        }
+        validateInput("fullName", input, errors);
+    }
+
     /**
      * Validates the user input for the emailAddress field.
-     * 
+     *
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
-     */    
+     */
      public void validateEmailAddress(String input, Errors errors) {
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("emailAddress", "emailAddress.required");
@@ -132,23 +131,23 @@ public class CreateUserValidator implements Validator  {
         if (!matcher.matches()) {
             errors.rejectValue("emailAddress", "emailAddress.wellFormed");
             return;
-        }  
+        }
         try {
-            User user = userManager.lookupUserByEmailAddress(input);           
+            User user = userManager.lookupUserByEmailAddress(input);
             errors.rejectValue("emailAddress", "emailAddress.alreadyInUse");
             return;
         } catch (RecoverableDataAccessException e) {
             return;
         }
     }
-    
+
     /**
      * Validates the user input for the various password fields.
-     * 
+     *
      * @param formField  The form field corresponding to the user input.
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
-     */    
+     */
      public void validatePassword(String formField, String input, Errors errors) {
         if (StringUtils.isBlank(input)) {
             errors.rejectValue(formField, "password.required");
@@ -157,13 +156,13 @@ public class CreateUserValidator implements Validator  {
         if ((StringUtils.length(input) < 8) || (StringUtils.length(input) > 25)) {
             errors.rejectValue(formField, "password.length");
             return;
-        }  
-        validateInput(formField, input, errors); 
+        }
+        validateInput(formField, input, errors);
     }
-    
+
     /**
      * Validates password and confirmation passwords to make sure they are the same.
-     * 
+     *
      * @param password  The password specified by the user.
      * @param confirmPassword  The confirmation of the password.
      * @param error  Object in which to store any validation errors.
@@ -172,12 +171,12 @@ public class CreateUserValidator implements Validator  {
         if (!StringUtils.equals(password, confirmPassword)) {
             errors.rejectValue("confirmPassword", "password.match");
             return;
-        } 
+        }
     }
-    
+
     /**
      * Validates the admin input for the User's access level.
-     * 
+     *
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -185,12 +184,12 @@ public class CreateUserValidator implements Validator  {
         if ((input > 2) || (input < 1)) {
             errors.rejectValue("accessLevel", "accessLevel.options");
             return;
-        } 
+        }
     }
-    
+
     /**
      * Validates the admin input for the User's account status.
-     * 
+     *
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -198,12 +197,12 @@ public class CreateUserValidator implements Validator  {
         if (input > 1) {
             errors.rejectValue("accountStatus", "accountStatus.options");
             return;
-        } 
+        }
     }
 
     /**
      * A generic utility method to validate user input against known bad characters and strings.
-     * 
+     *
      * @param formField  The form field corresponding to the user input.
      * @param input  The user input to validate.
      * @param error  Object in which to store any validation errors.
@@ -225,30 +224,30 @@ public class CreateUserValidator implements Validator  {
 
     /**
      * Validates the user input against known bad strings.
-     * 
+     *
      * @param itemToCheck  The user input to validate.
-     * @return  The bad user input string, or null if input passes validation. 
+     * @return  The bad user input string, or null if input passes validation.
      */
     public String checkForNaughtyStrings(String itemToCheck) {
-        for (String item : NAUGHTY_STRINGS) {              
+        for (String item : NAUGHTY_STRINGS) {
             if (StringUtils.contains(StringUtils.lowerCase(itemToCheck), item)) {
                 return item;
-            } 
+            }
         }
         return null;
     }
 
     /**
      * Validates the user input against known bad characters.
-     * 
+     *
      * @param itemToCheck  The user input to validate.
-     * @return  The bad user input char, or null if input passes validation. 
+     * @return  The bad user input char, or null if input passes validation.
      */
     public String checkForNaughtyChars(String itemToCheck) {
         for (String item : NAUGHTY_CHARS) {
             if (StringUtils.contains(itemToCheck, item)) {
                 return item;
-            } 
+            }
         }
         return null;
     }
