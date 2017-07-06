@@ -203,6 +203,12 @@ public class CreateUserControllerTest {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
+            .fullName("Test User One")
+            .emailAddress("testUserOne@foo.bar")
+            .password("password")
+            .confirmPassword("password")
+            .accessLevel(1)
+            .accountStatus(1)
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
@@ -235,7 +241,13 @@ public class CreateUserControllerTest {
 
         User testUserOne = new UserBuilder()
             .userId(1)
-            .userName("testUser")
+            .userName("testUserOne")
+            .fullName("Test User One")
+            .emailAddress("testUserOne@foo.bar")
+            .password("password")
+            .confirmPassword("password")
+            .accessLevel(1)
+            .accountStatus(1)
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenThrow(new RecoverableDataAccessException(""));
@@ -297,6 +309,12 @@ public class CreateUserControllerTest {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
+            .fullName("Test User One")
+            .emailAddress("testUserOne@foo.bar")
+            .password("password")
+            .confirmPassword("password")
+            .accessLevel(1)
+            .accountStatus(1)
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
@@ -328,7 +346,13 @@ public class CreateUserControllerTest {
 
         User testUserOne = new UserBuilder()
             .userId(1)
-            .userName("testUser")
+            .userName("testUserOne")
+            .fullName("Test User One")
+            .emailAddress("testUserOne@foo.bar")
+            .password("password")
+            .confirmPassword("password")
+            .accessLevel(1)
+            .accountStatus(1)
             .build();
 
         when(userManagerMock.createUser(isA(User.class))).thenThrow(new RecoverableDataAccessException(""));
