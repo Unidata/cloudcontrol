@@ -1,10 +1,10 @@
       <%-- This view is to configure the Docker client (admin only). --%>
       <h3>Configure Docker Client</h3>
-      
+
       <p>* Indicates a required field.</p>
 
        <form:form action="${baseUrl}/dashboard/docker/client/configure" commandName="clientConfig" method="POST">
-        <ul class="format threeQuarters">      
+        <ul class="format threeQuarters">
          <li>
           <label for="dockerHost" class="tooltip" title="The host/port or unix socket needed to connect to the Docker engine.  The same as the DOCKER_HOST value (if applicable).">
            Docker Host/Port or Unix Socket*
@@ -16,18 +16,18 @@
           <label for="dockerTlsVerify" class="tooltip" title="Whether TLS verification is required for access.  Always true in CloudControl. The same as the DOCKER_TLS_Verify value (if applicable).">
            Docker TLS Verify
           </label>
-          <form:input path="dockerTlsVerify" cssClass="fieldDisabled" disabled="true" value="1"/>
-          <form:errors path="dockerTlsVerify" cssClass="error" />  
+          <form:input path="dockerTlsVerify" cssClass="fieldDisabled" readonly="readonly" value="1"/>
+          <form:errors path="dockerTlsVerify" cssClass="error" />
          </li>
          <li>
           <label for="dockerCertPath" class="tooltip" title="Path to the certificates needed for TLS verification.  The same as the DOCKER_CERT_PATH value (if applicable).">
            Docker Certificate Path*
           </label>
           <form:input path="dockerCertPath" />
-          <form:errors path="dockerCertPath" cssClass="error" />  
+          <form:errors path="dockerCertPath" cssClass="error" />
          </li>
          <li>
-          <input type="submit" value="Configure" /> 
+          <input type="submit" value="Configure" />
          </li>
         </ul>
        </form:form>
