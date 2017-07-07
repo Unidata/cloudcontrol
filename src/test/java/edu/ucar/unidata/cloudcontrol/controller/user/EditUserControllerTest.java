@@ -270,9 +270,8 @@ public class EditUserControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
         verify(userManagerMock, times(1)).lookupUser("testUserOne");
-        verify(userManagerMock).updateUser(formObjectArgument.capture());
+        verify(userManagerMock, times(1)).updateUser(isA(User.class));
         verifyNoMoreInteractions(userManagerMock);
     }
 }
