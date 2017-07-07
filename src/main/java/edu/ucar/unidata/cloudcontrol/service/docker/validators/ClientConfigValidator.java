@@ -18,15 +18,15 @@ import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
  */
 @Component
 public class ClientConfigValidator implements Validator  {
-  
+
     protected static Logger logger = Logger.getLogger(ClientConfigValidator.class);
 
-    private String[] NAUGHTY_STRINGS = {"<script>", "../", "svg", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"}; 
-    private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"}; 
+    private String[] NAUGHTY_STRINGS = {"<script>", "../", "svg", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"};
+    private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"};
 
     /**
      * Checks to see if Object class can be validated.
-     * 
+     *
      * @param clazz  The Object class to validate
      * @return true if class can be validated
      */
@@ -36,20 +36,20 @@ public class ClientConfigValidator implements Validator  {
 
     /**
      * Validates the clientConfig input contained in the ClientConfig object.
-     * 
+     *
      * @param obj  The target object to validate.
      * @param error  Object in which to store any validation errors.
      */
     public void validate(Object obj, Errors errors) {
         ClientConfig clientConfig = (ClientConfig) obj;
-        validateDockerHost(clientConfig.getDockerHost(), errors);  
-        validateDockerCertPath(clientConfig.getDockerCertPath(), errors); 
-        validateDockerTlsVerify(clientConfig.getDockerTlsVerify(), errors); 
+        validateDockerHost(clientConfig.getDockerHost(), errors);
+        validateDockerCertPath(clientConfig.getDockerCertPath(), errors);
+        validateDockerTlsVerify(clientConfig.getDockerTlsVerify(), errors);
     }
 
     /**
      * Validates the user input for the dockerHost field.
-     * 
+     *
      * @param input  The clientConfig input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -61,13 +61,13 @@ public class ClientConfigValidator implements Validator  {
         if ((StringUtils.length(input) < 10) || (StringUtils.length(input) > 100)) {
             errors.rejectValue("dockerHost", "dockerHost.length");
             return;
-        }        
-        validateInput("dockerHost", input, errors); 
+        }
+        validateInput("dockerHost", input, errors);
     }
 
     /**
      * Validates the user input for the dockerCertPath field.
-     * 
+     *
      * @param input  The clientConfig input to validate.
      * @param error  Object in which to store any validation errors.
      */
@@ -79,26 +79,26 @@ public class ClientConfigValidator implements Validator  {
         if ((StringUtils.length(input) < 8) || (StringUtils.length(input) > 120)) {
             errors.rejectValue("dockerCertPath", "dockerCertPath.length");
             return;
-        }  
-        validateInput("dockerCertPath", input, errors); 
-    }    
-     
+        }
+        validateInput("dockerCertPath", input, errors);
+    }
+
     /**
      * Validates the user input for the dockerTlsVerify field.
-     * 
+     *
      * @param input  The clientConfig input to validate.
      * @param error  Object in which to store any validation errors.
-     */    
+     */
      public void validateDockerTlsVerify(int input, Errors errors) {
         if (input != 1){
             errors.rejectValue("dockerTlsVerify", "dockerTlsVerify.wellFormed");
             return;
-        }  
+        }
     }
 
     /**
      * A generic utility method to validate clientConfig input against known bad characters and strings.
-     * 
+     *
      * @param formField  The form field corresponding to the clientConfig input.
      * @param input  The clientConfig input to validate.
      * @param error  Object in which to store any validation errors.
@@ -120,30 +120,30 @@ public class ClientConfigValidator implements Validator  {
 
     /**
      * Validates the clientConfig input against known bad strings.
-     * 
+     *
      * @param itemToCheck  The clientConfig input to validate.
-     * @return  The bad clientConfig input string, or null if input passes validation. 
+     * @return  The bad clientConfig input string, or null if input passes validation.
      */
     public String checkForNaughtyStrings(String itemToCheck) {
-        for (String item : NAUGHTY_STRINGS) {              
+        for (String item : NAUGHTY_STRINGS) {
             if (StringUtils.contains(StringUtils.lowerCase(itemToCheck), item)) {
                 return item;
-            } 
+            }
         }
         return null;
     }
 
     /**
      * Validates the clientConfig input against known bad characters.
-     * 
+     *
      * @param itemToCheck  The clientConfig input to validate.
-     * @return  The bad clientConfig input char, or null if input passes validation. 
+     * @return  The bad clientConfig input char, or null if input passes validation.
      */
     public String checkForNaughtyChars(String itemToCheck) {
         for (String item : NAUGHTY_CHARS) {
             if (StringUtils.contains(itemToCheck, item)) {
                 return item;
-            } 
+            }
         }
         return null;
     }

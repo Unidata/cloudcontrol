@@ -23,19 +23,19 @@ import edu.ucar.unidata.cloudcontrol.repository.docker.ClientConfigDao;
  */
 public class ClientManagerImpl implements ClientManager {
     protected static Logger logger = Logger.getLogger(ClientManagerImpl.class);
-       
+
     private ClientConfigDao clientConfigDao;
 
     /**
-     * Sets the data access object which will acquire and persist the data 
-     * passed to it via the methods of this ClientManager. 
-     * 
-     * @param clientConfigDao  The service mechanism data access object representing a ClientConfig. 
+     * Sets the data access object which will acquire and persist the data
+     * passed to it via the methods of this ClientManager.
+     *
+     * @param clientConfigDao  The service mechanism data access object representing a ClientConfig.
      */
     public void setClientConfigDao(ClientConfigDao clientConfigDao) {
         this.clientConfigDao = clientConfigDao;
     }
-            
+
     /**
      * Initializes a com.github.dockerjava.api.DockerClient with configuraion information.
      *
@@ -44,7 +44,7 @@ public class ClientManagerImpl implements ClientManager {
     public DockerClient initializeDockerClient() {
         List<ClientConfig> clientConfigs = getAllClientConfigs();
         if (clientConfigs.size() > 0) {
-			ClientConfig clientConfig = clientConfigs.get(0);       
+            ClientConfig clientConfig = clientConfigs.get(0);
             DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
                 .withDockerHost(clientConfig.getDockerHost())
                 .withDockerTlsVerify(true)
@@ -52,83 +52,83 @@ public class ClientManagerImpl implements ClientManager {
                 .build();
             return DockerClientBuilder.getInstance(config).build();
         } else {
-			throw new DockerClientException("Unable to initialize Docker client.  No client configuration settings are available.");
-        }        
+            throw new DockerClientException("Unable to initialize Docker client.  No client configuration settings are available.");
+        }
     }
-    
+
     /**
      * Looks up and retrieves the ClientConfig from the persistence mechanism using the id.
-     * 
-     * @param id   The id of the ClientConfig (will be unique for each ClientConfig). 
-     * @return  The ClientConfig.   
+     *
+     * @param id   The id of the ClientConfig (will be unique for each ClientConfig).
+     * @return  The ClientConfig.
      */
     public ClientConfig lookupById(int id) {
         return clientConfigDao.lookupById(id);
     }
-    
+
     /**
      * Looks up and retrieves a List of ClientConfigs from the persistence mechanism using the DOCKER_HOST value.
-     * 
-     * @param dockerHost  The DOCKER_HOST value of the ClientConfig. 
-     * @return  The List of ClientConfigs.   
+     *
+     * @param dockerHost  The DOCKER_HOST value of the ClientConfig.
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerHost(String dockerHost) {
         return clientConfigDao.lookupByDockerHost(dockerHost);
     }
-    
+
     /**
      * Looks up and retrieves a List of ClientConfigs from the persistence mechanism using the DOCKER_CERT_PATH value.
-     * 
-     * @param dockerCertPath  The DOCKER_CERT_PATH value of the ClientConfig. 
-     * @return  The List of ClientConfigs.  
+     *
+     * @param dockerCertPath  The DOCKER_CERT_PATH value of the ClientConfig.
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerCertPath(String dockerCertPath) {
         return clientConfigDao.lookupByDockerCertPath(dockerCertPath);
     }
-    
+
     /**
      * Looks up and retrieves a List of ClientConfigs from the persistence mechanism using the DOCKER_TLS_VERIFY value.
-     * 
-     * @param dockerTlsVerify  The DOCKER_TLS_VERIFY value of the ClientConfig. 
-     * @return  The List of ClientConfigs. 
+     *
+     * @param dockerTlsVerify  The DOCKER_TLS_VERIFY value of the ClientConfig.
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerTlsVerify(int dockerTlsVerify) {
         return clientConfigDao.lookupByDockerTlsVerify(dockerTlsVerify);
     }
-    
+
     /**
      * Looks up and retrieves a List of ClientConfigs from the persistence mechanism using the user who created them.
-     * 
-     * @param createdBy  The user who created the ClientConfigs. 
-     * @return  The List of ClientConfigs.   
+     *
+     * @param createdBy  The user who created the ClientConfigs.
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByCreatedBy(String createdBy) {
         return clientConfigDao.lookupByCreatedBy(createdBy);
     }
-    
+
     /**
      * Looks up and retrieves a List of ClientConfigs from the persistence mechanism using the user who last updated them.
-     * 
-     * @param lastUpdatedBy  The user to last update the ClientConfigs. 
-     * @return  The List of ClientConfigs.   
+     *
+     * @param lastUpdatedBy  The user to last update the ClientConfigs.
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByLastUpdatedBy(String lastUpdatedBy) {
         return clientConfigDao.lookupByLastUpdatedBy(lastUpdatedBy);
     }
-    
+
     /**
      * Looks up and retrieves a List of all ClientConfigs from the persistence mechanism.
-     * 
-     * @return  The List of ClientConfigs.   
+     *
+     * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> getAllClientConfigs() {
         return clientConfigDao.getAllClientConfigs();
     }
-    
+
     /**
      * Finds and removes the ClientConfig from the persistence mechanism using the id.
-     * 
-     * @param id  The id of the ClientConfig to delete. 
+     *
+     * @param id  The id of the ClientConfig to delete.
      */
     public void deleteClientConfig(int id) {
         clientConfigDao.deleteClientConfig(id);
@@ -136,9 +136,9 @@ public class ClientManagerImpl implements ClientManager {
 
     /**
      * Creates a new ClientConfig in the persistence mechanism.
-     * 
-     * @param clientConfig  The ClientConfig to be created. 
-     * @return  The id of the newly created ClientConfig object. 
+     *
+     * @param clientConfig  The ClientConfig to be created.
+     * @return  The id of the newly created ClientConfig object.
      */
     public int createClientConfig(ClientConfig clientConfig) {
         Date now = new Date(System.currentTimeMillis());
@@ -146,11 +146,11 @@ public class ClientManagerImpl implements ClientManager {
         clientConfig.setDateModified(now);
         return clientConfigDao.createClientConfig(clientConfig);
     }
-    
+
     /**
      * Saves changes made to an existing ClientConfig in the persistence mechanism.
-     * 
-     * @param clientConfig  The existing ClientConfig with changes that needs to be saved. 
+     *
+     * @param clientConfig  The existing ClientConfig with changes that needs to be saved.
      */
     public void updateClientConfig(ClientConfig clientConfig) {
         Date now = new Date(System.currentTimeMillis());
@@ -160,7 +160,7 @@ public class ClientManagerImpl implements ClientManager {
 
     /**
      * Determines if the minimum required Docker-related system environment variables exist.
-     * The minimum required environment variables needed by the DockerClient are DOCKER_HOST 
+     * The minimum required environment variables needed by the DockerClient are DOCKER_HOST
      * and DOCKER_CERT_PATH.  If DOCKER_TLS_VERIFY is present, it must not be false or empty.
      *
      * @return  The ClientConfig object.
@@ -202,7 +202,7 @@ public class ClientManagerImpl implements ClientManager {
             return false;
         }
     }
-    
+
     /**
      * Utility for determining if a property value contains a data.
      *
@@ -216,5 +216,5 @@ public class ClientManagerImpl implements ClientManager {
             return false;
         }
     }
-    
+
 }

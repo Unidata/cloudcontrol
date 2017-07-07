@@ -8,7 +8,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Object representing information for Docker client configuration.
  */
-
 public class ClientConfig implements Serializable {
 
     private int id;
@@ -19,11 +18,11 @@ public class ClientConfig implements Serializable {
     private String lastUpdatedBy;
     private Date dateCreated;
     private Date dateModified;
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
@@ -51,7 +50,7 @@ public class ClientConfig implements Serializable {
     public void setDockerTlsVerify(int dockerTlsVerify) {
         this.dockerTlsVerify = dockerTlsVerify;
     }
-    
+
     public String getCreatedBy() {
         return createdBy;
     }
@@ -59,7 +58,7 @@ public class ClientConfig implements Serializable {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
-    
+
     public String getLastUpdatedBy() {
         return lastUpdatedBy;
     }
@@ -71,7 +70,7 @@ public class ClientConfig implements Serializable {
     public Date getDateCreated() {
         return dateCreated;
     }
-       
+
     public void setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
     }
@@ -79,7 +78,7 @@ public class ClientConfig implements Serializable {
     public Date getDateModified() {
         return dateModified;
     }
-       
+
     public void setDateModified(Date dateModified) {
         this.dateModified = dateModified;
     }
@@ -87,5 +86,5 @@ public class ClientConfig implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 }
