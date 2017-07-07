@@ -28,8 +28,6 @@ public class _Version implements Serializable {
     private String version;
     private String buildTime;
     private String experimental;  // Changed from Boolean
-	
-
 
     public String getApiVersion() {
         return apiVersion;
@@ -42,7 +40,7 @@ public class _Version implements Serializable {
             this.apiVersion = apiVersion;
         } 
     }
-    
+
     public String getArch() {
         return arch;
     }
@@ -52,9 +50,9 @@ public class _Version implements Serializable {
             this.arch = "";
         } else {
             this.arch = arch;
-        }        
+        }
     }
-    
+
     public String getGitCommit() {
         return gitCommit;
     }
@@ -64,9 +62,9 @@ public class _Version implements Serializable {
             this.gitCommit = "";
         } else {
             this.gitCommit = gitCommit;
-        }   
+        } 
     }
-    
+
     public String getGoVersion() {
         return goVersion;
     }
@@ -76,9 +74,9 @@ public class _Version implements Serializable {
             this.goVersion = "";
         } else {
             this.goVersion = goVersion;
-        }   
+        } 
     }
-    
+
     public String getKernelVersion() {
         return kernelVersion;
     }
@@ -88,9 +86,9 @@ public class _Version implements Serializable {
             this.kernelVersion = "";
         } else {
             this.kernelVersion = kernelVersion;
-        }        
+        }
     }
-    
+
     public String getOperatingSystem() {
         return operatingSystem;
     }
@@ -100,9 +98,9 @@ public class _Version implements Serializable {
             this.operatingSystem = "";
         } else {
             this.operatingSystem = operatingSystem;
-        }        
+        }
     }
-    
+
     public String getVersion() {
         return version;
     }
@@ -112,9 +110,9 @@ public class _Version implements Serializable {
             this.version = "";
         } else {
             this.version = version;
-        }    
+        }
     }
-    
+
     public String getBuildTime() {
         return buildTime;
     }
@@ -124,9 +122,9 @@ public class _Version implements Serializable {
             this.buildTime = "";
         } else {
             this.buildTime = buildTime;
-        }        
+        }
     }
-    
+
     public String getExperimental() {
         return experimental;
     }
@@ -136,11 +134,11 @@ public class _Version implements Serializable {
             this.experimental = "";
         } else {
             this.experimental = String.valueOf(experimental);
-        }        
+        }
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 }

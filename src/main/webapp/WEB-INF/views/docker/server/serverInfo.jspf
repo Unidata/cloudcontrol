@@ -2,7 +2,7 @@
       <h3>Docker Server Information</h3>
       <c:choose>
        <c:when test="${not empty serverInfo}">
-        <table> 
+        <table>
          <tbody>
           <tr>
             <td>
@@ -14,7 +14,7 @@
              <c:out value="${serverInfo.architecture}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>total number of containers</b> in this Docker instance.">
               Containers
@@ -24,7 +24,7 @@
              <c:out value="${serverInfo.containers}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>number of stopped containers</b> in this Docker instance.">
               Containers Stopped
@@ -34,7 +34,7 @@
              <c:out value="${serverInfo.containersStopped}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>number of paused containers</b> in this Docker instance.">
               Containers Paused
@@ -43,8 +43,8 @@
             <td>
              <c:out value="${serverInfo.containersPaused}" />
             </td>
-          </tr>         
-          <tr>         
+          </tr>
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>number of running containers</b> in this Docker instance.">
               Containers Running
@@ -54,7 +54,7 @@
              <c:out value="${serverInfo.containersRunning}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>CPU CFS period constraint</b> or not.">
               CPU CFS Period Support
@@ -64,7 +64,7 @@
              <c:out value="${serverInfo.cpuCfsPeriod}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>CPU CFS quota limits</b> or not.">
               CPU CFS Quota Support
@@ -74,7 +74,7 @@
              <c:out value="${serverInfo.cpuCfsQuota}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>CPU shares</b> or not.">
               CPU Shares Support
@@ -84,7 +84,7 @@
              <c:out value="${serverInfo.cpuShares}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>CPU set/pinning</b> or not.">
               CPU Set/Pinning Support
@@ -94,7 +94,7 @@
              <c:out value="${serverInfo.cpuSet}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Whether <b>debug mode</b> is enabled for the Docker server or not.">
               Debug Mode Enabled
@@ -104,7 +104,7 @@
              <c:out value="${serverInfo.debug}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>discovery backend</b>.">
               Discovery Backend
@@ -114,7 +114,7 @@
              <c:out value="${serverInfo.discoveryBackend}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The location of the <b>Docker root directory</b>.">
               Docker Root Directory
@@ -124,7 +124,7 @@
              <c:out value="${serverInfo.dockerRootDir}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>storage driver</b> used by the Docker daemon.">
               Storage Driver
@@ -134,7 +134,7 @@
              <c:out value="${serverInfo.driver}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Low-level <b>driver-specific status</b> information.">
                Driver Status
@@ -144,7 +144,7 @@
              <c:out value="${serverInfo.driverStatuses}" escapeXml="false"/>
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="Low-level <b>system status</b> information.">
                System Status
@@ -154,7 +154,7 @@
              <c:out value="${serverInfo.systemStatus}" escapeXml="false"/>
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The third-party <b>volume and network plugins</b> in this Docker instance.">
               Plugins
@@ -164,7 +164,7 @@
              <c:out value="${serverInfo.plugins}" escapeXml="false"/>
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>execution driver</b> used in this Docker instance.">
               Execution Driver
@@ -174,7 +174,7 @@
              <c:out value="${serverInfo.executionDriver}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The default <b>logging driver</b> used by the Docker daemon.">
               Logging Driver
@@ -186,7 +186,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Denotes whether the Docker instance is an <b>experimental build</b> or not."> 
+             <div class="tooltip" class="tooltip" title="Denotes whether the Docker instance is an <b>experimental build</b> or not.">
               Experimental Build
              </div>
             </td>
@@ -196,7 +196,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>HTTP proxy</b> enabled in this Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>HTTP proxy</b> enabled in this Docker instance.">
               HTTP Proxy
              </div>
             </td>
@@ -206,7 +206,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>HTTPS proxy</b> enabled in this Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>HTTPS proxy</b> enabled in this Docker instance.">
               HTTPS Proxy
              </div>
             </td>
@@ -216,7 +216,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The Docker <b>engine ID</b>."> 
+             <div class="tooltip" class="tooltip" title="The Docker <b>engine ID</b>.">
               ID
              </div>
             </td>
@@ -226,7 +226,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Whether <b>IPv4 forwarding</b> is enabled or not."> 
+             <div class="tooltip" class="tooltip" title="Whether <b>IPv4 forwarding</b> is enabled or not.">
               IPv4 Forwarding Enabled
              </div>
             </td>
@@ -236,7 +236,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>bridge-nf iptables</b> or not."> 
+             <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>bridge-nf iptables</b> or not.">
               Bridge-nf Iptables
              </div>
             </td>
@@ -246,7 +246,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>bridge-nf ip6tables</b> or not."> 
+             <div class="tooltip" class="tooltip" title="Whether the kernel supports <b>bridge-nf ip6tables</b> or not.">
               Bridge-nf Ip6tables
              </div>
             </td>
@@ -256,7 +256,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>total number of images</b> in this Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>total number of images</b> in this Docker instance.">
               Images
              </div>
             </td>
@@ -266,7 +266,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>Docker registry address</b> used by this Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>Docker registry address</b> used by this Docker instance.">
               Index Server Address
              </div>
             </td>
@@ -276,7 +276,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>initialization path</b> for the Docker daemon."> 
+             <div class="tooltip" class="tooltip" title="The <b>initialization path</b> for the Docker daemon.">
               Initialization Path
              </div>
             </td>
@@ -286,7 +286,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>SHA1 verification hash</b> used."> 
+             <div class="tooltip" class="tooltip" title="The <b>SHA1 verification hash</b> used.">
               Init SHA1
              </div>
             </td>
@@ -294,7 +294,7 @@
              <c:out value="${serverInfo.initSha1}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>kernel version</b> of machine running the Docker instance.">
               Kernel Version
@@ -304,7 +304,7 @@
              <c:out value="${serverInfo.kernelVersion}" />
             </td>
           </tr>
-          <tr>         
+          <tr>
             <td>
              <div class="tooltip" class="tooltip" title="The <b>labels</b> containing metadata about the Docker daemon.">
               Labels
@@ -316,7 +316,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Whether the kernel supports a <b>memory limit</b> or not."> 
+             <div class="tooltip" class="tooltip" title="Whether the kernel supports a <b>memory limit</b> or not.">
               Memory Limit Support
              </div>
             </td>
@@ -326,7 +326,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>total memory</b> available on the host system."> 
+             <div class="tooltip" class="tooltip" title="The <b>total memory</b> available on the host system.">
               Total Memory
              </div>
             </td>
@@ -336,7 +336,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>name</b> of the docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>name</b> of the docker instance.">
               Name
              </div>
             </td>
@@ -346,7 +346,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>number of CPUs</b> available on the machine."> 
+             <div class="tooltip" class="tooltip" title="The <b>number of CPUs</b> available on the machine.">
               Number of CPUs
              </div>
             </td>
@@ -356,7 +356,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The number of <b>event listeners</b>."> 
+             <div class="tooltip" class="tooltip" title="The number of <b>event listeners</b>.">
               Number of Event Listeners
              </div>
             </td>
@@ -365,7 +365,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>number of Named Data Networking Forwarding Daemons</b> running."> 
+             <div class="tooltip" class="tooltip" title="The <b>number of Named Data Networking Forwarding Daemons</b> running.">
               Named Data Networking Forwarding Daemon
              </div>
             </td>
@@ -375,7 +375,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>number of Go routines</b> running."> 
+             <div class="tooltip" class="tooltip" title="The <b>number of Go routines</b> running.">
               Number of GoRoutines
              </div>
             </td>
@@ -384,7 +384,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The hosts where a <b>proxy is not applied</b>."> 
+             <div class="tooltip" class="tooltip" title="The hosts where a <b>proxy is not applied</b>.">
               No Proxy
              </div>
             </td>
@@ -394,7 +394,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="Whether <b>OOM Kill</b> is disabled or not."> 
+             <div class="tooltip" class="tooltip" title="Whether <b>OOM Kill</b> is disabled or not.">
               OOM Kill Disabled
              </div>
             </td>
@@ -404,7 +404,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>type information/details</b> about the operating system of the machine running the Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>type information/details</b> about the operating system of the machine running the Docker instance.">
               Operating System Type
              </div>
             </td>
@@ -414,7 +414,7 @@
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The kernel's <b>OOM score</b>."> 
+             <div class="tooltip" class="tooltip" title="The kernel's <b>OOM score</b>.">
               OOM Score
              </div>
             </td>
@@ -461,49 +461,49 @@
             <td>
              <c:out value="${serverInfo.swapLimit}" />
             </td>
-          </tr> 
+          </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>system time</b> of the machine running this Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>system time</b> of the machine running this Docker instance.">
               System Time
              </div>
             </td>
             <td>
-             <c:out value="${serverInfo.systemTime}" />    
+             <c:out value="${serverInfo.systemTime}" />
             </td>
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>engine version</b> of the Docker instance."> 
+             <div class="tooltip" class="tooltip" title="The <b>engine version</b> of the Docker instance.">
               Server Version
              </div>
             </td>
             <td>
-             <c:out value="${serverInfo.serverVersion}" />    
+             <c:out value="${serverInfo.serverVersion}" />
             </td>
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>URL</b> of the distributed storage backend."> 
+             <div class="tooltip" class="tooltip" title="The <b>URL</b> of the distributed storage backend.">
               Cluster Store
              </div>
             </td>
             <td>
-             <c:out value="${serverInfo.clusterStore}" />    
+             <c:out value="${serverInfo.clusterStore}" />
             </td>
           </tr>
           <tr>
             <td>
-             <div class="tooltip" class="tooltip" title="The <b>address</b> of the daemon instance on the cluster"> 
+             <div class="tooltip" class="tooltip" title="The <b>address</b> of the daemon instance on the cluster">
               Cluster Advertise
              </div>
             </td>
             <td>
-             <c:out value="${serverInfo.clusterAdvertise}" />    
+             <c:out value="${serverInfo.clusterAdvertise}" />
             </td>
           </tr>
          </tbody>
-        </table>        
+        </table>
        </c:when>
        <c:otherwise>
         <p>Unable to display Docker server information.</p>

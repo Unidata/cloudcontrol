@@ -14,7 +14,7 @@
             <c:out value="${serverVersion.apiVersion}" />
            </td>
           </tr>
-          <tr>      
+          <tr>
            <td>
             <div class="tooltip" class="tooltip" title="The <b>architecture</b> of the machine running the Docker instance.">
              Architecture
@@ -24,7 +24,7 @@
             <c:out value="${serverVersion.arch}" />
            </td>
           </tr>
-          <tr>      
+          <tr>
            <td>
             <div class="tooltip" class="tooltip" title="The <b>Git commit checksum</b> of the Docker instance.">
              Git Commit Checksum
@@ -34,7 +34,7 @@
             <c:out value="${serverVersion.gitCommit}" />
            </td>
           </tr>
-          <tr>      
+          <tr>
            <td>
            <div class="tooltip" class="tooltip" title="The <b>Go version</b> used to build the Docker instance.">
              GO Version
@@ -44,7 +44,7 @@
             <c:out value="${serverVersion.goVersion}" />
            </td>
           </tr>
-          <tr>      
+          <tr>
            <td>
             <div class="tooltip" class="tooltip" title="The <b>kernel version</b> of the machine running the Docker instance.">
              Kernel Version
@@ -81,7 +81,7 @@
             </div>
            </td>
            <td>
-            <c:out value="${serverVersion.buildTime}" />    
+            <c:out value="${serverVersion.buildTime}" />
            </td>
           </tr>
           <tr>
@@ -95,7 +95,7 @@
            </td>
           </tr>
          </tbody>
-        </table>       
+        </table> 
        </c:when>
        <c:otherwise>
         <p>Unable to display Docker server version.</p>

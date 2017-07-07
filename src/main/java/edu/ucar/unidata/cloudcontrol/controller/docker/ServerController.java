@@ -10,7 +10,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 /**
  * Controller to issue rudimentary server/system-related Docker commands.
  */
-
 @Controller
 public class ServerController implements HandlerExceptionResolver {
 
@@ -39,57 +37,57 @@ public class ServerController implements HandlerExceptionResolver {
 
     @Resource(name="serverManager")
     private ServerManager serverManager;
-    
-    
+
+
     /**
      * Accepts a GET request for Docker server information.
      *
-     * The view is the dashboard.  The model contains the server information 
+     * The view is the dashboard.  The model contains the server information
      * which will be loaded and displayed in the view via jspf.
-     * 
+     *
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/info", method=RequestMethod.GET)
-    public String getInfo(Model model) { 
+    public String getInfo(Model model) {
         _Info _info = serverManager.getInfo();
         if (!Objects.isNull(_info)) {
-            model.addAttribute("serverInfo", _info);   
-        }                   
-        model.addAttribute("action", "serverInfo");   
+            model.addAttribute("serverInfo", _info);
+        }
+        model.addAttribute("action", "serverInfo");
         return "dashboard";
     }
-    
+
     /**
      * Accepts a GET request for the Docker server version.
      *
-     * The view is the dashboard.  The model contains the server version 
+     * The view is the dashboard.  The model contains the server version
      * information which will be loaded and displayed in the view via jspf.
-     * 
+     *
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/version", method=RequestMethod.GET)
-    public String getVersion(Model model) { 
+    public String getVersion(Model model) {
         _Version _version = serverManager.getVersion();
         if (!Objects.isNull(_version)) {
-            model.addAttribute("serverVersion", _version);  
-        }                              
-        model.addAttribute("action", "serverVersion");  
+            model.addAttribute("serverVersion", _version);
+        }
+        model.addAttribute("action", "serverVersion");
         return "dashboard";
     }
-    
+
     /**
      * This method gracefully handles any uncaught exception
      * that are fatal in nature and unresolvable by the user.
-     * 
+     *
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.  
+     * @param handler  The executed handler, or null if none chosen at the time of the exception.
      * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage. 
+     * @return  The error page containing the appropriate message to the dockerImage.
      */
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
@@ -100,20 +98,20 @@ public class ServerController implements HandlerExceptionResolver {
         printWriter.flush();
 
         String stackTrace = writer.toString();
-        
+
         ModelAndView modelAndView = new ModelAndView();
         Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){ 
+        if (exception instanceof AccessDeniedException){
             message = exception.getMessage();
             modelAndView.setViewName("denied");
         } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;  
-            modelAndView.setViewName("fatalError"); 
+            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
+            modelAndView.setViewName("fatalError");
         }
-        logger.error(message);       
+        logger.error(message);
         model.put("message", message);
         modelAndView.addAllObjects(model);
         return modelAndView;
-    } 
+    }
 
 }

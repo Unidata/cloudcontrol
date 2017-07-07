@@ -25,29 +25,29 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
  */
 public class ServerManagerImpl implements ServerManager {
     protected static Logger logger = Logger.getLogger(ServerManagerImpl.class);
-    
+
     @Resource(name = "clientManager")
     private ClientManager clientManager;
-    
+
     /**
      * Requests Docker server information.
      *
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Info object.
      */
     public _Info getInfo() {
-        _Info _info;  
+        _Info _info;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             Info info = dockerClient.infoCmd().exec();
-            _info = convertInfo(info); 
+            _info = convertInfo(info);
         } catch (Exception e) {
             logger.error("Unable to get Docker server info: " + e);
-			_info = null;
-        }    
-        return _info;    
+            _info = null;
+        }
+        return _info;
     }
-    
-    
+
+
     /**
      * Converts a com.github.dockerjava.api.model.Info object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Info object.
@@ -115,7 +115,7 @@ public class ServerManagerImpl implements ServerManager {
         _Info _info = mapInfoTo_Info.apply(info);
         return _info;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.InfoRegistryConfig object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InfoRegistryConfig object.
@@ -136,7 +136,7 @@ public class ServerManagerImpl implements ServerManager {
         _InfoRegistryConfig _infoRegistryConfig = mapInfoRegistryConfigTo_InfoRegistryConfig.apply(infoRegistryConfig);
         return _infoRegistryConfig;
     }
-    
+
 
     /**
      * Utility method to process a Map of com.github.dockerjava.api.model.InfoRegistryConfig.IndexConfig objects.
@@ -152,8 +152,8 @@ public class ServerManagerImpl implements ServerManager {
         }
         return _indexConfigMap;
     }
-    
-    
+
+
     /**
      * Converts a com.github.dockerjava.api.model.InfoRegistryConfig.IndexConfig object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InfoRegistryConfig._IndexConfig object.
@@ -175,7 +175,7 @@ public class ServerManagerImpl implements ServerManager {
         _InfoRegistryConfig._IndexConfig _indexConfig = mapIndexConfigTo_IndexConfig.apply(indexConfig);
         return _indexConfig;
     }
-    
+
 
     /**
      * Requests the Docker server version.
@@ -190,11 +190,11 @@ public class ServerManagerImpl implements ServerManager {
             _version = convertVersion(version);
         } catch (Exception e) {
             logger.error("Unable to get Docker server version: " + e);
-			_version = null;
-        }    
+            _version = null;
+        }
         return _version;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.Version object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Version object.

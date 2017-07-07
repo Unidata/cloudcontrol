@@ -11,14 +11,14 @@ import edu.ucar.unidata.cloudcontrol.domain.docker._Version;
  * Service for processing docker server and system-related api requests.
  */
 public interface ServerManager {
-	
+
     /**
      * Requests Docker server information.
      *
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Info object.
      */
     public _Info getInfo();
-	
+
     /**
      * Requests the docker server version.
      *
