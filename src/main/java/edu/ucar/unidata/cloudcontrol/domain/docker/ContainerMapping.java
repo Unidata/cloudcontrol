@@ -8,7 +8,6 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Object representing information about Docker container usage.
  */
-
 public class ContainerMapping implements Serializable {
 
     private int id;
@@ -16,15 +15,15 @@ public class ContainerMapping implements Serializable {
     private String imageId;
     private String userName;
     private Date datePerformed;
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
-	
+
     public String getContainerId() {
         return containerId;
     }
@@ -52,7 +51,7 @@ public class ContainerMapping implements Serializable {
     public Date getDatePerformed() {
         return datePerformed;
     }
-       
+
     public void setDatePerformed(Date datePerformed) {
         this.datePerformed = datePerformed;
     }
@@ -60,5 +59,5 @@ public class ContainerMapping implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 }

@@ -7,16 +7,15 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Object representing an image the admin has flaged for display in the user interface.
  */
-
 public class ImageMapping implements Serializable {
 
     private int id;
     private String imageId;
-    
+
     public int getId() {
         return id;
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
@@ -28,9 +27,9 @@ public class ImageMapping implements Serializable {
     public void setImageId(String imageId) {
         this.imageId = imageId;
     }
-	
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 }

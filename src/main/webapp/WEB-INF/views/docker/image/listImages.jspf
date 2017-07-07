@@ -3,14 +3,14 @@
       <c:choose>
        <c:when test="${imageList ne null}">
         <c:choose>
-         <c:when test="${fn:length(imageList) gt 0}">  
-          <table class="list"> 
+         <c:when test="${fn:length(imageList) gt 0}">
+          <table class="list">
            <thead>
             <tr>
              <th>
               Repository/Tags
              </th>
-             <th> 
+             <th>
               Date Created
              </th>
              <th>
@@ -25,13 +25,13 @@
            </thead>
            <tbody>
             <c:forEach items="${imageList}" var="image">
-             <c:set var="id" value="${fn:replace(image.id, ':', '')}" />     
+             <c:set var="id" value="${fn:replace(image.id, ':', '')}" />
              <tr id="<c:out value="${id}" />Toggle" class="toggle">
               <td class="main">
                <c:out value="${image.repoTags}" />
               </td>
               <td>
-               <c:out value="${image.created}"/>               
+               <c:out value="${image.created}"/>
               </td>
               <td>
                <c:out value="${image.status}" />
@@ -50,13 +50,13 @@
               </sec:authorize>
              </tr>
              <tr id="<c:out value="${id}" />ToggleSection" class="hideandshow">
-             
+
              <sec:authorize access="hasRole('ROLE_ADMIN')">
               <td colspan="4">
              </sec:authorize>
              <sec:authorize access="hasRole('ROLE_USER')">
               <td colspan="3">
-             </sec:authorize>    
+             </sec:authorize>
 
 
 <c:if test="${image.attachedContainers ne null}">
@@ -64,19 +64,19 @@
                <c:forEach items="${image.attachedContainers}" var="attachedContainer">
                  <li>
                  COMMAND:  <c:out value="${attachedContainer.command}" /><br>
-                 CREATED:  <c:out value="${attachedContainer.created}" /><br>          
+                 CREATED:  <c:out value="${attachedContainer.created}" /><br>
                  ID:  <c:out value="${attachedContainer.id}" /><br>
                  IMAGE:  <c:out value="${attachedContainer.image}" /><br>
                  IMAGE ID:  <c:out value="${attachedContainer.imageId}" /><br>
-                 NAME:  <c:out value="${attachedContainer.names}" /><br>            
-                 PORTS:  <c:out value="${attachedContainer.ports}" /><br>            
-                 LABELS:  <c:out value="${attachedContainer.labels}" /><br>           
+                 NAME:  <c:out value="${attachedContainer.names}" /><br>
+                 PORTS:  <c:out value="${attachedContainer.ports}" /><br>
+                 LABELS:  <c:out value="${attachedContainer.labels}" /><br>
                  STATUS:  <c:out value="${attachedContainer.status}" /><br>
-                 SIZE RW:  <c:out value="${attachedContainer.sizeRw}" /><br>           
-                 SIZE ROOT FS:  <c:out value="${attachedContainer.sizeRootFs}" /><br>       
-                 HOST CONFIG:  <c:out value="${attachedContainer.hostConfig}" /><br>       
-                 NETWORK SETTING:  <c:out value="${attachedContainer.networkSettings}" /><br>  
-              
+                 SIZE RW:  <c:out value="${attachedContainer.sizeRw}" /><br>
+                 SIZE ROOT FS:  <c:out value="${attachedContainer.sizeRootFs}" /><br>
+                 HOST CONFIG:  <c:out value="${attachedContainer.hostConfig}" /><br>
+                 NETWORK SETTING:  <c:out value="${attachedContainer.networkSettings}" /><br>
+
                  </li>
                </c:forEach>
                </ul>
@@ -86,89 +86,89 @@
 
 
                <div class="left">
-                <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status: 
+                <p class="tooltip block" title="The <b>image status</b> shows whether the image is currently running or not.">Image Status:
                 <c:choose>
                  <c:when test="${fn:contains(image.status, 'Not Initialized')}">
                   <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="start">
-                   Start Image      
+                   Start Image
                   </button>
                  </c:when>
                  <c:when test="${fn:contains(image.status, 'Exited')}">
                   <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="start">
-                   Start Image      
+                   Start Image
                   </button>
                  </c:when>
                  <c:when test="${fn:contains(image.status, 'Created')}">
                   <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="start">
-                   Start Image      
+                   Start Image
                   </button>
                  </c:when>
                  <c:otherwise>
                   <span><c:out value="${image.status}" /></span></p>
                   <button id="<c:out value='${image.id}' />" class="stop">
-                   Stop Image      
+                   Stop Image
                   </button>
                  </c:otherwise>
                 </c:choose>
                </div>
 
-               
+
                <div class="right">
                 <p class="tooltip block" title="View more detailed <b>information about the image</b> using the <i>inspect</i> and <i>history</i> features.">Image Information:</p>
                 <button id="<c:out value='${image.id}' />" class="inspect">
-                 Inspect Image      
-                </button>  
+                 Inspect Image
+                </button>
                </div>
-                
+
                <sec:authorize access="hasRole('ROLE_ADMIN')">
 
                 <div class="left">
-                 <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image accessibility: 
+                 <p class="tooltip block" title="The <b>image visible to user</b> option shows whether the image is visible on the user's dashboard or not.">Image accessibility:
                  <c:choose>
                   <c:when test="${image.isVisibleToUsers eq 'false'}">
                    <span>Hidden from Users</span></p>
                    <button id="<c:out value='${image.id}' />" class="show">
-                    Show to Users     
+                    Show to Users
                    </button>
                   </c:when>
                   <c:otherwise>
                    <span>Visible to Users</span></p>
                    <button id="<c:out value='${image.id}' />" class="show">
-                    Hide from Users     
+                    Hide from Users
                    </button>
                   </c:otherwise>
                  </c:choose>
                 </div>
-                
-                <div class="right"> 
-                 <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the Docker file system.">Danger Zone:</p>      
+
+                <div class="right">
+                 <p class="tooltip block" title="The <b>danger zone</b> allows you to delete an image from the Docker file system.">Danger Zone:</p>
                  <button id="<c:out value='${image.id}' />" class="remove">
-                  Remove Image from Docker   
+                  Remove Image from Docker
                  </button>
                 </div>
-               
+
                </sec:authorize>
               </td>
-             </tr>                 
+             </tr>
             </c:forEach>
            </tbody>
           </table>
          </c:when>
          <c:otherwise>
-         <sec:authorize access="hasRole('ROLE_ADMIN')">   
+         <sec:authorize access="hasRole('ROLE_ADMIN')">
           <p>No images are available in this Docker instance yet. Add some!</p>
          </sec:authorize>
          <sec:authorize access="hasRole('ROLE_USER')">
           <p>No images are available in this Docker instance yet. The site administrator has yet to add any.</p>
          </sec:authorize>
          </c:otherwise>
-        </c:choose>        
+        </c:choose>
        </c:when>
        <c:otherwise>
-        <sec:authorize access="hasRole('ROLE_ADMIN')">   
+        <sec:authorize access="hasRole('ROLE_ADMIN')">
          <p>Unable to display Docker images. Have you <b><a href="${baseUrl}/dashboard/docker/client/configure">configured</a></b> the CloudControl Docker client?  If so, check the log files to ascertain what is wrong.</p>
         </sec:authorize>
         <sec:authorize access="hasRole('ROLE_USER')">
@@ -176,7 +176,7 @@
         </sec:authorize>
        </c:otherwise>
       </c:choose>
-      
+
       <div id="dialog"></div>
       <div id="wait"></div>
-      
+

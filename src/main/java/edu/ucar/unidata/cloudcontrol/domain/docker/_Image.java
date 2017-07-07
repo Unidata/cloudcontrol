@@ -17,7 +17,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  *
  * Note: This object is passed directly to the view with no intermediary manipulation.
  * Therefore, the com.github.dockerjava.api.model.Image attribute types have been
- * converted to String types to handle: 1) checking for null values passed from the 
+ * converted to String types to handle: 1) checking for null values passed from the
  * com.github.dockerjava.api.model.Info object; and 2) custom formatting of data.
  */
 public class _Image implements Serializable {
@@ -44,7 +44,7 @@ public class _Image implements Serializable {
             d.setTime(created.longValue() * 1000);
             SimpleDateFormat format = new SimpleDateFormat("d MMM yyyy");
             this.created = format.format(d);
-        }        
+        }
     }
 
     public String getId() {
@@ -56,7 +56,7 @@ public class _Image implements Serializable {
             this.id = "";
         } else {
             this.id = id.substring(0,11);
-        }        
+        }
     }
 
     public String getParentId() {
@@ -68,7 +68,7 @@ public class _Image implements Serializable {
             this.parentId = "";
         } else {
             this.parentId = parentId;
-        }        
+        }
     }
 
     public String getRepoTags() {
@@ -89,7 +89,7 @@ public class _Image implements Serializable {
                         if (it.hasNext()) {
                             sb.append(s + ", ");
                         } else {
-                            sb.append(s);                            
+                            sb.append(s);
                         }
                     }
                 }
@@ -97,7 +97,7 @@ public class _Image implements Serializable {
             } else {
                 this.repoTags = "";
             }
-        }      
+        }
     }
 
     public String getSize() {
@@ -107,7 +107,7 @@ public class _Image implements Serializable {
     public void setSize(Long size) {
         if (Objects.isNull(size)) {
             this.size = "";
-        } else {       
+        } else {
             if (size > 1000000) {
                 this.size = String.valueOf(size.longValue()/1000000) + " MB";
             } else if (size > 1000) {
@@ -115,7 +115,7 @@ public class _Image implements Serializable {
             } else {
                 this.size = size.toString() + " B";
             }
-        }        
+        }
     }
 
     public String getVirtualSize() {
@@ -133,39 +133,39 @@ public class _Image implements Serializable {
             } else {
                 this.virtualSize = virtualSize.toString() + " B";
             }
-        } 
+        }
     }
-    
+
     public String getStatus() {
         return status;
     }
-    
+
     public void setStatus(String status) {
         if (Objects.isNull(status)) {
             this.status = "";
         } else {
             this.status = status;
-        }        
+        }
     }
-    
+
     public boolean getIsVisibleToUsers() {
         return isVisibleToUsers;
     }
-    
+
     public void setIsVisibleToUsers(boolean isVisibleToUsers) {
-        this.isVisibleToUsers = isVisibleToUsers;      
+        this.isVisibleToUsers = isVisibleToUsers;
     }
-    
+
     public List<_Container> getAttachedContainers() {
         return attachedContainers;
     }
-    
+
     public void setAttachedContainers(List<_Container> attachedContainers) {
-        this.attachedContainers = attachedContainers;      
+        this.attachedContainers = attachedContainers;
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 }
