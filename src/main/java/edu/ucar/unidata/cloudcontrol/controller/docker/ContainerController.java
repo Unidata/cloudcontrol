@@ -31,7 +31,6 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 /**
  * Controller to issue rudimentary Container-related Docker commands.
  */
-
 @Controller
 public class ContainerController implements HandlerExceptionResolver {
 
@@ -39,36 +38,36 @@ public class ContainerController implements HandlerExceptionResolver {
 
     @Resource(name="containerManager")
     private ContainerManager containerManager;
-    
-    
+
+
     /**
      * Accepts a GET request for a List of Docker containers.
      *
      * The view is the dashboard.  The model contains the container List
      * which will be loaded and displayed in the view via jspf.
-     * 
+     *
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/container/list", method=RequestMethod.GET)
-    public String getContainerList(Model model) { 
-        List<_Container> _containers = containerManager.getContainerList(); 
-        if (!Objects.isNull(_containers)) {      
-            model.addAttribute("containerList", _containers);  
-        }  
+    public String getContainerList(Model model) {
+        List<_Container> _containers = containerManager.getContainerList();
+        if (!Objects.isNull(_containers)) {
+            model.addAttribute("containerList", _containers);
+        }
         return "dashboard";
     }
 
     /**
      * This method gracefully handles any uncaught exception
      * that are fatal in nature and unresolvable by the user.
-     * 
+     *
      * @param request   The current HttpServletRequest request.
      * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.  
+     * @param handler  The executed handler, or null if none chosen at the time of the exception.
      * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage. 
+     * @return  The error page containing the appropriate message to the dockerImage.
      */
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
@@ -79,20 +78,20 @@ public class ContainerController implements HandlerExceptionResolver {
         printWriter.flush();
 
         String stackTrace = writer.toString();
-        
+
         ModelAndView modelAndView = new ModelAndView();
         Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){ 
+        if (exception instanceof AccessDeniedException){
             message = exception.getMessage();
             modelAndView.setViewName("denied");
         } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;  
-            modelAndView.setViewName("fatalError"); 
+            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
+            modelAndView.setViewName("fatalError");
         }
-        logger.error(message);       
+        logger.error(message);
         model.put("message", message);
         modelAndView.addAllObjects(model);
         return modelAndView;
-    } 
+    }
 
 }

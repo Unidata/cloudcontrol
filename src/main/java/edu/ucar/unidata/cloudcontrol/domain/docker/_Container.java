@@ -17,8 +17,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Data in this object corresponds to the com.github.dockerjava.api.model.Container object.
  *
  * Note: This object is passed directly to the view with no intermediary manipulation.
- * Therefore, the com.github.dockerjava.api.model.Container attribute types have 
- * been converted to String types to handle: 1) the @CheckForNull getter annotation in the 
+ * Therefore, the com.github.dockerjava.api.model.Container attribute types have
+ * been converted to String types to handle: 1) the @CheckForNull getter annotation in the
  * com.github.dockerjava.api.model.Container object; and 2) custom formatting of data.
  */
 public class _Container implements Serializable {
@@ -46,7 +46,7 @@ public class _Container implements Serializable {
             this.command = "";
         } else {
             this.command = command;
-        }        
+        }
     }
 
     public String getCreated() {
@@ -61,7 +61,7 @@ public class _Container implements Serializable {
             d.setTime(created.longValue() * 1000);
             SimpleDateFormat format = new SimpleDateFormat("d MMM yyyy");
             this.created = format.format(d);
-        }        
+        }
     }
 
     public String getId() {
@@ -73,9 +73,9 @@ public class _Container implements Serializable {
             this.id = "";
         } else {
             this.id = id.substring(0,12);
-        }    
+        }
     }
-    
+
     public String getImage() {
         return image;
     }
@@ -85,7 +85,7 @@ public class _Container implements Serializable {
             this.image = "";
         } else {
             this.image = image;
-        }   
+        }
     }
 
     public String getImageId() {
@@ -97,7 +97,7 @@ public class _Container implements Serializable {
             this.imageId = "";
         } else {
             this.imageId = imageId.substring(0,11);
-        }        
+        }
     }
 
     public String getNames() {
@@ -118,21 +118,21 @@ public class _Container implements Serializable {
                           if (it.hasNext()) {
                             sb.append(s + ", ");
                         } else {
-                            sb.append(s);                            
+                            sb.append(s);
                         }
                     }
                 }
                 this.names = sb.toString();
             } else {
-                this.names = "";    
+                this.names = "";
             }
-        }         
+        }
     }
-    
+
     public String getPorts() {
         return ports;
-    }    
-    
+    }
+
     public void setPorts(_ContainerPort[] ports) {
         if (Objects.isNull(ports)) {
             this.ports = "";
@@ -147,16 +147,16 @@ public class _Container implements Serializable {
                         sb.append("IP: " + p.getIp() + "<br>");
                         sb.append("Private Port: " + p.getPrivatePort() + "<br>");
                         sb.append("Public Port: " + p.getPublicPort() + "<br>");
-                        sb.append("Type: " + p.getType() + "<br><br>");                         
+                        sb.append("Type: " + p.getType() + "<br><br>");
                     }
                 }
                 this.ports = sb.toString();
             } else {
-                this.ports = "";    
+                this.ports = "";
             }
-        }         
+        }
     }
-    
+
     public String getLabels() {
         return labels;
     }
@@ -182,9 +182,9 @@ public class _Container implements Serializable {
                 sb.append("<br>");
             }
             this.labels = sb.toString();
-        }        
+        }
     }
-    
+
     public String getStatus() {
         return status;
     }
@@ -194,7 +194,7 @@ public class _Container implements Serializable {
             this.status = "";
         } else {
             this.status = status;
-        }        
+        }
     }
 
     public String getSizeRw() {
@@ -212,7 +212,7 @@ public class _Container implements Serializable {
             } else {
                 this.sizeRw = sizeRw.toString() + " B";
             }
-        }   
+        }
     }
 
     public String getSizeRootFs() {
@@ -230,9 +230,9 @@ public class _Container implements Serializable {
             } else {
                 this.sizeRootFs = sizeRootFs.toString() + " B";
             }
-        }   
+        }
     }
-    
+
     public String getHostConfig() {
         return hostConfig;
     }
@@ -242,7 +242,7 @@ public class _Container implements Serializable {
             this.hostConfig = "";
         } else {
             this.hostConfig = "Network Mode: " + hostConfig.getNetworkMode();
-        }        
+        }
     }
     public String getNetworkSettings() {
         return networkSettings;
@@ -253,12 +253,12 @@ public class _Container implements Serializable {
             this.networkSettings = "";
         } else {
             this.networkSettings = "Container Network Settings: " + networkSettings.getNetworks();
-        }        
+        }
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 
 }
