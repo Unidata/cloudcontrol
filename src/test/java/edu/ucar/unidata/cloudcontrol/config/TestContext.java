@@ -5,8 +5,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.security.web.context.SecurityContextRepository;
-
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
@@ -25,11 +23,10 @@ import edu.ucar.unidata.cloudcontrol.service.user.validators.PasswordValidator;
  */
 @Configuration
 public class TestContext {
- 
-    @Bean
-    public UserManager userManager() {
-        return Mockito.mock(UserManager.class);
-    }
+
+    /*
+     * edu.ucar.unidata.cloudcontrol.service.docker dependancies
+     */
 
     @Bean
     public ClientManager clientManager() {
@@ -66,6 +63,15 @@ public class TestContext {
         return Mockito.mock(ContainerMappingManager.class);
     }
 
+    /*
+     * edu.ucar.unidata.cloudcontrol.service.user dependancies
+     */
+
+    @Bean
+    public UserManager userManager() {
+        return Mockito.mock(UserManager.class);
+    }
+
     @Bean
     public CreateUserValidator createUserValidator() {
         return Mockito.mock(CreateUserValidator.class);
@@ -79,10 +85,5 @@ public class TestContext {
     @Bean
     public PasswordValidator passwordValidator() {
         return Mockito.mock(PasswordValidator.class);
-    }
-
-    @Bean
-    public SecurityContextRepository securityContextRepository() {
-        return Mockito.mock(SecurityContextRepository.class);
     }
 }
