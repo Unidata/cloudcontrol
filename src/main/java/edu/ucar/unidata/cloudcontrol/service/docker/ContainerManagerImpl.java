@@ -187,8 +187,6 @@ public class ContainerManagerImpl implements ContainerManager {
             logger.error("Container " + containerId + " is already running: " + e);
         } catch (NotFoundException e) {
             logger.error("Unable to find and start container " + containerId + ": " + e);
-        } catch (Exception e) {
-            logger.error("Unable to start container " + containerId + ": " + e);
         }
         return containerId;
     }

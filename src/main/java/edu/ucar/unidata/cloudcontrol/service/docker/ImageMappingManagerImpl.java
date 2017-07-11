@@ -72,8 +72,9 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> filterByImageMapping(List<_Image> _images) {
-        List<_Image> imageMappings = new ArrayList<_Image>();
+        List<_Image> imageMappings = null;
         if (_images != null) {
+            imageMappings = new ArrayList<_Image>();
             for (_Image _image : _images) {
                 if (_image.getIsVisibleToUsers()) {
                     imageMappings.add(_image);

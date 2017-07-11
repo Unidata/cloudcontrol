@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,26 +81,37 @@ public class ImageController implements HandlerExceptionResolver {
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
      */
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value="/dashboard/docker/image/list", method=RequestMethod.GET)
     public String getImageList(Authentication authentication, Model model) {
         List<_Image> _images;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            // will return null if none are available.
             _images = imageManager.getImageList();
         } else {
+            // will return null if imageManager.getImageList() is null (no images to examine, period); else
+            // will return empty List if the admin has not made any images publically visible
             _images = imageMappingManager.filterByImageMapping(imageManager.getImageList());
         }
         if (_images != null) {
              model.addAttribute("imageList", _images);
         } else {
-            // see if server info image number jives
+            // make sure there are indeed no images to server -- see if server info image number jives
             _Info _info = serverManager.getInfo();
             if (_info != null) {
                 if (Integer.parseInt(_info.getImages()) == 0) {
                     _images = new ArrayList<_Image>();
                     model.addAttribute("imageList", _images);
+                } else {
+                    logger.error("Requested image list was null but docker server info information shows at least one image available: " + _info.toString());
+                    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                        throw new RuntimeException("An error has occurred whilst retrieving the image list.  Requested image list was null but docker server info information shows at least one image available.  Please check the CloudControl log file for more information.");
+                    } else {
+                        throw new RuntimeException("An error has occurred whilst retrieving the image list.  Please contact the site administrator.");
+                    }
                 }
-            }
+            } // else no docker info to compare with, so don't add imageList to model
         }
         model.addAttribute("action", "listImages");
         return "dashboard";
@@ -114,6 +124,7 @@ public class ImageController implements HandlerExceptionResolver {
      * @param authentication  The Authentication object to check user roles.
      * @return  The ID of the image container that has been started (if successful), or an error message.
      */
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping(value="/dashboard/docker/image/{imageId}/start", method=RequestMethod.GET)
     @ResponseBody
     public String startImage(@PathVariable String imageId, Authentication authentication) {
@@ -126,13 +137,18 @@ public class ImageController implements HandlerExceptionResolver {
             }
         }
         // start an image container
-        String containerId = containerManager.startContainer(imageId, authentication.getName());
-        if (containerId == null) {
-            logger.error("Unable to start container for image " + imageId);
-            return "Error: unable to start image.  Please contact the site administrator.";
-        } else {
-            logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
-            return containerId;
+        try {
+            String containerId = containerManager.startContainer(imageId, authentication.getName());
+            if (containerId == null) {
+                // tried to start container but status check shows its not running
+                logger.error("Unable to start container for image " + imageId);
+                return "Error: unable to start image.  Please contact the site administrator.";
+            } else {
+                logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
+                return containerId;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("An error whilst trying to start image." +  e);
         }
     }
 
