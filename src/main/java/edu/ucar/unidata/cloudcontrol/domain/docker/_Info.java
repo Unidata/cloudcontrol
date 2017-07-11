@@ -12,7 +12,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * Object representing the system-wide information of a Docker instance.
  *
- * Data in this object corresponds to the com.github.dockerjava.api.model.Info 
+ * Data in this object corresponds to the com.github.dockerjava.api.model.Info
  * object and the JSON result of a GET /info request to the Docker Remote API.
  *
  * Note: This object is passed directly to the view with no intermediary manipulation.
@@ -23,56 +23,56 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class _Info implements Serializable {
 
     private String architecture;
-    private String containers;         // Changed from Integer  
-    private String containersStopped;  // Changed from Integer 
-    private String containersPaused;   // Changed from Integer 
-    private String containersRunning;  // Changed from Integer 
-    private String cpuCfsPeriod;       // Changed from Boolean 
-    private String cpuCfsQuota;        // Changed from Boolean 
-    private String cpuShares;          // Changed from Boolean 
-    private String cpuSet;             // Changed from Boolean 
-    private String debug;              // Changed from Boolean 
+    private String containers;         // Changed from Integer
+    private String containersStopped;  // Changed from Integer
+    private String containersPaused;   // Changed from Integer
+    private String containersRunning;  // Changed from Integer
+    private String cpuCfsPeriod;       // Changed from Boolean
+    private String cpuCfsQuota;        // Changed from Boolean
+    private String cpuShares;          // Changed from Boolean
+    private String cpuSet;             // Changed from Boolean
+    private String debug;              // Changed from Boolean
     private String discoveryBackend;
     private String dockerRootDir;
     private String driver;
-    private String driverStatuses;     // Changed from List<List<String>> 
+    private String driverStatuses;     // Changed from List<List<String>>
     private String systemStatus;       // Changed from List<Object>
     private String plugins;            // Changed from Map<String, List<String>>
     private String executionDriver;
     private String loggingDriver;
-    private String experimentalBuild;  // Changed from Boolean 
+    private String experimentalBuild;  // Changed from Boolean
     private String httpProxy;
     private String httpsProxy;
     private String id;
-    private String ipv4Forwarding;     // Changed from Boolean 
-    private String bridgeNfIptables;   // Changed from Boolean 
-    private String bridgeNfIp6tables;  // Changed from Boolean 
-    private String images;             // Changed from Integer  
+    private String ipv4Forwarding;     // Changed from Boolean
+    private String bridgeNfIptables;   // Changed from Boolean
+    private String bridgeNfIp6tables;  // Changed from Boolean
+    private String images;             // Changed from Integer
     private String indexServerAddress;
     private String initPath;
     private String initSha1;
     private String kernelVersion;
     private String labels;             // Changed from String[]
-    private String memoryLimit;        // Changed from Boolean 
+    private String memoryLimit;        // Changed from Boolean
     private String memTotal;           // Changed from Long
     private String name;
-    private String ncpu;               // Changed from Integer 
-    private String nEventsListener;    // Changed from Integer 
-    private String nfd;                // Changed from Integer 
-    private String nGoroutines;        // Changed from Integer 
+    private String ncpu;               // Changed from Integer
+    private String nEventsListener;    // Changed from Integer
+    private String nfd;                // Changed from Integer
+    private String nGoroutines;        // Changed from Integer
     private String noProxy;
-    private String oomKillDisable;     // Changed from Boolean 
+    private String oomKillDisable;     // Changed from Boolean
     private String osType;
-    private String oomScoreAdj;        // Changed from Integer 
+    private String oomScoreAdj;        // Changed from Integer
     private String operatingSystem;
-    private String registryConfig;     // Changed from InfoRegistryConfig 
+    private String registryConfig;     // Changed from InfoRegistryConfig
     private String sockets;            // Changed from String[]
-    private String swapLimit;          // Changed from Boolean 
+    private String swapLimit;          // Changed from Boolean
     private String systemTime;
     private String serverVersion;
     private String clusterStore;
     private String clusterAdvertise;
-    
+
     public String getArchitecture() {
         return architecture;
     }
@@ -82,7 +82,7 @@ public class _Info implements Serializable {
             this.architecture = "";
         } else {
             this.architecture = architecture;
-        }        
+        }
     }
 
     public String getContainers() {
@@ -94,7 +94,7 @@ public class _Info implements Serializable {
             this.containers = "";
         } else {
             this.containers = String.valueOf(containers);
-        }   
+        }
     }
 
     public String getContainersStopped() {
@@ -106,7 +106,7 @@ public class _Info implements Serializable {
             this.containersStopped = "";
         } else {
             this.containersStopped = String.valueOf(containersStopped);
-        }         
+        }
     }
 
     public String getContainersPaused() {
@@ -118,7 +118,7 @@ public class _Info implements Serializable {
             this.containersPaused = "";
         } else {
             this.containersPaused = String.valueOf(containersPaused);
-        }        
+        }
     }
 
     public String getContainersRunning() {
@@ -130,7 +130,7 @@ public class _Info implements Serializable {
             this.containersRunning = "";
         } else {
             this.containersRunning = String.valueOf(containersRunning);
-        }          
+        }
     }
 
     public String getCpuCfsPeriod() {
@@ -142,7 +142,7 @@ public class _Info implements Serializable {
             this.cpuCfsPeriod = "";
         } else {
             this.cpuCfsPeriod = String.valueOf(cpuCfsPeriod);
-        }         
+        }
     }
 
     public String getCpuCfsQuota() {
@@ -202,7 +202,7 @@ public class _Info implements Serializable {
             this.discoveryBackend = "";
         } else {
             this.discoveryBackend = discoveryBackend;
-        } 
+        }
     }
 
     public String getDockerRootDir() {
@@ -214,7 +214,7 @@ public class _Info implements Serializable {
             this.dockerRootDir = "";
         } else {
             this.dockerRootDir = dockerRootDir;
-        } 
+        }
     }
 
     public String getDriver() {
@@ -226,7 +226,7 @@ public class _Info implements Serializable {
             this.driver = "";
         } else {
             this.driver = driver;
-        } 
+        }
     }
 
     public String getDriverStatuses() {
@@ -251,18 +251,18 @@ public class _Info implements Serializable {
                                   if (it.hasNext()) {
                                     sb.append(s + ": ");
                                 } else {
-                                    sb.append(s);                            
+                                    sb.append(s);
                                 }
                             }
                          }
                     sb.append("<br>");
-                    } 
+                    }
                 }
                 this.driverStatuses = sb.toString();
             } else {
                 this.driverStatuses = "";
             }
-        }         
+        }
     }
 
     public String getSystemStatus() {
@@ -286,7 +286,7 @@ public class _Info implements Serializable {
             } else {
                 this.systemStatus = "";
             }
-        } 
+        }
     }
 
     public String getPlugins() {
@@ -318,7 +318,7 @@ public class _Info implements Serializable {
                                   if (it.hasNext()) {
                                     sb.append(s + ", ");
                                 } else {
-                                    sb.append(s);                            
+                                    sb.append(s);
                                 }
                             }
                         }
@@ -329,7 +329,7 @@ public class _Info implements Serializable {
             } else {
                 this.plugins = "";
             }
-        }        
+        }
     }
 
     public String getExecutionDriver() {
@@ -341,7 +341,7 @@ public class _Info implements Serializable {
             this.executionDriver = "";
         } else {
             this.executionDriver = executionDriver;
-        } 
+        }
     }
 
     public String getLoggingDriver() {
@@ -359,7 +359,7 @@ public class _Info implements Serializable {
     public String getExperimentalBuild() {
         return experimentalBuild;
     }
-    
+
     public void setExperimentalBuild(Boolean experimentalBuild) {
         if (Objects.isNull(experimentalBuild)) {
             this.experimentalBuild = "";
@@ -377,7 +377,7 @@ public class _Info implements Serializable {
             this.httpProxy = "";
         } else {
             this.httpProxy = httpProxy;
-        } 
+        }
     }
 
     public String getHttpsProxy() {
@@ -389,7 +389,7 @@ public class _Info implements Serializable {
             this.httpsProxy = "";
         } else {
             this.httpsProxy = httpsProxy;
-        } 
+        }
     }
 
     public String getId() {
@@ -401,7 +401,7 @@ public class _Info implements Serializable {
             this.id = "";
         } else {
             this.id = id;
-        } 
+        }
     }
 
     public String getIpv4Forwarding() {
@@ -415,7 +415,7 @@ public class _Info implements Serializable {
             this.ipv4Forwarding = String.valueOf(ipv4Forwarding);
         }
     }
-    
+
     public String getBridgeNfIptables() {
         return bridgeNfIptables;
     }
@@ -449,7 +449,7 @@ public class _Info implements Serializable {
             this.images = "";
         } else {
             this.images = String.valueOf(images);
-        } 
+        }
     }
 
     public String getIndexServerAddress() {
@@ -461,7 +461,7 @@ public class _Info implements Serializable {
             this.indexServerAddress = "";
         } else {
             this.indexServerAddress = indexServerAddress;
-        } 
+        }
     }
 
     public String getInitPath() {
@@ -473,7 +473,7 @@ public class _Info implements Serializable {
             this.initPath = "";
         } else {
             this.initPath = initPath;
-        } 
+        }
     }
 
     public String getInitSha1() {
@@ -485,7 +485,7 @@ public class _Info implements Serializable {
             this.initSha1 = "";
         } else {
             this.initSha1 = initSha1;
-        } 
+        }
     }
 
     public String getKernelVersion() {
@@ -497,7 +497,7 @@ public class _Info implements Serializable {
             this.kernelVersion = "";
         } else {
             this.kernelVersion = kernelVersion;
-        } 
+        }
     }
 
     public String getLabels() {
@@ -518,15 +518,15 @@ public class _Info implements Serializable {
                           if (it.hasNext()) {
                             sb.append(s + ", ");
                         } else {
-                            sb.append(s);                            
+                            sb.append(s);
                         }
                     }
                 }
                 this.labels = sb.toString();
             } else {
-                this.labels = "";    
+                this.labels = "";
             }
-        }         
+        }
     }
 
     public String getMemoryLimit() {
@@ -550,7 +550,7 @@ public class _Info implements Serializable {
             this.memTotal = "";
         } else {
             this.memTotal = String.valueOf(memTotal);
-        } 
+        }
     }
 
     public String getName() {
@@ -562,9 +562,9 @@ public class _Info implements Serializable {
             this.name = "";
         } else {
             this.name = name;
-        } 
+        }
     }
-    
+
     public String getNcpu() {
         return ncpu;
     }
@@ -574,7 +574,7 @@ public class _Info implements Serializable {
             this.ncpu = "";
         } else {
             this.ncpu = String.valueOf(ncpu);
-        } 
+        }
     }
 
     public String getNEventsListener() {
@@ -586,7 +586,7 @@ public class _Info implements Serializable {
             this.nEventsListener = "";
         } else {
             this.nEventsListener = String.valueOf(nEventsListener);
-        } 
+        }
     }
 
     public String getNfd() {
@@ -598,7 +598,7 @@ public class _Info implements Serializable {
             this.nfd = "";
         } else {
             this.nfd = String.valueOf(nfd);
-        } 
+        }
     }
 
     public String getNGoroutines() {
@@ -610,7 +610,7 @@ public class _Info implements Serializable {
             this.nGoroutines = "";
         } else {
             this.nGoroutines = String.valueOf(nGoroutines);
-        } 
+        }
     }
 
     public String getNoProxy() {
@@ -622,7 +622,7 @@ public class _Info implements Serializable {
             this.noProxy = "";
         } else {
             this.noProxy = noProxy;
-        } 
+        }
     }
 
     public String getOomKillDisable() {
@@ -646,7 +646,7 @@ public class _Info implements Serializable {
             this.osType = "";
         } else {
             this.osType = osType;
-        } 
+        }
     }
 
     public String getOomScoreAdj() {
@@ -658,7 +658,7 @@ public class _Info implements Serializable {
             this.oomScoreAdj = "";
         } else {
             this.oomScoreAdj = String.valueOf(oomScoreAdj);
-        } 
+        }
     }
 
     public String getOperatingSystem() {
@@ -670,7 +670,7 @@ public class _Info implements Serializable {
             this.operatingSystem = "";
         } else {
             this.operatingSystem = operatingSystem;
-        } 
+        }
     }
 
     public String getRegistryConfig() {
@@ -686,7 +686,7 @@ public class _Info implements Serializable {
             sb.append("InsecureRegistryCIDRs: " + registryConfig.getInsecureRegistryCIDRs() + "<br>");
             sb.append("Mirrors: " + registryConfig.getMirrors() + "<br>");
             this.registryConfig = sb.toString();
-        } 
+        }
     }
 
     public String getSockets() {
@@ -707,15 +707,15 @@ public class _Info implements Serializable {
                           if (it.hasNext()) {
                             sb.append(s + ", ");
                         } else {
-                            sb.append(s);                            
+                            sb.append(s);
                         }
                     }
                 }
                 this.sockets = sb.toString();
             } else {
-                this.sockets = "";    
+                this.sockets = "";
             }
-        }         
+        }
     }
 
     public String getSwapLimit() {
@@ -739,7 +739,7 @@ public class _Info implements Serializable {
             this.systemTime = "";
         } else {
             this.systemTime = systemTime;
-        } 
+        }
     }
 
     public String getServerVersion() {
@@ -751,7 +751,7 @@ public class _Info implements Serializable {
             this.serverVersion = "";
         } else {
             this.serverVersion = serverVersion;
-        } 
+        }
     }
 
     public String getClusterStore() {
@@ -763,7 +763,7 @@ public class _Info implements Serializable {
             this.clusterStore = "";
         } else {
             this.clusterStore = clusterStore;
-        } 
+        }
     }
 
     public String getClusterAdvertise() {
@@ -775,12 +775,12 @@ public class _Info implements Serializable {
             this.clusterAdvertise = "";
         } else {
             this.clusterAdvertise = clusterAdvertise;
-        } 
+        }
     }
-    
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
-    }  
+    }
 
 }

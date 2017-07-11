@@ -13,6 +13,11 @@ public class _InfoBuilder {
         return this;
     }
 
+    public _InfoBuilder images(Integer images) {
+        info.setImages(images);
+        return this;
+    }
+
     public _Info build() {
         return info;
     }
