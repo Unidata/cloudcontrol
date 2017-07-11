@@ -128,14 +128,10 @@ public class ContainerControllerTest {
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
             .andExpect(model().attribute("containerList", hasSize(2)))
             .andExpect(model().attribute("containerList", hasItem(
-                allOf(
-                    hasProperty("id", is("77af4d6b9913"))
-                )
+                hasProperty("id", is("77af4d6b9913"))
             )))
             .andExpect(model().attribute("containerList", hasItem(
-                allOf(
-                    hasProperty("id", is("b6fa739cedf5"))
-                )
+                hasProperty("id", is("b6fa739cedf5"))
             )));
           //.andDo(print());
 
