@@ -78,7 +78,7 @@ public class ServerControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testClientOne", roles = {"USER"})
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void getInfo_AccessToServerInfoWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/info").with(csrf()))
             .andExpect(status().isOk())
@@ -115,12 +115,14 @@ public class ServerControllerTest {
 
         _Info testInfo = new _InfoBuilder()
             .architecture("x86_64")
+            .images(4)
             .build();
 
         when(serverManagerMock.getInfo()).thenReturn(testInfo);
         mockMvc.perform(get("/dashboard/docker/server/info").with(csrf()))
             .andExpect(model().attribute("action", equalTo("serverInfo")))
-            .andExpect(model().attribute("serverInfo", hasProperty("architecture", is("x86_64"))));
+            .andExpect(model().attribute("serverInfo", hasProperty("architecture", is("x86_64"))))
+            .andExpect(model().attribute("serverInfo", hasProperty("images", is("4"))));
           //.andDo(print());
 
         verify(serverManagerMock, times(1)).getInfo();
@@ -136,7 +138,7 @@ public class ServerControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testClientOne", roles = {"USER"})
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void getVersion_AccessToServerVersionWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/version").with(csrf()))
             .andExpect(status().isOk())

@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
@@ -191,6 +192,7 @@ public class ViewUserControllerTest {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
 
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

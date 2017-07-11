@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -141,6 +142,7 @@ public class DeleteUserControllerTest {
 
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -213,6 +215,7 @@ public class DeleteUserControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userId", "1")
             )
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

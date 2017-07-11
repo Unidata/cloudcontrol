@@ -23,11 +23,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -80,7 +80,7 @@ public class ContainerControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testClientOne", roles = {"USER"})
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void getContainerList_AccessToContainerListWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
             .andExpect(status().isOk())
@@ -104,9 +104,7 @@ public class ContainerControllerTest {
     public void getContainerList_ModelShouldContainNoContainerList() throws Exception {
         when(containerManagerMock.getContainerList()).thenReturn(null);
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("dashboard"))
-            .andExpect(forwardedUrl("/WEB-INF/views/dashboard.jsp"));
+            .andExpect(model().attribute("containerList", is(nullValue())));
           //.andDo(print());
 
         verify(containerManagerMock, times(1)).getContainerList();

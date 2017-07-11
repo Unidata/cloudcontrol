@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -54,7 +55,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -101,7 +102,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testClientOne", roles = {"USER"})
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void getDashboardPage_AccessToDashboardWithAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard").with(csrf()))
             .andExpect(status().isOk())
@@ -176,7 +177,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "testClientOne", roles = {"USER"})
+    @WithMockUser(username = "testUserOne", roles = {"USER"})
     public void configure_AccessToClientConfigurationWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/configure").with(csrf()))
             .andExpect(status().isOk())
@@ -360,6 +361,7 @@ public class ClientControllerTest {
 
         when(clientManagerMock.lookupById(1)).thenThrow(new RecoverableDataAccessException(""));
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -453,6 +455,7 @@ public class ClientControllerTest {
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -519,6 +522,7 @@ public class ClientControllerTest {
 
         when(clientManagerMock.lookupById(1)).thenThrow(new RecoverableDataAccessException(""));
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -627,6 +631,16 @@ public class ClientControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editClientConfig_ClientConfigNotEditedShouldThrowRunTimeException() throws Exception {
 
+        ClientConfig testClientConfigOne = new ClientConfigBuilder()
+            .id(1)
+            .dockerHost("tcp://127.0.0.1:2375")
+            .dockerCertPath("/foo/bar/baz/.docker")
+            .dockerTlsVerify(1)
+            .createdBy("admin")
+            .lastUpdatedBy("admin")
+            .build();
+
+        when(clientManagerMock.lookupById(1)).thenReturn(testClientConfigOne);
         doThrow(new RecoverableDataAccessException("")).when(clientManagerMock).updateClientConfig(isA(ClientConfig.class));
         mockMvc.perform(post("/dashboard/docker/client/edit/1").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -634,11 +648,13 @@ public class ClientControllerTest {
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
+            .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
-         // .andDo(print());
+          //.andDo(print());
         verify(clientManagerMock, times(1)).lookupById(1);
+        verify(clientManagerMock, times(1)).updateClientConfig(isA(ClientConfig.class));
         verifyNoMoreInteractions(clientManagerMock);
     }
 }
