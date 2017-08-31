@@ -351,8 +351,8 @@ public class ImageControllerTest {
             .andExpect(model().attribute("message", containsString("RuntimeException")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
-            .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"))
-          .andDo(print());
+            .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
+          //.andDo(print());
 
         verify(containerManagerMock, times(1)).startContainer("b6fa739cedf5", "admin");
         verifyNoMoreInteractions(containerManagerMock);

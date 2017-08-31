@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -43,9 +43,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -188,11 +188,11 @@ public class ViewUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void viewUser_UserNotFoundShouldThrowRunTimeException() throws Exception {
-        when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
+    public void viewUser_UserNotFoundShouldDataRetrievalFailureException() throws Exception {
+        when(userManagerMock.lookupUser("testUserOne")).thenThrow(new DataRetrievalFailureException("Unable to find User with userId 1"));
 
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -200,27 +200,4 @@ public class ViewUserControllerTest {
             verify(userManagerMock, times(1)).lookupUser("testUserOne");
             verifyNoMoreInteractions(userManagerMock);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

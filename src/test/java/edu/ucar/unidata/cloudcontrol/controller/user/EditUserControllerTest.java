@@ -17,7 +17,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -50,10 +50,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -121,7 +121,6 @@ public class EditUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUser_ModelShouldContainUserToEditAndEditUserAction() throws Exception {
-
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
@@ -162,7 +161,6 @@ public class EditUserControllerTest {
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
         when(userManagerMock.updateUser(isA(User.class))).thenReturn(testUserOne);
-
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -178,7 +176,6 @@ public class EditUserControllerTest {
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
         when(userManagerMock.updateUser(isA(User.class))).thenReturn(testUserOne);
-
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -188,7 +185,6 @@ public class EditUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUser_UserValidationErrorShouldRenderEditUserView() throws Exception {
-
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -207,7 +203,6 @@ public class EditUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUser_UserEditedSuccessfullyShouldRedirectToUserView() throws Exception {
-
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
@@ -246,8 +241,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_EditedUserNotFoundShouldThrowRunTimeException() throws Exception {
-
+    public void editUser_EditedUserNotFoundShouldDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
@@ -257,7 +251,7 @@ public class EditUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        when(userManagerMock.updateUser(isA(User.class))).thenThrow(new RecoverableDataAccessException(""));
+        when(userManagerMock.updateUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to update User.  No User with userName testUserOne found."));
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -266,7 +260,7 @@ public class EditUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to update User.  No User with userName testUserOne found.")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

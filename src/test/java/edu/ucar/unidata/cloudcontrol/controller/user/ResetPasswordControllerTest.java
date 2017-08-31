@@ -17,7 +17,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,10 +51,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -122,7 +122,6 @@ public class ResetPasswordControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUserPassword_ModelShouldContainUserWithPasswordToEditAndResetPasswordAction() throws Exception {
-
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
@@ -172,7 +171,6 @@ public class ResetPasswordControllerTest {
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
         doNothing().when(userManagerMock).updatePassword(isA(User.class));
-
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -182,7 +180,6 @@ public class ResetPasswordControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUserPassword_UserPasswordValidationErrorShouldRenderResetPasswordView() throws Exception {
-
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -201,7 +198,6 @@ public class ResetPasswordControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editUserPassword_UserPasswordEditedSuccessfullyShouldRedirectToUserView() throws Exception {
-
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
@@ -230,21 +226,20 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_UnableToEditUserPasswordShouldThrowRunTimeException() throws Exception {
-
+    public void editUserPassword_UnableToEditUserPasswordShouldThrowDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        doThrow(new RecoverableDataAccessException("")).when(userManagerMock).updatePassword(isA(User.class));
+        doThrow(new DataRetrievalFailureException("Unable to find User with userId 1")).when(userManagerMock).updatePassword(isA(User.class));
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("password", "password")
                 .param("confirmPassword", "password")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

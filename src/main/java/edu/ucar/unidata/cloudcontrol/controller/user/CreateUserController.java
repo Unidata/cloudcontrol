@@ -1,16 +1,11 @@
 package edu.ucar.unidata.cloudcontrol.controller.user;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
+import edu.ucar.unidata.cloudcontrol.domain.User;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
+import edu.ucar.unidata.cloudcontrol.service.user.validators.CreateUserValidator;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -26,19 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-
-import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
-import edu.ucar.unidata.cloudcontrol.service.user.validators.CreateUserValidator;
 
 /**
  * Controller to create a new User.
  */
 @Controller
-public class CreateUserController implements HandlerExceptionResolver {
-
-    protected static Logger logger = Logger.getLogger(CreateUserController.class);
+public class CreateUserController {
 
     @Resource(name="userManager")
     private UserManager userManager;
@@ -104,21 +92,16 @@ public class CreateUserController implements HandlerExceptionResolver {
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to create new User.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/create", method=RequestMethod.POST)
     public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("action", "createUser");
-           return new ModelAndView("dashboard");
+            model.addAttribute("action", "createUser");
+            return new ModelAndView("dashboard");
         } else {
-            try {
-                user = userManager.createUser(user);
-                return new ModelAndView(new RedirectView("/dashboard/user/view/" + user.getUserName(), true));
-            } catch (RecoverableDataAccessException e) {
-                throw new RuntimeException("Unable to create new user: " + e);
-            }
+            user = userManager.createUser(user);
+            return new ModelAndView(new RedirectView("/dashboard/user/view/" + user.getUserName(), true));
         }
     }
 
@@ -133,55 +116,15 @@ public class CreateUserController implements HandlerExceptionResolver {
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View. 
-     * @throws RuntimeException  If unable to complete registration process.
      */
     @RequestMapping(value="/welcome/register", method=RequestMethod.POST)
     public ModelAndView register(@Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
-           model.addAttribute("action", "register");
-           return new ModelAndView("welcome");
+            model.addAttribute("action", "register");
+            return new ModelAndView("welcome");
         } else {
-            try {
-                userManager.createUser(user);
-                return new ModelAndView(new RedirectView("/login", true));
-            } catch (RecoverableDataAccessException e) {
-                throw new RuntimeException("Unable to complete registration process: " + e);
-            }
+            userManager.createUser(user);
+            return new ModelAndView(new RedirectView("/login", true));
         }
-    }
-
-    /**
-     * This method gracefully handles any uncaught exception
-     * that are fatal in nature and unresolvable by the user.
-     * 
-     * @param request   The current HttpServletRequest request.
-     * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.  
-     * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage. 
-     */
-    @Override
-    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
-        String message = "";
-        StringWriter writer = new StringWriter();
-        PrintWriter printWriter = new PrintWriter( writer );
-        exception.printStackTrace( printWriter );
-        printWriter.flush();
-
-        String stackTrace = writer.toString();
-        
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){
-            message = exception.getMessage();
-            modelAndView.setViewName("denied");
-        }else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
-            modelAndView.setViewName("fatalError");
-        }
-        logger.error(message);     
-        model.put("message", message);
-        modelAndView.addAllObjects(model);
-        return modelAndView;
     }
 }

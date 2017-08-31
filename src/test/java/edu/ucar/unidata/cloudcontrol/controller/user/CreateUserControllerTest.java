@@ -17,7 +17,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -238,8 +238,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_NewlyCreatedUserNotFoundShouldThrowRunTimeException() throws Exception {
-
+    public void createUser_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
@@ -251,7 +250,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenThrow(new RecoverableDataAccessException(""));
+        when(userManagerMock.createUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/dashboard/user/create").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -262,7 +261,7 @@ public class CreateUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to create new User")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -344,7 +343,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_NewlyCreatedUserNotFoundShouldThrowRunTimeException() throws Exception {
+    public void register_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
 
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -357,7 +356,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenThrow(new RecoverableDataAccessException(""));
+        when(userManagerMock.createUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/welcome/register").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -368,7 +367,7 @@ public class CreateUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to create new User")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

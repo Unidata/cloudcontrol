@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -44,10 +44,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -101,9 +101,7 @@ public class DeleteUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void deleteUser_ModelShouldContainUserObjectAndDeleteUserAction() throws Exception {
-
         Date now = new Date(System.currentTimeMillis());
-
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
@@ -117,7 +115,6 @@ public class DeleteUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
             .andExpect(model().attribute("action", equalTo("deleteUser")))
             .andExpect(model().attribute("user", hasProperty("userId", is(1))))
@@ -138,11 +135,10 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_UserToDeletedNotFoundShouldThrowRunTimeException() throws Exception {
-
-        when(userManagerMock.lookupUser("testUserOne")).thenThrow(new RecoverableDataAccessException(""));
+    public void deleteUser_UserToDeletedNotFoundShouldDataRetrievalFailureException() throws Exception {
+        when(userManagerMock.lookupUser("testUserOne")).thenThrow(new DataRetrievalFailureException("Unable to find User with userId 1"));
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -179,7 +175,6 @@ public class DeleteUserControllerTest {
             .userId(1)
             .userName("testUserOne")
             .build();
- 
         User testUserTwo = new UserBuilder()
             .userId(2)
             .userName("testUserTwo")
@@ -187,7 +182,6 @@ public class DeleteUserControllerTest {
 
         when(userManagerMock.getUserList()).thenReturn(Arrays.asList(testUserOne, testUserTwo));
         doNothing().when(userManagerMock).deleteUser(testUserOne.getUserId());
-
         mockMvc.perform(post("/dashboard/user/delete").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userId", "1")
@@ -204,18 +198,18 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_UnableToDeletedUserShouldThrowRunTimeException() throws Exception {
+    public void deleteUser_UnableToDeletedUserShouldDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
             .build();
 
-        doThrow(new RecoverableDataAccessException("")).when(userManagerMock).deleteUser(testUserOne.getUserId());
+        doThrow(new DataRetrievalFailureException("Unable to delete User. No User found with userId 1")).when(userManagerMock).deleteUser(testUserOne.getUserId());
         mockMvc.perform(post("/dashboard/user/delete").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userId", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to delete User. No User found with userId 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

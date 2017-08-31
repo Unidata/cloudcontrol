@@ -100,7 +100,21 @@
       </list>
     </property>
   </bean>
- 
+
+  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    <property name="exceptionMappings">
+      <props>
+        <prop key="org.springframework.security.access.AccessDeniedException">
+          denied
+        </prop>
+        <prop key="org.springframework.dao.DataRetrievalFailureException">
+          fatalError
+        </prop>
+      </props>
+    </property>
+    <!-- <property name="defaultErrorView" value="error"/> -->
+  </bean>
+
   <!-- Message source resolver to use messages.properties file in the 'war/WEB-INF/classes' directory -->
   <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
     <property name="basename" value="messages"/>
@@ -111,7 +125,7 @@
     <property name="prefix" value="/WEB-INF/views/"></property>
     <property name="suffix" value=".jsp"></property>        
   </bean>
-  
+
   <!-- DAO injection -->  
   <bean id="userDetailsService" class="edu.ucar.unidata.cloudcontrol.service.user.UserDetailsServiceImpl">
     <property name="userDao" ref="userDao"/>
@@ -124,7 +138,7 @@
   <bean id="userDao" class="edu.ucar.unidata.cloudcontrol.repository.JdbcUserDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
-  
+
   <bean id="clientManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ClientManagerImpl">
     <property name="clientConfigDao" ref="clientConfigDao"/>
   </bean>
@@ -132,7 +146,7 @@
   <bean id="clientConfigDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcClientConfigDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
-  
+
   <bean id="imageMappingManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManagerImpl">
     <property name="imageMappingDao" ref="imageMappingDao"/>
   </bean>
@@ -140,7 +154,7 @@
   <bean id="imageMappingDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcImageMappingDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
-  
+
   <bean id="containerMappingManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManagerImpl">
     <property name="containerMappingDao" ref="containerMappingDao"/>
   </bean>
@@ -148,12 +162,12 @@
   <bean id="containerMappingDao" class="edu.ucar.unidata.cloudcontrol.repository.docker.JdbcContainerMappingDao">
     <property name="dataSource" ref="dbDataSource"/>
   </bean>
-  
+
   <!-- Declaration for Resource use -->
   <bean id="containerManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ContainerManagerImpl" /> 
   <bean id="imageManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ImageManagerImpl" />   
   <bean id="serverManager" class="edu.ucar.unidata.cloudcontrol.service.docker.ServerManagerImpl" />   
-  
+
   <!-- Declare a datasource that has pooling capabilities--> 
   <bean id="dbDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
     <property name="driverClassName" value="${jdbc.driverClassName}"/>
@@ -166,7 +180,6 @@
     <property name="maxWait" value="-1" />
     <property name="validationQuery" value="${jdbc.validationQuery}" />
   </bean>
- 
 
 </beans>
 
