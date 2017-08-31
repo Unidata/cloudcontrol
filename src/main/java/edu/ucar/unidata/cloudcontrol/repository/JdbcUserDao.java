@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -32,13 +32,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      *
      * @param userId  The userId of the User to locate (will be unique for each User).
      * @return  The User.
-     * @throws RecoverableDataAccessException  If unable to lookup User with the given userId.
+     * @throws DataRetrievalFailureException  If unable to lookup User with the given userId.
      */
     public User lookupUser(int userId) {
         String sql = "SELECT * FROM users WHERE userId = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userId);
         if (users.isEmpty()) {
-            throw new RecoverableDataAccessException("Unable to find User with userId: " + new Integer(userId).toString());
+            throw new DataRetrievalFailureException("Unable to find User with userId " + new Integer(userId).toString());
         }
         return users.get(0);
     }
@@ -48,13 +48,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      *
      * @param userName  The userName of the User to locate (will be unique for each User).
      * @return  The User.
-     * @throws RecoverableDataAccessException  If unable to lookup User with the given userName.
+     * @throws DataRetrievalFailureException  If unable to lookup User with the given userName.
      */
     public User lookupUser(String userName) {
         String sql = "SELECT * FROM users WHERE userName = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);
         if (users.isEmpty()) {
-            throw new RecoverableDataAccessException("Unable to find User with userName: " + userName);
+            throw new DataRetrievalFailureException("Unable to find User with userName " + userName);
         }
         return users.get(0);
     }
@@ -64,13 +64,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      *
      * @param emailAddress The emailAddress of the User to locate (will be unique for each User).
      * @return  The User.
-     * @throws RecoverableDataAccessException  If unable to lookup User with the given emailAddress.
+     * @throws DataRetrievalFailureException  If unable to lookup User with the given emailAddress.
      */
     public User lookupUserByEmailAddress(String emailAddress) {
         String sql = "SELECT * FROM users WHERE emailAddress = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);
         if (users.isEmpty()) {
-            throw new RecoverableDataAccessException("Unable to find User with emailAddress: " + emailAddress);
+            throw new DataRetrievalFailureException("Unable to find User with emailAddress " + emailAddress);
         }
         return users.get(0);
     }
@@ -90,13 +90,13 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * Finds and removes the User from the persistence mechanism using the userId.
      *
      * @param userId   The userId of the User to locate (will be unique for each User).
-     * @throws RecoverableDataAccessException  If unable to find and delete the User.
+     * @throws DataRetrievalFailureException  If unable to find and delete the User.
      */
     public void deleteUser(int userId) {
         String sql = "DELETE FROM users WHERE userId = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, userId);
         if (rowsAffected <= 0) {
-            throw new RecoverableDataAccessException("Unable to delete User. No User found with userId: " + new Integer(userId).toString());
+            throw new DataRetrievalFailureException("Unable to delete User. No User found with userId " + new Integer(userId).toString());
         }
     }
 
@@ -104,14 +104,14 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * Creates a new User in the persistence mechanism.
      *
      * @param user  The User to be created.
-     * @throws RecoverableDataAccessException  If the User already exists.
+     * @throws DataRetrievalFailureException  If the User already exists.
      * @return  The peristed User.
      */
     public User createUser(User user) {
         String sql = "SELECT * FROM users WHERE userName = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), user.getUserName());
         if (!users.isEmpty()) {
-            throw new RecoverableDataAccessException("User with userName \"" +  user.getUserName() + "\" already exists.");
+            throw new DataRetrievalFailureException("User with userName \"" +  user.getUserName() + "\" already exists.");
         } else {
             this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("users").usingGeneratedKeyColumns("userId");
             SqlParameterSource parameters = new BeanPropertySqlParameterSource(user);
@@ -119,7 +119,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             if (newUserId != null) {
                 user.setUserId(newUserId.intValue());
             } else {
-                throw new RecoverableDataAccessException("Unable to create new User: " + user.toString());
+                throw new DataRetrievalFailureException("Unable to create new User " + user.toString());
             }
         }
         return user;
@@ -129,7 +129,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * Saves changes made to an existing User in the persistence mechanism.
      *
      * @param user   The existing User with changes that needs to be saved.
-     * @throws RecoverableDataAccessException  If unable to find the User to update.
+     * @throws DataRetrievalFailureException  If unable to find the User to update.
      * @return  The updated User.
      */
     public User updateUser(User user) {
@@ -145,7 +145,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.getUserId()
         });
         if (rowsAffected  <= 0) {
-            throw new RecoverableDataAccessException("Unable to update User.  No User with userName: " + user.getUserName() + " found.");
+            throw new DataRetrievalFailureException("Unable to update User.  No User with userName " + user.getUserName() + " found.");
         }
         return user;
     }
@@ -154,7 +154,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * Updates the User's Password in the persistence mechanism.
      *
      * @param user  The User whose password needs to be update.
-     * @throws RecoverableDataAccessException  If unable to find the User to update.
+     * @throws DataRetrievalFailureException  If unable to find the User to update.
      */
     public void updatePassword(User user) {
         String sql = "UPDATE users SET password = ?, dateModified = ? WHERE userName = ?";
@@ -165,7 +165,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.getUserName()
         });
         if (rowsAffected  <= 0) {
-            throw new RecoverableDataAccessException("Unable to update User's password.  User not found: " + user.toString());
+            throw new DataRetrievalFailureException("Unable to update User's password.  User not found " + user.toString());
         }
     }
 
