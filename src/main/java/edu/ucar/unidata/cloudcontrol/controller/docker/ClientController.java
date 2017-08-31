@@ -1,18 +1,14 @@
 package edu.ucar.unidata.cloudcontrol.controller.docker;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
+import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
+import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.validators.ClientConfigValidator;
+
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -36,18 +32,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
-import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.validators.ClientConfigValidator;
-
-
 /**
  * Controller to handle the Docker client configuration and commands.
  */
 @Controller
-public class ClientController implements HandlerExceptionResolver {
-
-    protected static Logger logger = Logger.getLogger(ClientController.class);
+public class ClientController {
 
     @Resource(name = "clientManager")
     private ClientManager clientManager;
@@ -265,7 +254,6 @@ public class ClientController implements HandlerExceptionResolver {
     @RequestMapping(value="/dashboard/docker/client/edit/{id}", method=RequestMethod.POST)
     public ModelAndView editClientConfig(@PathVariable int id, @Valid ClientConfig clientConfig, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            logger.info("an error has occurred");
             model.addAttribute("action", "editClientConfig");
             model.addAttribute("clientConfig", clientConfig);
             return new ModelAndView("dashboard");
@@ -283,40 +271,4 @@ public class ClientController implements HandlerExceptionResolver {
             }
         }
     }
-
-    /**
-     * This method gracefully handles any uncaught exception
-     * that are fatal in nature and unresolvable by the user.
-     *
-     * @param request   The current HttpServletRequest request.
-     * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.
-     * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage.
-     */
-    @Override
-    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
-        String message = "";
-        StringWriter writer = new StringWriter();
-        PrintWriter printWriter = new PrintWriter( writer );
-        exception.printStackTrace( printWriter );
-        printWriter.flush();
-
-        String stackTrace = writer.toString();
-
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){
-            message = exception.getMessage();
-            modelAndView.setViewName("denied");
-        } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
-            modelAndView.setViewName("fatalError");
-        }
-        logger.error(message);
-        model.put("message", message);
-        modelAndView.addAllObjects(model);
-        return modelAndView;
-    }
-
 }

@@ -19,7 +19,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -55,7 +55,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -140,7 +140,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void getDashboardPage_ModelShouldContainRequestedClientConfigAndNoSpecifiedAction() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -215,7 +214,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void configure_ModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -275,7 +273,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void listClientConfigs_ModelShouldContainListOfRequestedClientConfigsAndListClientConfigsAction() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -335,7 +332,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void viewClientConfig_ModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -357,11 +353,10 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void viewClientConfig_RequestedClientConfigNotFoundShouldThrowRunTimeException() throws Exception {
-
-        when(clientManagerMock.lookupById(1)).thenThrow(new RecoverableDataAccessException(""));
+    public void viewClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+        when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to find ClientConfig with id 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -400,7 +395,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createClientConfig_ClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
-
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -419,7 +413,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createClientConfig_ClientConfigCreatedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
-
         when(clientManagerMock.createClientConfig(isA(ClientConfig.class))).thenReturn(1);
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -446,16 +439,15 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createClientConfig_ClientConfigNotCreatedShouldThrowRunTimeException() throws Exception {
-
-        when(clientManagerMock.createClientConfig(isA(ClientConfig.class))).thenThrow(new RecoverableDataAccessException(""));
+    public void createClientConfig_ClientConfigNotCreatedShouldThrowDataRetrievalFailureException() throws Exception {
+        when(clientManagerMock.createClientConfig(isA(ClientConfig.class))).thenThrow(new DataRetrievalFailureException("Unable to create ClientConfig"));
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://127.0.0.1:2375")
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to create ClientConfig")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -496,7 +488,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editClientConfig_ModelShouldContainRequestedClientConfigAndEditClientConfigAction() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -518,11 +509,10 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_RequestedClientConfigNotFoundShouldThrowRunTimeException() throws Exception {
-
-        when(clientManagerMock.lookupById(1)).thenThrow(new RecoverableDataAccessException(""));
+    public void editClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+        when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to find ClientConfig with id 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -552,7 +542,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editClientConfig_PostToEditClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -572,7 +561,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editClientConfig_ClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
-
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -591,7 +579,6 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void editClientConfig_ClientConfigEditedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
-
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -629,8 +616,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_ClientConfigNotEditedShouldThrowRunTimeException() throws Exception {
-
+    public void editClientConfig_ClientConfigNotEditedShouldThrowDataRetrievalFailureException() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -641,14 +627,14 @@ public class ClientControllerTest {
             .build();
 
         when(clientManagerMock.lookupById(1)).thenReturn(testClientConfigOne);
-        doThrow(new RecoverableDataAccessException("")).when(clientManagerMock).updateClientConfig(isA(ClientConfig.class));
+        doThrow(new DataRetrievalFailureException("Unable to update ClientConfig.  No ClientConfig with id 1")).when(clientManagerMock).updateClientConfig(isA(ClientConfig.class));
         mockMvc.perform(post("/dashboard/docker/client/edit/1").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://127.0.0.1:2375")
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("message", containsString("Unable to update ClientConfig.  No ClientConfig with id 1")))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
