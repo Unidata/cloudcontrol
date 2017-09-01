@@ -113,7 +113,6 @@ public class ContainerControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void getContainerList_ModelShouldContainListOfContainers() throws Exception {
-
         _Container testContainerOne = new _ContainerBuilder()
             .id("77af4d6b9913")
             .build();

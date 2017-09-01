@@ -112,7 +112,6 @@ public class ServerControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void getInfo_ModelShouldContainServerInfoAndServerInfoAction() throws Exception {
-
         _Info testInfo = new _InfoBuilder()
             .architecture("x86_64")
             .images(4)
@@ -172,7 +171,6 @@ public class ServerControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void getVersion_ModelShouldContainServerVersionAndServerVersionAction() throws Exception {
-
         _Version testVersion = new _VersionBuilder()
             .apiVersion("1.23")
             .build();
