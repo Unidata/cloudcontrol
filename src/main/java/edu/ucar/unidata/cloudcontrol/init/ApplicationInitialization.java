@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -80,9 +81,9 @@ public class ApplicationInitialization implements ServletContextListener {
                 BufferedReader reader = null;
                 try {
                     reader = new BufferedReader(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
-                    while ((currentLine = reader.readLine()) != null) {
+                    while (Objects.nonNull(currentLine = reader.readLine())) {
                         String lineData;
-                        if ((lineData = StringUtils.stripToNull(currentLine)) != null) {
+                        if (Objects.nonNull((lineData = StringUtils.stripToNull(currentLine)))) {
                             if (lineData.startsWith("servletcontainer.home")) {
                                 servletcontainerHome = StringUtils.removeStart(lineData, "servletcontainer.home=");
                                 logger.info("${servletcontainer.home} set to: " + servletcontainerHome);  
@@ -109,7 +110,7 @@ public class ApplicationInitialization implements ServletContextListener {
                 } catch (Exception e) {
                     logger.error(e); 
                 } finally {
-                    if (reader != null) {
+                    if (Objects.nonNull(reader)) {
                         try {
                             reader.close();
                         } catch (IOException e) {
@@ -118,21 +119,21 @@ public class ApplicationInitialization implements ServletContextListener {
                     }
                 }
                 
-                if (cloudcontrolHome == null) {
+                if (Objects.isNull(cloudcontrolHome)) {
                     logger.info("Configuration file does not contain ${cloudcontrol.home} information.");  
                     logger.info("Using ${cloudcontrol.home} default: " + DEFAULT_HOME);  
-                    cloudcontrolHome = DEFAULT_HOME;      
+                    cloudcontrolHome = DEFAULT_HOME;
                 }
-                if (databaseSelected == null) {
+                if (Objects.isNull(databaseSelected)) {
                     logger.info("Configuration file does not contain ${cloudcontrol.db} information.");  
                     logger.info("Using ${cloudcontrol.db} default: " + DEFAULT_DATABASE);  
-                    databaseSelected = DEFAULT_DATABASE;      
+                    databaseSelected = DEFAULT_DATABASE;
                 }
             }
             createDirectory(new File(cloudcontrolHome));
-        } catch (NullPointerException e) {            
-            logger.error("Show-stopping file creation error: " + e );   
-            throw new RuntimeException(e.getMessage());  
+        } catch (NullPointerException e) {
+            logger.error("Show-stopping file creation error: " + e );
+            throw new RuntimeException(e.getMessage());
         }
         
         try {
@@ -245,7 +246,7 @@ public class ApplicationInitialization implements ServletContextListener {
                     addDefaultAdminUser(derbyDriver, derbyUrl + ";create=true", null, null);
                     createTables(createClientConfigTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     createTables(createImageMappingTableSql, derbyDriver, derbyUrl + ";create=true", null, null);
-					createTables(createContainerMappingSql, derbyDriver, derbyUrl + ";create=true", null, null);
+                    createTables(createContainerMappingSql, derbyDriver, derbyUrl + ";create=true", null, null);
                     
                     connection = DriverManager.getConnection(derbyUrl + ";shutdown=true");
                 } catch (SQLException e) {
@@ -255,7 +256,7 @@ public class ApplicationInitialization implements ServletContextListener {
                         logger.info("Database connection: " + e.getMessage()); 
                     }
                 } finally { 
-                    if (connection != null) {
+                    if (Objects.nonNull(connection)) {
                         try {
                             connection.close();
                         } catch (SQLException e) {
@@ -294,7 +295,7 @@ public class ApplicationInitialization implements ServletContextListener {
                 logger.error("Unable to find database drive class: " + e); 
             }
             try { 
-                if ((username != null) && (password != null)){
+                if ((Objects.nonNull(username)) && (Objects.nonNull(password))){
                     connection = DriverManager.getConnection(url, username, password);
                 } else {
                     connection = DriverManager.getConnection(url);
@@ -308,14 +309,14 @@ public class ApplicationInitialization implements ServletContextListener {
         } catch (SQLException e) { 
             logger.error("Unable to prepare and/or execute prepared statement: " + e); 
         } finally { 
-            if (preparedStatement != null) {
+            if (Objects.nonNull(preparedStatement)) {
                 try {
                     preparedStatement.close();
                 } catch (SQLException e) {
                     logger.error("Unable to close prepared statement: " + e); 
                 }
             } 
-            if (connection != null) {
+            if (Objects.nonNull(connection)) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
@@ -348,7 +349,7 @@ public class ApplicationInitialization implements ServletContextListener {
                 logger.error("Unable to find database drive class: " + e); 
             }
             try { 
-                if ((username != null) && (password != null)){
+                if ((Objects.nonNull(username)) && (Objects.nonNull(password))){
                     connection = DriverManager.getConnection(url, username, password);
                 } else {
                     connection = DriverManager.getConnection(url);
@@ -371,14 +372,14 @@ public class ApplicationInitialization implements ServletContextListener {
         } catch (SQLException e) { 
             logger.error("Unable to prepare and/or execute prepared statement: " + e); 
         } finally { 
-            if (preparedStatement != null) {
+            if (Objects.nonNull(preparedStatement)) {
                 try {
                     preparedStatement.close();
                 } catch (SQLException e) {
                     logger.error("Unable to close prepared statement: " + e); 
                 }
             } 
-            if (connection != null) {
+            if (Objects.nonNull(connection)) {
                 try {
                     connection.close();
                 } catch (SQLException e) {

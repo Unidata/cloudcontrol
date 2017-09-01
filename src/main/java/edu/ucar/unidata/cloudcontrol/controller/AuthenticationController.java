@@ -1,8 +1,8 @@
 package edu.ucar.unidata.cloudcontrol.controller;
 
-import javax.annotation.Resource;
+import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 
 @Controller
 public class AuthenticationController {
-    protected static Logger logger = Logger.getLogger(AuthenticationController.class);
 
     /**
      * Accepts a GET request for the login page.
@@ -31,7 +30,7 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/login/{error}", method = RequestMethod.GET)
     public String getLoginPage(@PathVariable String error, Model model) {
-        if (error != null) {
+         if (Objects.nonNull(error)) {
             model.addAttribute("error", error);
         }
         return "login";

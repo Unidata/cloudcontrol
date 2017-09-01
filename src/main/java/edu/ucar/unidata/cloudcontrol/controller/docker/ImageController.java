@@ -1,5 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.controller.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -76,25 +78,11 @@ public class ImageController {
         List<_Image> _images;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            // will return null if none are available.
-            _images = imageManager.getImageList();
+            _images = imageManager.getImageList(); // can be empty
         } else {
-            // will return null if imageManager.getImageList() is null (no images to examine, period); else
-            // will return empty List if the admin has not made any images publically visible
-            _images = imageMappingManager.filterByImageMapping(imageManager.getImageList());
+            _images = imageMappingManager.filterByImageMapping(imageManager.getImageList()); //can be empty
         }
-        if (_images != null) {
-             model.addAttribute("imageList", _images);
-        } else {
-            // make sure there are indeed no images to serve -- see if server info image number jives
-            _Info _info = serverManager.getInfo();
-            if (_info != null) {
-                if (Integer.parseInt(_info.getImages()) == 0) {
-                    _images = new ArrayList<_Image>();
-                    model.addAttribute("imageList", _images);
-                }
-            } // else no docker info to compare with, so don't add imageList to model
-        }
+        model.addAttribute("imageList", _images);
         model.addAttribute("action", "listImages");
         return "dashboard";
     }
@@ -135,32 +123,38 @@ public class ImageController {
     @RequestMapping(value="/dashboard/docker/image/{containerId}/stop", method=RequestMethod.GET)
     public String stopImage(@PathVariable String containerId, Authentication authentication) {
         // check to see if user is allow to access/manipulate this image
-        _Container _container = containerManager.getContainer(containerId);
-        if (_container == null) {
-            logger.error("Unable to find container " + containerId + " to stop.");
-            return "Error: unable to find image container.  Please contact the site administrator.";
-        }
-        String imageId = _container.getImageId();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            if (!imageMappingManager.isVisibleToUser(imageId)) {
-                logger.info("User " + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);
-                return "Error: you are not allowed to start/stop this image.  Please contact the site administrator if you have any questions.";
+        try{
+            _Container _container = containerManager.getContainer(containerId);
+            String imageId = _container.getImageId();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                if (!imageMappingManager.isVisibleToUser(imageId)) {
+                    logger.info("User " + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);
+                    return "Error: you are not allowed to start/stop this image.  Please contact the site administrator if you have any questions.";
+                }
             }
-        }
-        // see if user making the request is the same as the one in the mapping
-        String userName = containerMappingManager.lookupContainerMappingbyContainer(_container).getUserName();
-        if (authentication.getName().equals(userName) || authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            if (!containerManager.stopContainer(containerId)) {
-                logger.error("Unable to stop image container " + containerId);
-                return "Error: unable to stop image container.  Please contact the site administrator.";
+            // see if user making the request is the same as the one in the mapping
+            ContainerMapping containerMapping = containerMappingManager.lookupContainerMappingbyContainer(_container);
+            if (Objects.nonNull(containerMapping)) {
+                String userName = containerMapping.getUserName();
+                if (authentication.getName().equals(userName) || authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+                    try {
+                        containerManager.stopContainer(containerId);
+                        logger.info("User " + authentication.getName() + " has successfully stopped container " + containerId + " in image " + imageId);
+                        return _container.getImageId();
+                    } catch (Exception e) {
+                        return "Error: unable to stop image container.  Please contact the site administrator.";
+                    }
+                } else {
+                    logger.info("User" + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);
+                    return "Error: you are not allowed to start/stop this image container.  Please contact the site administrator.";
+                }
             } else {
-                logger.info("User " + authentication.getName() + " has successfully stopped container " + containerId + " in image " + imageId);
-                return _container.getImageId();
+                logger.info("Unable to ContainerMapping for container " + containerId + " in image " + imageId);
+                return "Error: unable to find image container mapping.  Please contact the site administrator.";
             }
-        } else {
-            logger.info("User" + authentication.getName() + " does not have permission to stop container " + containerId + " in image " + imageId);
-            return "Error: you are not allowed to start/stop this image container.  Please contact the site administrator.";
+        } catch (Exception e) {
+            return "Error: unable to find image container.  Please contact the site administrator.";
         }
     }
 
@@ -181,11 +175,7 @@ public class ImageController {
         } else {
             _images = imageMappingManager.filterByImageMapping(imageManager.getImageList());
         }
-        if (_images != null) {
-            statusMap = imageManager.getImageStatusMap(_images);
-        } else {
-            statusMap = new HashMap<String, String>();
-        }
+        statusMap = imageManager.getImageStatusMap(_images);
         return statusMap;
     }
 

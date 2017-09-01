@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -91,7 +92,7 @@ public class ImageManagerImpl implements ImageManager {
                 }
             }
         }
-        if (_image == null) {
+        if (Objects.isNull(_image)) {
             String message = "Unable to find image " + imageId;
             logger.error(message);
             throw new NotFoundException(message);
@@ -126,18 +127,13 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap() {
-        Map<String, String> idStatusMap = null;
+         Map<String, String> idStatusMap = new HashMap<String, String>();
         List<_Image> _images = getImageList();
         if (!_images.isEmpty()) {
             for (_Image _image : _images) {
-                if (_image != null) {
+                if (Objects.nonNull(_image)) {
                     idStatusMap = new HashMap<String, String>();
                     idStatusMap.put(_image.getId(), _image.getStatus());
-                }
-            }
-            if (idStatusMap != null) {
-                if (idStatusMap.isEmpty()) {
-                    idStatusMap = null;
                 }
             }
         }
@@ -151,17 +147,12 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap(List<_Image> _images) {
-        Map<String, String> idStatusMap = null;
+        Map<String, String> idStatusMap = new HashMap<String, String>();
         if (!_images.isEmpty()) {
             for (_Image _image : _images) {
-                if (_image != null) {
+                if (Objects.nonNull(_image)) {
                     idStatusMap = new HashMap<String, String>();
                     idStatusMap.put(_image.getId(), _image.getStatus());
-                }
-            }
-            if (idStatusMap != null) {
-                if (idStatusMap.isEmpty()) {
-                    idStatusMap = null;
                 }
             }
         }
@@ -178,9 +169,6 @@ public class ImageManagerImpl implements ImageManager {
     public void removeImage(String imageId, String userName) {
         _Image _image = getImage(imageId);
         String repoTags = _image.getRepoTags();
-        if (!containerManager.removeContainersFromImage(imageId)) {
-            logger.error("Unable to remove containers for Image: " + imageId + ". Will attempt to force the image removal.");
-        }
         if (imageMappingManager.isVisibleToUser(imageId)) {
             imageMappingManager.deleteImageMapping(imageId);
         }

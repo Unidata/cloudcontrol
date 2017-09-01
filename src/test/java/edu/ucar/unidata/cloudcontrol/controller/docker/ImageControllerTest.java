@@ -19,6 +19,7 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -208,24 +209,6 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getImageList_ModelShouldContainNoListOfImagesAndJustTheListImagesAction() throws Exception {
-
-        when(imageManagerMock.getImageList()).thenReturn(null);
-        when(serverManagerMock.getInfo()).thenReturn(null);
-
-        mockMvc.perform(get("/dashboard/docker/image/list").with(csrf()))
-            .andExpect(model().attribute("action", equalTo("listImages")))
-            .andExpect(model().attribute("imageList", is(nullValue())));
-          //.andDo(print());
-
-        verify(imageManagerMock, times(1)).getImageList();
-        verify(serverManagerMock, times(1)).getInfo();
-        verifyNoMoreInteractions(imageManagerMock);
-        verifyNoMoreInteractions(serverManagerMock);
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void getImageList_ModelShouldContainAnEmptyListOfImagesAndListImagesAction() throws Exception {
 
         _Info testInfo = new _InfoBuilder()
@@ -233,9 +216,8 @@ public class ImageControllerTest {
             .images(0)
             .build();
 
-        when(imageManagerMock.getImageList()).thenReturn(null);
+        when(imageManagerMock.getImageList()).thenReturn(Collections.emptyList());
         when(serverManagerMock.getInfo()).thenReturn(testInfo);
-
         mockMvc.perform(get("/dashboard/docker/image/list").with(csrf()))
             .andExpect(model().attribute("action", equalTo("listImages")))
             .andExpect(model().attribute("imageList", is(empty())));
@@ -244,7 +226,6 @@ public class ImageControllerTest {
         assertThat(testInfo.getImages(), is("0"));
 
         verify(imageManagerMock, times(1)).getImageList();
-        verify(serverManagerMock, times(1)).getInfo();
         verifyNoMoreInteractions(imageManagerMock);
         verifyNoMoreInteractions(serverManagerMock);
     }

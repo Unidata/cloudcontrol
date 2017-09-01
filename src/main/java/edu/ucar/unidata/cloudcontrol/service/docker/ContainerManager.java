@@ -68,9 +68,8 @@ public interface ContainerManager {
      * Stops a Docker container.
      *
      * @param containerId  The ID of the container to stop.
-     * @return  The whether the container has been started or not.
      */
-    public boolean stopContainer(String containerId);
+    public void stopContainer(String containerId);
 
     /**
      * Requests whether the edu.ucar.unidata.cloudcontrol.domain.docker._Container is running or not.
@@ -94,16 +93,14 @@ public interface ContainerManager {
      * Removes all Containers from an Image.
      *
      * @param imageId  The ID of the Image whose Containers need to be removed.
-     * @return  The whether the Containers were successfully removed or not.
      */
-    public boolean removeContainersFromImage(String imageId);
+    public void removeContainersFromImage(String imageId);
 
     /**
      * Removes a single Container from an Image.
      *
      * @param imageId  The ID of the Image corresponding to the Container.
      * @param containerId  The ID of the Container to remove.
-     * @return  The whether the Container was successfully removed or not.
      */
-    public boolean removeSingleContainerFromImage(String imageId, String containerId);
+    public void removeSingleContainerFromImage(String imageId, String containerId);
 }

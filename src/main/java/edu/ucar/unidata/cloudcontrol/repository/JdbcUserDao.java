@@ -2,9 +2,10 @@ package edu.ucar.unidata.cloudcontrol.repository;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
 
-import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
@@ -124,7 +125,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("users").usingGeneratedKeyColumns("userId");
             SqlParameterSource parameters = new BeanPropertySqlParameterSource(user);
             Number newUserId = insertActor.executeAndReturnKey(parameters);
-            if (newUserId != null) {
+            if (Objects.nonNull(newUserId)) {
                 user.setUserId(newUserId.intValue());
             } else {
                 String message = "Unable to create and persist new User " + user.toString();

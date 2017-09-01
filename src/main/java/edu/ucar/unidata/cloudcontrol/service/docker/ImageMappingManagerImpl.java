@@ -7,6 +7,8 @@ import edu.ucar.unidata.cloudcontrol.repository.docker.ImageMappingDao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.dao.DataRetrievalFailureException;
+
 /**
  * Service for processing requests associated with ImageMappings.
  */
@@ -68,8 +70,8 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> filterByImageMapping(List<_Image> _images) {
-        List<_Image> imageMappings = null;
-        if (_images != null) {
+        List<_Image> imageMappings = new ArrayList<_Image>();
+        if (!_images.isEmpty()) {
             imageMappings = new ArrayList<_Image>();
             for (_Image _image : _images) {
                 if (_image.getIsVisibleToUsers()) {
@@ -87,9 +89,10 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  Whether the Image is a ImageMapping or not.
      */
     public boolean isVisibleToUser(String imageId){
-        if (lookupImageMapping(imageId) != null) {
+        try {
+            lookupImageMapping(imageId);
             return true;
-        } else {
+        } catch (DataRetrievalFailureException e) {
             return false;
         }
     }

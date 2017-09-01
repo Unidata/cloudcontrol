@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Resource;
 
@@ -65,10 +66,10 @@ public class ContainerManagerImpl implements ContainerManager {
      * @return  A List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
     public List<_Container> getContainerListByImage(String imageId) {
-        List<_Container> _containerList = null;
+        List<_Container> _containerList = new ArrayList<_Container>();
         List<_Container> _containers = getContainerList();
-        if (_containers != null) {
-            _Container _container = null;
+        if (!_containers.isEmpty()) {
+            _Container _container;
             _containerList = new ArrayList<_Container>();
             for (_Container c : _containers) {
                 if (imageId.equals(c.getImageId())) {
@@ -88,10 +89,10 @@ public class ContainerManagerImpl implements ContainerManager {
      * @return  A List of running edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
      */
     public List<_Container> getRunningContainerListByImage(String imageId) {
-        List<_Container> _containerList = null;
+        List<_Container> _containerList = new ArrayList<_Container>();
         List<_Container> _containers = getContainerList();
-        if (_containers!= null) {
-            _Container _container = null;
+        if (!_containers.isEmpty()) {
+            _Container _container;
             _containerList = new ArrayList<_Container>();
             for (_Container c : _containers) {
                 if (imageId.equals(c.getImageId())) {
@@ -115,9 +116,9 @@ public class ContainerManagerImpl implements ContainerManager {
      * @return  A Map of container statuses.
      */
     public Map<String, String> getContainerStatusMap() {
-        Map<String, String> _containerStatusMap = null;
+        Map<String, String> _containerStatusMap = new HashMap<String, String>();
         List<_Container> _containers = getContainerList();
-        if (_containers != null) {
+        if (!_containers.isEmpty()) {
             _containerStatusMap = new HashMap<String, String>();
             for (_Container c : _containers) {
                 _containerStatusMap.put(c.getImage(), c.getStatus());
@@ -131,6 +132,7 @@ public class ContainerManagerImpl implements ContainerManager {
      *
      * @param containerId  The container ID.
      * @return  The edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
+     * @throws NotFoundException  If unable to find the container.
      */
     public _Container getContainer(String containerId) {
         List<_Container> _containers = getContainerList();
@@ -141,6 +143,11 @@ public class ContainerManagerImpl implements ContainerManager {
                 break;
             }
         }
+        if (Objects.isNull(_container)) {
+            String message = "Unable to find Container " + containerId;
+            logger.error(message);
+            throw new NotFoundException(message);
+        }
         return _container;
     }
 
@@ -149,12 +156,12 @@ public class ContainerManagerImpl implements ContainerManager {
      *
      * @param imageId  The ID of the image in which to start the container.
      * @param authenticatedUser  The user that the started container.
-     * @return  The ID of the container that has been started (or null if unsuccessful).
+     * @return  The ID of the container that has been started.
      * @throws NotModifiedException  If container is already running or if its status is detected as anything but running.
      * @throws NotFoundException  If unable to find the container to start it.
      */
     public String startContainer(String imageId, String authenticatedUser) {
-        String containerId = null;
+        String containerId;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             CreateContainerResponse createContainerResponse = createContainer(dockerClient, imageId);
@@ -163,7 +170,6 @@ public class ContainerManagerImpl implements ContainerManager {
 
             // further checking to see if the container is running
             if (!containerIsRunning(dockerClient, containerId)) {
-                containerId = null;
                 String message = "Container " + containerId + " is not running when it should be.";
                 logger.error(message);
                 throw new NotModifiedException(message);
@@ -184,10 +190,10 @@ public class ContainerManagerImpl implements ContainerManager {
                 }
             }
         } catch (NotModifiedException e) {
-            logger.error("Container " + containerId + " is already running: " + e);
+            logger.error("Container is already running: " + e);
             throw e;
         } catch (NotFoundException e) {
-            logger.error("Unable to find and start container " + containerId + ": " + e);
+            logger.error("Unable to find and start container: " + e);
             throw e;
         }
         return containerId;
@@ -197,12 +203,10 @@ public class ContainerManagerImpl implements ContainerManager {
      * Stops a Docker container.
      *
      * @param containerId  The ID of the container to stop.
-     * @return  The whether the container has been started or not.
      * @throws NotModifiedException  If container has already been stopped or if its status is detected as running.
      * @throws NotFoundException  If unable to find the container to stop it.
      */
-    public boolean stopContainer(String containerId) {
-        boolean isStopped = false;
+    public void stopContainer(String containerId) {
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             dockerClient.stopContainerCmd(containerId).exec();
@@ -214,9 +218,7 @@ public class ContainerManagerImpl implements ContainerManager {
                 throw new NotModifiedException(message);
             } else {
                 // remove the container completely
-                if (removeSingleContainerFromImage(getContainer(containerId).getImageId(), containerId)) {
-                    isStopped = true;
-                }
+                removeSingleContainerFromImage(getContainer(containerId).getImageId(), containerId);
             }
         } catch (NotModifiedException e) {
             logger.error("Container " + containerId + " has been already stopped: " + e);
@@ -225,7 +227,6 @@ public class ContainerManagerImpl implements ContainerManager {
             logger.error("Unable to find and stop container " + containerId + ": " + e);
             throw e;
         }
-        return isStopped;
     }
 
     /**
@@ -286,35 +287,25 @@ public class ContainerManagerImpl implements ContainerManager {
      * Removes all Containers from an Image.
      *
      * @param imageId  The ID of the Image whose Containers need to be removed.
-     * @return  The whether the Containers were successfully removed or not.
      * @throws NotFoundException  If unable to remove containers for requested image.
      */
-    public boolean removeContainersFromImage(String imageId) {
-        boolean hasBeenRemoved = false;
+    public void removeContainersFromImage(String imageId) {
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
             List<_Container> _containers = getContainerListByImage(imageId);
             if (!_containers.isEmpty()) {
                 for (_Container _container : _containers) {
                     if (containerIsRunning(dockerClient, _container.getId())) {
-                        if (!stopContainer(_container.getId())) {
-                            logger.error("Unable to stop container:  " + _container.getId() + ". Will attempt to force the container removal.");
-                        }
+                        stopContainer(_container.getId());
                     }
                     dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
                     _Container _c = getContainer(_container.getId());
-                    if (_c == null) {
-                        hasBeenRemoved = true;
-                    }
                 }
-            } else {
-                hasBeenRemoved = true;
             }
         } catch (NotFoundException e) {
             logger.error("Unable to find and remove Containers for image " + imageId + ": " + e);
             throw e;
         }
-        return hasBeenRemoved;
     }
 
     /**
@@ -322,33 +313,25 @@ public class ContainerManagerImpl implements ContainerManager {
      *
      * @param imageId  The ID of the Image corresponding to the Container.
      * @param containerId  The ID of the Container to remove.
-     * @return  The whether the Container was successfully removed or not.
      * @throws NotFoundException  If unable to remove the requested container for requested image.
      */
-    public boolean removeSingleContainerFromImage(String imageId, String containerId) {
-        boolean hasBeenRemoved = false;
+    public void removeSingleContainerFromImage(String imageId, String containerId) {
         DockerClient dockerClient = clientManager.initializeDockerClient();
         List<_Container> _containers = getContainerListByImage(imageId);
         if (!_containers.isEmpty()) {
             for (_Container _container : _containers) {
                 if (_container.getId().equals(containerId)) {
                     if (containerIsRunning(dockerClient, _container.getId())) {
-                        if (!stopContainer(_container.getId())) {
-                            logger.error("Unable to stop container:  " + _container.getId() + ". Will attempt to force the container removal.");
-                        }
+                        stopContainer(_container.getId());
                     }
                     dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
                     _Container _c = getContainer(_container.getId());
-                    if (_c == null) {
-                        hasBeenRemoved = true;
-                    }
                 }
             }
         } else {
-            String message = "Unable to find and container " + containerId + " for image " + imageId;
+            String message = "Unable to find and remove container " + containerId + " for image " + imageId;
             logger.error(message);
             throw new NotFoundException(message);
         }
-        return hasBeenRemoved;
     }
 }

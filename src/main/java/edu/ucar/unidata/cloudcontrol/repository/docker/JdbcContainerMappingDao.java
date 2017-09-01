@@ -4,10 +4,11 @@ import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 
-import java.util.Date;
-import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
@@ -147,7 +148,7 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
         this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("containerMapping").usingGeneratedKeyColumns("id");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(containerMapping);
         Number newId = insertActor.executeAndReturnKey(parameters);
-        if (newId != null) {
+        if (Objects.nonNull(newId)) {
             containerMapping.setId(newId.intValue());
         } else {
             String message = "Unable to create ContainerMapping: " + containerMapping.toString();

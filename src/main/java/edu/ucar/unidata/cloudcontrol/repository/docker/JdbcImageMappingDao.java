@@ -2,9 +2,10 @@ package edu.ucar.unidata.cloudcontrol.repository.docker;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 
-import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
 
 import org.apache.log4j.Logger;
 
@@ -82,7 +83,7 @@ public class JdbcImageMappingDao extends JdbcDaoSupport implements ImageMappingD
         this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("imageMapping").usingGeneratedKeyColumns("id");
         SqlParameterSource parameters = new BeanPropertySqlParameterSource(imageMapping);
         Number newId = insertActor.executeAndReturnKey(parameters);
-        if (newId != null) {
+        if (Objects.nonNull(newId)) {
             imageMapping.setId(newId.intValue());
         } else {
             String message = "Unable to create and persist ImageMapping: " + imageMapping.toString();
