@@ -1,22 +1,18 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.repository.docker.ContainerMappingDao;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Service for processing requests associated with ContainerMappings.
  */
 public class ContainerMappingManagerImpl implements ContainerMappingManager {
-    protected static Logger logger = Logger.getLogger(ContainerMappingManagerImpl.class);
 
     private ContainerMappingDao containerMappingDao;
 
@@ -46,7 +42,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @param userName  The user who created the ContainerMapping.
      * @return  The List of ContainerMappings.
      */
-    public  List<ContainerMapping> lookupContainerMappingsByUserName(String userName){
+    public List<ContainerMapping> lookupContainerMappingsByUserName(String userName){
         return containerMappingDao.lookupContainerMappingsByUserName(userName);
     }
 
@@ -66,7 +62,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @param _Image  The _image corresponding to the ContainerMapping object.
      * @return  The List of ContainerMappings.
      */
-    public  List<ContainerMapping> lookupContainerMappingsByImage(_Image _image){
+    public List<ContainerMapping> lookupContainerMappingsByImage(_Image _image){
         return containerMappingDao.lookupContainerMappingsByImage(_image);
     }
 

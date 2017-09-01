@@ -1,5 +1,9 @@
 package edu.ucar.unidata.cloudcontrol.repository.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+
 import java.util.Date;
 import java.util.List;
 import java.sql.ResultSet;
@@ -7,16 +11,12 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 
 /**
  * The ContainerMappingDao implementation.  Persistence mechanism is a database.
@@ -32,12 +32,15 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
      *
      * @param containerMappingId   The ID of the ContainerMapping object (will be unique for each ContainerMapping).
      * @return  The ContainerMapping.
+     * @throws DataRetrievalFailureException  If unable to locate ContainerMapping by container mapping ID.
      */
     public ContainerMapping lookupContainerMappingById(int containerMappingId) {
         String sql = "SELECT * FROM containerMapping WHERE id = ?";
         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), containerMappingId);
         if (containerMappings.isEmpty()) {
-            return null;
+            String message = "Unable to find ContainerMapping with id " + new Integer(containerMappingId).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return containerMappings.get(0);
     }
@@ -49,9 +52,12 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
      * @return  The List of ContainerMappings.
      */
     public  List<ContainerMapping> lookupContainerMappingsByUserName(String userName){
-         String sql = "SELECT * FROM containerMapping WHERE userName = ? ORDER BY datePerformed DESC";
-         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), userName);
-         return containerMappings;
+        String sql = "SELECT * FROM containerMapping WHERE userName = ? ORDER BY datePerformed DESC";
+        List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), userName);
+        if (containerMappings.isEmpty()) {
+            logger.info("Unable to find any ContainerMappings made by user name " + userName);
+        }
+        return containerMappings;
     }
 
     /**
@@ -63,7 +69,12 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
     public ContainerMapping lookupContainerMappingbyContainer(_Container _container){
         String sql = "SELECT * FROM containerMapping WHERE containerId = ? ORDER BY datePerformed DESC";
         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), _container.getId());
-        return containerMappings.get(0);
+        if (containerMappings.isEmpty()) {
+            logger.info("Unable to find any ContainerMappings for container" + _container.toString());
+            return null;
+        } else {
+            return containerMappings.get(0);
+        }
     }
 
     /**
@@ -75,6 +86,9 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
     public  List<ContainerMapping> lookupContainerMappingsByImage(_Image _image){
         String sql = "SELECT * FROM containerMapping WHERE imageId = ? ORDER BY datePerformed DESC";
         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), _image.getId());
+        if (containerMappings.isEmpty()) {
+            logger.info("Unable to find any ContainerMappings for image " + _image.toString());
+        }
         return containerMappings;
     }
 
@@ -87,6 +101,9 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
     public  List<ContainerMapping> lookupContainerMappingsByDatePerfomed(Date datePerformed){
         String sql = "SELECT * FROM containerMapping WHERE datePerformed = ? ORDER BY datePerformed DESC";
         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper(), datePerformed);
+        if (containerMappings.isEmpty()) {
+            logger.info("Unable to find any ContainerMappings for date " + datePerformed.toString());
+        }
         return containerMappings;
     }
 
@@ -98,6 +115,9 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
     public List<ContainerMapping> getAllContainerMappings() {
         String sql = "SELECT * FROM containerMapping ORDER BY datePerformed DESC";
         List<ContainerMapping> containerMappings = getJdbcTemplate().query(sql, new ContainerMappingMapper());
+        if (containerMappings.isEmpty()) {
+            logger.info("No ContainerMappings persisted yet.");
+        }
         return containerMappings;
     }
 
@@ -105,12 +125,15 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
      * Finds and removes the ContainerMapping from the persistence mechanism using the ContainerMapping ID.
      *
      * @param containerMappingId  The ID of the ContainerMapping object.
+     * @throws DataRetrievalFailureException  If unable to locate and delete ContainerMapping by ID.
      */
     public void deleteContainerMapping(String containerMappingId) {
         String sql = "DELETE FROM containerMapping WHERE id = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, containerMappingId);
         if (rowsAffected <= 0) {
-            throw new RecoverableDataAccessException("Unable to delete ContainerMapping. No ContainerMapping found with id: " + containerMappingId);
+            String message = "Unable to delete ContainerMapping. No ContainerMapping found with id: " + containerMappingId;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
 
@@ -118,6 +141,7 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
      * Creates a new ContainerMapping in the persistence mechanism.
      *
      * @param containerMapping  The ContainerMapping to be created.
+     * @throws DataRetrievalFailureException  If unable to create and persist ContainerMapping.
      */
     public void createContainerMapping(ContainerMapping containerMapping) {
         this.insertActor = new SimpleJdbcInsert(getDataSource()).withTableName("containerMapping").usingGeneratedKeyColumns("id");
@@ -126,10 +150,11 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
         if (newId != null) {
             containerMapping.setId(newId.intValue());
         } else {
-            throw new RecoverableDataAccessException("Unable to create ContainerMapping: " + containerMapping.toString());
+            String message = "Unable to create ContainerMapping: " + containerMapping.toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
-
 
     /***
      * Maps each row of the ResultSet to a ContainerMapping object.
@@ -153,5 +178,4 @@ public class JdbcContainerMappingDao extends JdbcDaoSupport implements Container
             return containerMapping;
         }
     }
-
 }

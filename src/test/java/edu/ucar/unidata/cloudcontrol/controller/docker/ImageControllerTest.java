@@ -44,6 +44,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.theInstance;
 
@@ -249,31 +250,6 @@ public class ImageControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getImageList_ConflictingImageNumberShouldThrowRunTimeException() throws Exception {
-
-        _Info testInfo = new _InfoBuilder()
-            .architecture("x86_64")
-            .images(4)
-            .build();
-
-        when(imageManagerMock.getImageList()).thenReturn(null);
-        when(serverManagerMock.getInfo()).thenReturn(testInfo);
-
-        mockMvc.perform(get("/dashboard/docker/image/list").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
-            .andExpect(status().isOk())
-            .andExpect(view().name("fatalError"))
-            .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
-          //.andDo(print());
-
-        verify(imageManagerMock, times(1)).getImageList();
-        verify(serverManagerMock, times(1)).getInfo();
-        verifyNoMoreInteractions(imageManagerMock);
-        verifyNoMoreInteractions(serverManagerMock);
-    }
-
-    @Test
     public void startImage_UnauthenticatedAjaxGetRequestToStartImageShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start"))
             .andExpect(status().is3xxRedirection())
@@ -285,8 +261,7 @@ public class ImageControllerTest {
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void startImage_AjaxGetRequestToStartImageWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Error: unable to start image.")));
+            .andExpect(status().isOk());
           //.andDo(print());
     }
 
@@ -296,8 +271,7 @@ public class ImageControllerTest {
 
         when(imageMappingManagerMock.isVisibleToUser("77af4d6b9913")).thenReturn(true);
         mockMvc.perform(get("/dashboard/docker/image/77af4d6b9913/start").with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Error: unable to start image.")));
+            .andExpect(status().isOk());
           //.andDo(print());
     }
 
@@ -328,11 +302,10 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_ImageContainerAlreadyRunningShouldThrowRunTimeException() throws Exception {
-
+    public void startImage_ImageContainerAlreadyRunningShouldThrowNotModifiedException() throws Exception {
         when(containerManagerMock.startContainer("b6fa739cedf5", "admin")).thenThrow(new NotModifiedException("Container 8dfafdbc3a40 is already running."));
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("exception", isA(NotModifiedException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -344,11 +317,10 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_StartedImageContainerNotFoundShouldThrowRunTimeException() throws Exception {
-
+    public void startImage_StartedImageContainerNotFoundShouldThrowNotFoundException() throws Exception {
         when(containerManagerMock.startContainer("b6fa739cedf5", "admin")).thenThrow(new NotFoundException("Unable to find and start container 8dfafdbc3a40."));
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
-            .andExpect(model().attribute("message", containsString("RuntimeException")))
+            .andExpect(model().attribute("exception", isA(NotFoundException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

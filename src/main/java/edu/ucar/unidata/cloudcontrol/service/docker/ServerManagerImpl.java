@@ -1,5 +1,10 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InfoRegistryConfig;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Version;
+import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,12 +18,6 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.InfoRegistryConfig;
 import com.github.dockerjava.api.model.Version;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
-import edu.ucar.unidata.cloudcontrol.domain.docker._InfoRegistryConfig;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Version;
-import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
-
 
 /**
  * Service for processing Docker server and system-related api requests.
@@ -35,15 +34,9 @@ public class ServerManagerImpl implements ServerManager {
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Info object.
      */
     public _Info getInfo() {
-        _Info _info;
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            Info info = dockerClient.infoCmd().exec();
-            _info = convertInfo(info);
-        } catch (Exception e) {
-            logger.error("Unable to get Docker server info: " + e);
-            _info = null;
-        }
+        DockerClient dockerClient = clientManager.initializeDockerClient();
+        Info info = dockerClient.infoCmd().exec();
+        _Info _info = convertInfo(info);
         return _info;
     }
 
@@ -183,15 +176,9 @@ public class ServerManagerImpl implements ServerManager {
      * @return  A edu.ucar.unidata.cloudcontrol.domain.docker._Version object.
      */
     public _Version getVersion() {
-        _Version _version;
-        try {
-            DockerClient dockerClient = clientManager.initializeDockerClient();
-            Version version = dockerClient.versionCmd().exec();
-            _version = convertVersion(version);
-        } catch (Exception e) {
-            logger.error("Unable to get Docker server version: " + e);
-            _version = null;
-        }
+        DockerClient dockerClient = clientManager.initializeDockerClient();
+        Version version = dockerClient.versionCmd().exec();
+        _Version _version = convertVersion(version);
         return _version;
     }
 

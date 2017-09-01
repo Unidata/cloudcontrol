@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.nullValue;
 
 import static org.mockito.Mockito.doNothing;
@@ -138,7 +139,7 @@ public class DeleteUserControllerTest {
     public void deleteUser_UserToDeletedNotFoundShouldDataRetrievalFailureException() throws Exception {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new DataRetrievalFailureException("Unable to find User with userId 1"));
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
-            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
+            .andExpect(model().attribute("exception", isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -209,7 +210,7 @@ public class DeleteUserControllerTest {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userId", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to delete User. No User found with userId 1")))
+            .andExpect(model().attribute("exception", isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

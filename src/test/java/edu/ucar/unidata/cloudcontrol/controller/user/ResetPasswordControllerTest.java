@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 
 import static org.junit.Assert.assertThat;
 
@@ -155,7 +156,7 @@ public class ResetPasswordControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        doNothing().when(userManagerMock).updatePassword(isA(User.class));
+        doNothing().when(userManagerMock).updatePassword(org.mockito.ArgumentMatchers.isA(User.class));
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -170,7 +171,7 @@ public class ResetPasswordControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        doNothing().when(userManagerMock).updatePassword(isA(User.class));
+        doNothing().when(userManagerMock).updatePassword(org.mockito.ArgumentMatchers.isA(User.class));
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -204,7 +205,7 @@ public class ResetPasswordControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        doNothing().when(userManagerMock).updatePassword(isA(User.class));
+        doNothing().when(userManagerMock).updatePassword(org.mockito.ArgumentMatchers.isA(User.class));
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("password", "password")
@@ -233,13 +234,13 @@ public class ResetPasswordControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        doThrow(new DataRetrievalFailureException("Unable to find User with userId 1")).when(userManagerMock).updatePassword(isA(User.class));
+        doThrow(new DataRetrievalFailureException("Unable to find User with userId 1")).when(userManagerMock).updatePassword(org.mockito.ArgumentMatchers.isA(User.class));
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("password", "password")
                 .param("confirmPassword", "password")
             )
-            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

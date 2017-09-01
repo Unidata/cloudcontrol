@@ -1,5 +1,8 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
+import edu.ucar.unidata.cloudcontrol.repository.docker.ClientConfigDao;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,9 +17,6 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.exception.DockerClientException;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
-import edu.ucar.unidata.cloudcontrol.repository.docker.ClientConfigDao;
 
 /**
  * Service for initializing and configuring the com.github.dockerjava.api.DockerClient.
@@ -52,7 +52,9 @@ public class ClientManagerImpl implements ClientManager {
                 .build();
             return DockerClientBuilder.getInstance(config).build();
         } else {
-            throw new DockerClientException("Unable to initialize Docker client.  No client configuration settings are available.");
+            String message = "Unable to initialize Docker client.  No client configuration settings are available.";
+            logger.error(message);
+            throw new DockerClientException(message);
         }
     }
 

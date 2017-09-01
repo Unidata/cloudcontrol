@@ -1,10 +1,11 @@
 package edu.ucar.unidata.cloudcontrol.repository;
 
+import edu.ucar.unidata.cloudcontrol.domain.User;
+
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import org.springframework.dao.DataRetrievalFailureException;
@@ -14,16 +15,12 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import edu.ucar.unidata.cloudcontrol.domain.User;
-
 /**
  * The UserDao implementation.  Persistence mechanism is a database.
  */
-
 public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
 
     protected static Logger logger = Logger.getLogger(JdbcUserDao.class);
-
 
     private SimpleJdbcInsert insertActor;
 
@@ -38,7 +35,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         String sql = "SELECT * FROM users WHERE userId = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userId);
         if (users.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find User with userId " + new Integer(userId).toString());
+            String message = "Unable to find User with userId " + new Integer(userId).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return users.get(0);
     }
@@ -54,7 +53,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         String sql = "SELECT * FROM users WHERE userName = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);
         if (users.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find User with userName " + userName);
+            String message = "Unable to find User with userName " + userName;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return users.get(0);
     }
@@ -70,7 +71,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         String sql = "SELECT * FROM users WHERE emailAddress = ?";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);
         if (users.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find User with emailAddress " + emailAddress);
+            String message = "Unable to find User with emailAddress " + emailAddress;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return users.get(0);
     }
@@ -83,6 +86,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
     public List<User> getUserList() {
         String sql = "SELECT * FROM users ORDER BY dateCreated DESC";
         List<User> users = getJdbcTemplate().query(sql, new UserMapper());
+        if (users.isEmpty()) {
+            logger.info("No users persisted yet.");
+        }
         return users;
     }
 
@@ -96,7 +102,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
         String sql = "DELETE FROM users WHERE userId = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, userId);
         if (rowsAffected <= 0) {
-            throw new DataRetrievalFailureException("Unable to delete User. No User found with userId " + new Integer(userId).toString());
+            String message = "Unable to delete User. No User found with userId " + new Integer(userId).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
 
@@ -119,7 +127,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             if (newUserId != null) {
                 user.setUserId(newUserId.intValue());
             } else {
-                throw new DataRetrievalFailureException("Unable to create new User " + user.toString());
+                String message = "Unable to create and persist new User " + user.toString();
+                logger.error(message);
+                throw new DataRetrievalFailureException(message);
             }
         }
         return user;
@@ -145,7 +155,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.getUserId()
         });
         if (rowsAffected  <= 0) {
-            throw new DataRetrievalFailureException("Unable to update User.  No User with userName " + user.getUserName() + " found.");
+            String message ="Unable to update User.  No User with userName " + user.getUserName() + " found.";
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return user;
     }
@@ -165,10 +177,11 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.getUserName()
         });
         if (rowsAffected  <= 0) {
-            throw new DataRetrievalFailureException("Unable to update User's password.  User not found " + user.toString());
+            String message = "Unable to update User's password.  User not found " + user.toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
-
 
     /***
      * Maps each row of the ResultSet to a User object.
@@ -196,5 +209,4 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             return user;
         }
     }
-
 }

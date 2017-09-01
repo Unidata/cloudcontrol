@@ -31,6 +31,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.theInstance;
 
 import static org.mockito.Mockito.reset;
@@ -192,7 +193,7 @@ public class ViewUserControllerTest {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new DataRetrievalFailureException("Unable to find User with userId 1"));
 
         mockMvc.perform(get("/dashboard/user/view/testUserOne").with(csrf()))
-            .andExpect(model().attribute("message", containsString("Unable to find User with userId 1")))
+            .andExpect(model().attribute("exception", isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

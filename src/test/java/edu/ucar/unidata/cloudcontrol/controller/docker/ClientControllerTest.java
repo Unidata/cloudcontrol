@@ -34,6 +34,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.theInstance;
 
@@ -356,7 +357,7 @@ public class ClientControllerTest {
     public void viewClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
-            .andExpect(model().attribute("message", containsString("Unable to find ClientConfig with id 1")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -413,7 +414,7 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createClientConfig_ClientConfigCreatedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
-        when(clientManagerMock.createClientConfig(isA(ClientConfig.class))).thenReturn(1);
+        when(clientManagerMock.createClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class))).thenReturn(1);
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://127.0.0.1:2375")
@@ -440,20 +441,20 @@ public class ClientControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createClientConfig_ClientConfigNotCreatedShouldThrowDataRetrievalFailureException() throws Exception {
-        when(clientManagerMock.createClientConfig(isA(ClientConfig.class))).thenThrow(new DataRetrievalFailureException("Unable to create ClientConfig"));
+        when(clientManagerMock.createClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class))).thenThrow(new DataRetrievalFailureException("Unable to create ClientConfig"));
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://127.0.0.1:2375")
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to create ClientConfig")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
-        verify(clientManagerMock, times(1)).createClientConfig(isA(ClientConfig.class));
+        verify(clientManagerMock, times(1)).createClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class));
         verifyNoMoreInteractions(clientManagerMock);
     }
 
@@ -512,7 +513,7 @@ public class ClientControllerTest {
     public void editClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
-            .andExpect(model().attribute("message", containsString("Unable to find ClientConfig with id 1")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -589,7 +590,7 @@ public class ClientControllerTest {
             .build();
 
         when(clientManagerMock.lookupById(1)).thenReturn(testClientConfigOne);
-        doNothing().when(clientManagerMock).updateClientConfig(isA(ClientConfig.class));
+        doNothing().when(clientManagerMock).updateClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class));
         mockMvc.perform(post("/dashboard/docker/client/edit/1").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://0.0.0.0:2375")
@@ -627,20 +628,20 @@ public class ClientControllerTest {
             .build();
 
         when(clientManagerMock.lookupById(1)).thenReturn(testClientConfigOne);
-        doThrow(new DataRetrievalFailureException("Unable to update ClientConfig.  No ClientConfig with id 1")).when(clientManagerMock).updateClientConfig(isA(ClientConfig.class));
+        doThrow(new DataRetrievalFailureException("Unable to update ClientConfig.  No ClientConfig with id 1")).when(clientManagerMock).updateClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class));
         mockMvc.perform(post("/dashboard/docker/client/edit/1").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("dockerHost", "tcp://127.0.0.1:2375")
                 .param("dockerCertPath", "/foo/bar/baz/.docker")
                 .param("dockerTlsVerify", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to update ClientConfig.  No ClientConfig with id 1")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
         verify(clientManagerMock, times(1)).lookupById(1);
-        verify(clientManagerMock, times(1)).updateClientConfig(isA(ClientConfig.class));
+        verify(clientManagerMock, times(1)).updateClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class));
         verifyNoMoreInteractions(clientManagerMock);
     }
 }

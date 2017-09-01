@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.nullValue;
 
 import static org.junit.Assert.assertThat;
@@ -170,7 +171,7 @@ public class CreateUserControllerTest {
             .userName("testUserOne")
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
 
         mockMvc.perform(post("/dashboard/user/create").with(csrf()))
            .andExpect(status().is3xxRedirection())
@@ -212,7 +213,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
         mockMvc.perform(post("/dashboard/user/create").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -250,7 +251,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/dashboard/user/create").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -261,7 +262,7 @@ public class CreateUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to create new User")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
@@ -278,7 +279,7 @@ public class CreateUserControllerTest {
             .userName("testUserOne")
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
 
         mockMvc.perform(post("/welcome/register").with(csrf()))
             .andExpect(status().is3xxRedirection())
@@ -318,7 +319,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
         mockMvc.perform(post("/welcome/register").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -356,7 +357,7 @@ public class CreateUserControllerTest {
             .accountStatus(1)
             .build();
 
-        when(userManagerMock.createUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
+        when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/welcome/register").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -367,7 +368,7 @@ public class CreateUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to create new User")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));

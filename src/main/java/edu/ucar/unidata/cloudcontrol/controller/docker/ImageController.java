@@ -1,25 +1,27 @@
 package edu.ucar.unidata.cloudcontrol.controller.docker;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
+import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
+import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java.io.StringWriter;
-import java.io.PrintWriter;
-
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.RecoverableDataAccessException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,26 +35,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.view.RedirectView;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
-import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
-import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
-
 
 /**
  * Controller to issue rudimentary image-related Docker commands.
  */
 @Controller
-public class ImageController implements HandlerExceptionResolver {
+public class ImageController {
 
     protected static Logger logger = Logger.getLogger(ImageController.class);
 
@@ -97,19 +86,12 @@ public class ImageController implements HandlerExceptionResolver {
         if (_images != null) {
              model.addAttribute("imageList", _images);
         } else {
-            // make sure there are indeed no images to server -- see if server info image number jives
+            // make sure there are indeed no images to serve -- see if server info image number jives
             _Info _info = serverManager.getInfo();
             if (_info != null) {
                 if (Integer.parseInt(_info.getImages()) == 0) {
                     _images = new ArrayList<_Image>();
                     model.addAttribute("imageList", _images);
-                } else {
-                    logger.error("Requested image list was null but docker server info information shows at least one image available: " + _info.toString());
-                    if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-                        throw new RuntimeException("An error has occurred whilst retrieving the image list.  Requested image list was null but docker server info information shows at least one image available.  Please check the CloudControl log file for more information.");
-                    } else {
-                        throw new RuntimeException("An error has occurred whilst retrieving the image list.  Please contact the site administrator.");
-                    }
                 }
             } // else no docker info to compare with, so don't add imageList to model
         }
@@ -137,19 +119,9 @@ public class ImageController implements HandlerExceptionResolver {
             }
         }
         // start an image container
-        try {
-            String containerId = containerManager.startContainer(imageId, authentication.getName());
-            if (containerId == null) {
-                // tried to start container but status check shows its not running
-                logger.error("Unable to start container for image " + imageId);
-                return "Error: unable to start image.  Please contact the site administrator.";
-            } else {
-                logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
-                return containerId;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("An error whilst trying to start image." +  e);
-        }
+        String containerId = containerManager.startContainer(imageId, authentication.getName());
+        logger.info("User " + authentication.getName() + " has successfully started container " + containerId + " in image " + imageId);
+        return containerId;
     }
 
     /**
@@ -238,17 +210,9 @@ public class ImageController implements HandlerExceptionResolver {
             }
         }
         _InspectImageResponse _inspectImageResponse = imageManager.inspectImage(id);
-        if (_inspectImageResponse != null) {
-            model.addAttribute("inspectImageResponse", _inspectImageResponse);
-        } else {
-            throw new RuntimeException("An error occurred whilst processing Inspect Image request. InspectImageResponse in null.");
-        }
+        model.addAttribute("inspectImageResponse", _inspectImageResponse);
         _Image _image = imageManager.getImage(id);
-        if (_image != null) {
-            model.addAttribute("image", _image);
-        } else {
-            throw new RuntimeException("An error occurred whilst processing Inspect Image request.  Image is null.");
-        }
+        model.addAttribute("image", _image);
         return "docker/image/inspectImage";
     }
 
@@ -312,46 +276,7 @@ public class ImageController implements HandlerExceptionResolver {
     public String removeImage(@PathVariable String id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName(); //get logged in username
-        if (!imageManager.removeImage(id, userName)) {
-            return "Error: Unable to remove Image.";
-        } else {
-            return "success";
-        }
+        imageManager.removeImage(id, userName);
+        return "success";
     }
-
-    /**
-     * This method gracefully handles any uncaught exception
-     * that are fatal in nature and unresolvable by the user.
-     *
-     * @param request   The current HttpServletRequest request.
-     * @param response  The current HttpServletRequest response.
-     * @param handler  The executed handler, or null if none chosen at the time of the exception.
-     * @param exception  The  exception that got thrown during handler execution.
-     * @return  The error page containing the appropriate message to the dockerImage.
-     */
-    @Override
-    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
-        String message = "";
-        StringWriter writer = new StringWriter();
-        PrintWriter printWriter = new PrintWriter( writer );
-        exception.printStackTrace( printWriter );
-        printWriter.flush();
-
-        String stackTrace = writer.toString();
-
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String, Object> model = new HashMap<String, Object>();
-        if (exception instanceof AccessDeniedException){
-            message = exception.getMessage();
-            modelAndView.setViewName("denied");
-        } else  {
-            message = "An error has occurred: " + exception.getClass().getName() + ": " + stackTrace;
-            modelAndView.setViewName("fatalError");
-        }
-        logger.error(message);
-        model.put("message", message);
-        modelAndView.addAllObjects(model);
-        return modelAndView;
-    }
-
 }

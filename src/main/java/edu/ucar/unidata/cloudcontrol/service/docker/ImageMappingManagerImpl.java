@@ -1,20 +1,16 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.repository.docker.ImageMappingDao;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Service for processing requests associated with ImageMappings.
  */
 public class ImageMappingManagerImpl implements ImageMappingManager {
-    protected static Logger logger = Logger.getLogger(ImageMappingManagerImpl.class);
 
     private ImageMappingDao imageMappingDao;
 

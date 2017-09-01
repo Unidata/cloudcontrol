@@ -12,8 +12,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.dao.RecoverableDataAccessException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 /**
  * Controller to handle the Docker client configuration and commands.
@@ -158,19 +155,14 @@ public class ClientController {
      * @param id  The id as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
-     * @throws RuntimeException  If unable to find the requested ClientConfig.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/view/{id}", method=RequestMethod.GET)
     public String viewClientConfig(@PathVariable int id, Model model) {
-        try {
-            ClientConfig clientConfig = clientManager.lookupById(id);
-            model.addAttribute("clientConfig", clientConfig);
-            model.addAttribute("action", "viewClientConfig");
-            return "dashboard";
-        } catch (RecoverableDataAccessException e) {
-            throw new RuntimeException("Unable to find clientConfig with id: " +  new Integer(id).toString());
-        }
+        ClientConfig clientConfig = clientManager.lookupById(id);
+        model.addAttribute("clientConfig", clientConfig);
+        model.addAttribute("action", "viewClientConfig");
+        return "dashboard";
     }
 
     /**
@@ -186,7 +178,6 @@ public class ClientController {
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
-     * @throws RuntimeException  If unable to create new ClientConfig.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/configure", method=RequestMethod.POST)
@@ -196,15 +187,11 @@ public class ClientController {
            model.addAttribute("clientConfig", clientConfig);
            return new ModelAndView("dashboard");
         } else {
-            try {
-                UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                clientConfig.setCreatedBy(authUser.getUsername());
-                clientConfig.setLastUpdatedBy(authUser.getUsername());
-                int id = clientManager.createClientConfig(clientConfig);
-                return new ModelAndView(new RedirectView("/dashboard/docker/client/view/" + new Integer(id).toString(), true));
-            } catch (RecoverableDataAccessException e) {
-                throw new RuntimeException("Unable to create new ClientConfig: " + e);
-            }
+            UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            clientConfig.setCreatedBy(authUser.getUsername());
+            clientConfig.setLastUpdatedBy(authUser.getUsername());
+            int id = clientManager.createClientConfig(clientConfig);
+            return new ModelAndView(new RedirectView("/dashboard/docker/client/view/" + new Integer(id).toString(), true));
         }
     }
 
@@ -219,19 +206,14 @@ public class ClientController {
      * @param id  The id as provided by @PathVariable.
      * @param model  The Model used by the View.
      * @return  The path for the ViewResolver.
-     * @throws RuntimeException  If unable to find the requested ClientConfig.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/edit/{id}", method=RequestMethod.GET)
     public String editClientConfig(@PathVariable int id, Model model) {
-        try {
-            ClientConfig clientConfig = clientManager.lookupById(id);
-            model.addAttribute("clientConfig", clientConfig);
-            model.addAttribute("action", "editClientConfig");
-            return "dashboard";
-        } catch (RecoverableDataAccessException e) {
-            throw new RuntimeException("Unable to find clientConfig with id: " +  new Integer(id).toString());
-        }
+        ClientConfig clientConfig = clientManager.lookupById(id);
+        model.addAttribute("clientConfig", clientConfig);
+        model.addAttribute("action", "editClientConfig");
+        return "dashboard";
     }
 
     /**
@@ -248,7 +230,6 @@ public class ClientController {
      * @param result  The BindingResult for error handling.
      * @param model  The Model used by the View.
      * @return  The redirect to the needed View.
-     * @throws RuntimeException  If unable to update ClientConfig.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/edit/{id}", method=RequestMethod.POST)
@@ -258,17 +239,13 @@ public class ClientController {
             model.addAttribute("clientConfig", clientConfig);
             return new ModelAndView("dashboard");
         } else {
-            try {
-                UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                clientConfig.setLastUpdatedBy(authUser.getUsername());
-                ClientConfig dbClientConfig = clientManager.lookupById(id);
-                clientConfig.setCreatedBy(dbClientConfig.getCreatedBy());
-                clientConfig.setDateCreated(dbClientConfig.getDateCreated());
-                clientManager.updateClientConfig(clientConfig);
-                return new ModelAndView(new RedirectView("/dashboard/docker/client/view/" + new Integer(id).toString(), true));
-            } catch (RecoverableDataAccessException e) {
-                throw new RuntimeException("Unable to edit clientConfig: " +  e);
-            }
+            UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            clientConfig.setLastUpdatedBy(authUser.getUsername());
+            ClientConfig dbClientConfig = clientManager.lookupById(id);
+            clientConfig.setCreatedBy(dbClientConfig.getCreatedBy());
+            clientConfig.setDateCreated(dbClientConfig.getDateCreated());
+            clientManager.updateClientConfig(clientConfig);
+            return new ModelAndView(new RedirectView("/dashboard/docker/client/view/" + new Integer(id).toString(), true));
         }
     }
 }

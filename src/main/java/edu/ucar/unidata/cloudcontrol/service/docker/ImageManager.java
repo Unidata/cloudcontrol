@@ -54,7 +54,6 @@ public interface ImageManager {
      *
      * @param imageId  The ID of the Image to remove.
      * @param userName  The userName of person who is removing the Image (for logging purposes)
-     * @return  The whether the Image was successfully removed or not.
      */
-    public boolean removeImage(String imageId, String userName);
+    public void removeImage(String imageId, String userName);
 }

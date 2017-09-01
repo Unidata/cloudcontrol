@@ -32,6 +32,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 
 import static org.junit.Assert.assertThat;
 
@@ -160,7 +161,7 @@ public class EditUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        when(userManagerMock.updateUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.updateUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -175,7 +176,7 @@ public class EditUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        when(userManagerMock.updateUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.updateUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf()))
            .andExpect(status().is3xxRedirection())
            .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
@@ -212,7 +213,7 @@ public class EditUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        when(userManagerMock.updateUser(isA(User.class))).thenReturn(testUserOne);
+        when(userManagerMock.updateUser(org.mockito.ArgumentMatchers.isA(User.class))).thenReturn(testUserOne);
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -251,7 +252,7 @@ public class EditUserControllerTest {
             .build();
 
         when(userManagerMock.lookupUser("testUserOne")).thenReturn(testUserOne);
-        when(userManagerMock.updateUser(isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to update User.  No User with userName testUserOne found."));
+        when(userManagerMock.updateUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to update User.  No User with userName testUserOne found."));
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("userName", "testUserOne")
@@ -260,14 +261,14 @@ public class EditUserControllerTest {
                 .param("accountStatus", "1")
                 .param("accessLevel", "1")
             )
-            .andExpect(model().attribute("message", containsString("Unable to update User.  No User with userName testUserOne found.")))
+            .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
             .andExpect(status().isOk())
             .andExpect(view().name("fatalError"))
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
         verify(userManagerMock, times(1)).lookupUser("testUserOne");
-        verify(userManagerMock, times(1)).updateUser(isA(User.class));
+        verify(userManagerMock, times(1)).updateUser(org.mockito.ArgumentMatchers.isA(User.class));
         verifyNoMoreInteractions(userManagerMock);
     }
 }

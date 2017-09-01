@@ -1,5 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.repository.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
+
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +14,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
 
 /**
  * The ClientConfigDao implementation.  Persistence mechanism is a database.
@@ -35,7 +35,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE id = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), id);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find ClientConfig with id " + new Integer(id).toString());
+            String message = "Unable to find ClientConfig with id " + new Integer(id).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs.get(0);
     }
@@ -51,7 +53,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE dockerHost = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), dockerHost);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find any ClientConfigs with a DOCKER_HOST value of " + dockerHost);
+            String message = "Unable to find any ClientConfigs with a DOCKER_HOST value of " + dockerHost;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs;
     }
@@ -67,7 +71,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE dockerCertPath = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), dockerCertPath);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find any ClientConfigs with a DOCKER_CERT_PATH value of " + dockerCertPath);
+            String message = "Unable to find any ClientConfigs with a DOCKER_CERT_PATH value of " + dockerCertPath;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs;
     }
@@ -83,7 +89,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE dockerTlsVerify = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), dockerTlsVerify);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find any ClientConfigs with a DOCKER_TLS_VERIFY value of " + new Integer(dockerTlsVerify).toString());
+            String message = "Unable to find any ClientConfigs with a DOCKER_TLS_VERIFY value of " + new Integer(dockerTlsVerify).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs;
     }
@@ -99,7 +107,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE createdBy = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), createdBy);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find any ClientConfigs created by user " + createdBy);
+            String message = "Unable to find any ClientConfigs created by user " + createdBy;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs;
     }
@@ -115,7 +125,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
         String sql = "SELECT * FROM clientConfig WHERE lastUpdatedBy = ?";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper(), lastUpdatedBy);
         if (clientConfigs.isEmpty()) {
-            throw new DataRetrievalFailureException("Unable to find any ClientConfigs last updated by user " + lastUpdatedBy);
+            String message = "Unable to find any ClientConfigs last updated by user " + lastUpdatedBy;
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
         return clientConfigs;
     }
@@ -124,11 +136,13 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
      * Looks up and retrieves a List of all ClientConfigs from the persistence mechanism.
      *
      * @return  The List of ClientConfigs.
-     * @throws DataRetrievalFailureException  If unable to lookup any ClientConfigs.
      */
     public List<ClientConfig> getAllClientConfigs() {
         String sql = "SELECT * FROM clientConfig ORDER BY dateCreated DESC";
         List<ClientConfig> clientConfigs = getJdbcTemplate().query(sql, new ClientConfigMapper());
+        if (clientConfigs.isEmpty()) {
+            logger.info("No ClientConfigs persisted yet.");
+        }
         return clientConfigs;
     }
 
@@ -136,12 +150,15 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
      * Finds and removes the ClientConfig from the persistence mechanism using the id.
      *
      * @param id  The id of the ClientConfig to delete.
+     * @throws DataRetrievalFailureException  If unable to locate and delete ClientConfig by id.
      */
     public void deleteClientConfig(int id) {
         String sql = "DELETE FROM clientConfig WHERE id = ?";
         int rowsAffected  = getJdbcTemplate().update(sql, id);
         if (rowsAffected <= 0) {
-            throw new DataRetrievalFailureException("Unable to delete ClientConfig. No ClientConfig found with id " + new Integer(id).toString());
+            String message = "Unable to delete ClientConfig. No ClientConfig found with id " + new Integer(id).toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
 
@@ -160,7 +177,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
             clientConfig.setId(newId.intValue());
             return newId.intValue();
         } else {
-            throw new DataRetrievalFailureException("Unable to create ClientConfig " + clientConfig.toString());
+            String message = "Unable to create and persist ClientConfig " + clientConfig.toString();
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
 
@@ -183,7 +202,9 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
             clientConfig.getId()
         });
         if (rowsAffected  <= 0) {
-            throw new DataRetrievalFailureException("Unable to update ClientConfig.  No ClientConfig with id " + clientConfig.getId() + " found.");
+            String message = "Unable to update ClientConfig.  No ClientConfig with id " + clientConfig.getId() + " found.";
+            logger.error(message);
+            throw new DataRetrievalFailureException(message);
         }
     }
 
@@ -212,5 +233,4 @@ public class JdbcClientConfigDao extends JdbcDaoSupport implements ClientConfigD
             return clientConfig;
         }
     }
-
 }
