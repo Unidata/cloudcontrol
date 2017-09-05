@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/views/jspf/taglibs.jspf" %>
 <%-- Only seen when user is logged in.  Main dashboard/page that displays available tasks.  --%>
 <!DOCTYPE HTML>
