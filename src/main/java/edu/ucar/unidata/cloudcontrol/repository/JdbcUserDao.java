@@ -106,6 +106,8 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             String message = "Unable to delete User. No User found with userId " + new Integer(userId).toString();
             logger.error(message);
             throw new DataRetrievalFailureException(message);
+        } else {
+            logger.info("Deleting user " + new Integer(userId).toString());
         }
     }
 
@@ -127,6 +129,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             Number newUserId = insertActor.executeAndReturnKey(parameters);
             if (Objects.nonNull(newUserId)) {
                 user.setUserId(newUserId.intValue());
+                logger.info("Creating new user " + user.getUserName());
             } else {
                 String message = "Unable to create and persist new User " + user.toString();
                 logger.error(message);
@@ -159,6 +162,8 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             String message ="Unable to update User.  No User with userName " + user.getUserName() + " found.";
             logger.error(message);
             throw new DataRetrievalFailureException(message);
+        } else {
+            logger.info("Updated user " + user.getUserName());
         }
         return user;
     }
@@ -181,6 +186,8 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             String message = "Unable to update User's password.  User not found " + user.toString();
             logger.error(message);
             throw new DataRetrievalFailureException(message);
+        } else {
+            logger.info("Updated password for user: " + user.getUserName());
         }
     }
 

@@ -26,6 +26,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * @param userDao  The service mechanism data access object representing a User. 
      */
     public void setUserDao(UserDao userDao) {
+        logger.debug("Setting user data access object.");
         this.userDao = userDao;
     }
 
@@ -39,6 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        logger.debug("Loading user by user name " + userName);
         User user = null;
         try {
             user = userDao.lookupUser(userName);

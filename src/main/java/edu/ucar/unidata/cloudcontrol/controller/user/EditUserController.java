@@ -9,6 +9,8 @@ import java.util.Collection;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +35,8 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @Controller
 public class EditUserController {
+
+    protected static Logger logger = Logger.getLogger(EditUserController.class);
 
     @Resource(name="userManager")
     private UserManager userManager;
@@ -63,6 +67,7 @@ public class EditUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/dashboard/user/edit/{userName}", method=RequestMethod.GET)
     public String editUser(@PathVariable String userName, Model model) {
+        logger.debug("Get edit user form.");
         User user = userManager.lookupUser(userName);
         model.addAttribute("action", "editUser");
         model.addAttribute("user", user);
@@ -88,11 +93,14 @@ public class EditUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/dashboard/user/edit/{userName}", method=RequestMethod.POST)
     public ModelAndView editUser(@PathVariable String userName, @Valid User user, BindingResult result, Authentication authentication, Model model) {
+        logger.debug("Processing submitted edit user form data.");
         if (result.hasErrors()) {
+            logger.debug("Validation errors detected in edit user form data. Returning user to form view.");
             model.addAttribute("action", "editUser");
             model.addAttribute("user", user);
             return new ModelAndView("dashboard");
         } else {
+            logger.debug("No validation errors detected in edit user form data. Proceeding with edit user process.");
             User u = userManager.lookupUser(user.getUserName());
             String name = user.getFullName();
             u.setFullName(name);

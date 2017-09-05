@@ -8,6 +8,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,8 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @Controller
 public class DeleteUserController {
+
+    protected static Logger logger = Logger.getLogger(DeleteUserController.class);
 
     @Resource(name="userManager")
     private UserManager userManager;
@@ -42,6 +46,7 @@ public class DeleteUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/delete/{userName}", method=RequestMethod.GET)
     public String deleteUser(@PathVariable String userName, Model model) {
+        logger.debug("Get delete user confirmation form.");
         User user = userManager.lookupUser(userName);
         model.addAttribute("user", user);
         model.addAttribute("action", "deleteUser");
@@ -64,6 +69,7 @@ public class DeleteUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/delete", method=RequestMethod.POST)
     public ModelAndView deleteUser(User user, BindingResult result, Model model) {
+        logger.debug("Processing delete user request.");
         userManager.deleteUser(user.getUserId());
         List<User> users = userManager.getUserList();
         model.addAttribute("action", "listUsers");

@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * Service for processing requests associated with ContainerMappings.
  */
 public class ContainerMappingManagerImpl implements ContainerMappingManager {
+
+    protected static Logger logger = Logger.getLogger(ContainerMappingManagerImpl.class);
 
     private ContainerMappingDao containerMappingDao;
 
@@ -23,6 +27,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @param containerMappingDao  The service mechanism data access object representing a ContainerMapping.
      */
     public void setContainerMappingDao(ContainerMappingDao containerMappingDao) {
+        logger.debug("Setting container mapping data access object.");
         this.containerMappingDao = containerMappingDao;
     }
 
@@ -33,6 +38,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @return  The ContainerMapping.
      */
     public ContainerMapping lookupContainerMappingById(int containerMappingId){
+        logger.debug("Using DAO to look up container mapping by id " + new Integer(containerMappingId).toString());
         return containerMappingDao.lookupContainerMappingById(containerMappingId);
     }
 
@@ -53,6 +59,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @return  The ContainerMapping.
      */
     public ContainerMapping lookupContainerMappingbyContainer(_Container _container){
+        logger.debug("Using DAO to look up container mapping by container " + _container.toString());
         return containerMappingDao.lookupContainerMappingbyContainer(_container);
     }
 
@@ -63,6 +70,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @return  The List of ContainerMappings.
      */
     public List<ContainerMapping> lookupContainerMappingsByImage(_Image _image){
+        logger.debug("Using DAO to look up container mappings for image " + _image.toString());
         return containerMappingDao.lookupContainerMappingsByImage(_image);
     }
 
@@ -73,6 +81,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @return  The List of ContainerMappings.
      */
     public  List<ContainerMapping> lookupContainerMappingsByDatePerfomed(Date datePerformed){
+        logger.debug("Using DAO to look up container mappings by date performed " + datePerformed.toString());
         return containerMappingDao.lookupContainerMappingsByDatePerfomed(datePerformed);
     }
 
@@ -82,6 +91,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @return  The List of ContainerMappings.
      */
     public List<ContainerMapping> getAllContainerMappings(){
+        logger.debug("Using DAO to look up all container mappings.");
         return containerMappingDao.getAllContainerMappings();
     }
 
@@ -91,6 +101,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @param containerMappingId  The ID of the ContainerMapping object.
      */
     public void deleteContainerMapping(String containerMappingId){
+        logger.debug("Using DAO to delete container mapping with id " + new Integer(containerMappingId).toString());
         containerMappingDao.deleteContainerMapping(containerMappingId);
     }
 
@@ -100,6 +111,7 @@ public class ContainerMappingManagerImpl implements ContainerMappingManager {
      * @param containerMapping  The ContainerMapping to be created.
      */
     public void createContainerMapping(ContainerMapping containerMapping){
+        logger.debug("Using DAO to create new container mapping " + containerMapping.toString());
         containerMappingDao.createContainerMapping(containerMapping);
     }
 

@@ -4,6 +4,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,8 @@ import org.springframework.ui.Model;
 @Controller
 public class AuthenticationController {
 
+    protected static Logger logger = Logger.getLogger(AuthenticationController.class);
+
     /**
      * Accepts a GET request for the login page.
      * View is the login page.
@@ -30,7 +34,9 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/login/{error}", method = RequestMethod.GET)
     public String getLoginPage(@PathVariable String error, Model model) {
-         if (Objects.nonNull(error)) {
+        logger.debug("Get login view.");
+        if (Objects.nonNull(error)) {
+            logger.debug("Authentication rrors detected. Returning user to login view.");
             model.addAttribute("error", error);
         }
         return "login";
@@ -45,6 +51,7 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginPage(Model model) {
+        logger.debug("Get login view.");
         return "login";
     }
 
@@ -57,6 +64,7 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String getLogoutPage(Model model) {
+        logger.debug("Perform logout.");
         return "logout";
     }
 
@@ -69,6 +77,7 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/denied", method = RequestMethod.GET)
     public String getDeniedPage() {
+        logger.debug("Access denied.");
         return "denied";
     }
 

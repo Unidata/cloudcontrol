@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class ContainerController {
+
+    protected static Logger logger = Logger.getLogger(ContainerController.class);
 
     @Resource(name="containerManager")
     private ContainerManager containerManager;
@@ -35,6 +39,7 @@ public class ContainerController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/container/list", method=RequestMethod.GET)
     public String getContainerList(Model model) {
+        logger.debug("Get list all docker containers view.");
         List<_Container> _containers = containerManager.getContainerList();
         if (!Objects.isNull(_containers)) {
             model.addAttribute("containerList", _containers);

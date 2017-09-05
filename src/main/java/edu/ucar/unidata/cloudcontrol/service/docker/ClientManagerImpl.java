@@ -33,6 +33,7 @@ public class ClientManagerImpl implements ClientManager {
      * @param clientConfigDao  The service mechanism data access object representing a ClientConfig.
      */
     public void setClientConfigDao(ClientConfigDao clientConfigDao) {
+        logger.debug("Setting client configuration data access object.");
         this.clientConfigDao = clientConfigDao;
     }
 
@@ -42,6 +43,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  A DockerClient object.
      */
     public DockerClient initializeDockerClient() {
+        logger.debug("Initializing docker client.");
         List<ClientConfig> clientConfigs = getAllClientConfigs();
         if (clientConfigs.size() > 0) {
             ClientConfig clientConfig = clientConfigs.get(0);
@@ -65,6 +67,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The ClientConfig.
      */
     public ClientConfig lookupById(int id) {
+        logger.debug("Using DAO to look up client configuration by id " + new Integer(id).toString());
         return clientConfigDao.lookupById(id);
     }
 
@@ -75,6 +78,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerHost(String dockerHost) {
+        logger.debug("Using DAO to look up client configurations by docker host " + dockerHost);
         return clientConfigDao.lookupByDockerHost(dockerHost);
     }
 
@@ -85,6 +89,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerCertPath(String dockerCertPath) {
+        logger.debug("Using DAO to look up client configurations by docker certificate path " + dockerCertPath);
         return clientConfigDao.lookupByDockerCertPath(dockerCertPath);
     }
 
@@ -95,6 +100,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByDockerTlsVerify(int dockerTlsVerify) {
+        logger.debug("Using DAO to look up client configurations by docker TLS verify " + dockerTlsVerify);
         return clientConfigDao.lookupByDockerTlsVerify(dockerTlsVerify);
     }
 
@@ -105,6 +111,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByCreatedBy(String createdBy) {
+        logger.debug("Using DAO to look up client configurations created by user " + createdBy);
         return clientConfigDao.lookupByCreatedBy(createdBy);
     }
 
@@ -115,6 +122,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> lookupByLastUpdatedBy(String lastUpdatedBy) {
+        logger.debug("Using DAO to look up client configurations last updated by user " + lastUpdatedBy);
         return clientConfigDao.lookupByLastUpdatedBy(lastUpdatedBy);
     }
 
@@ -124,6 +132,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The List of ClientConfigs.
      */
     public List<ClientConfig> getAllClientConfigs() {
+        logger.debug("Using DAO to look up all client configurations.");
         return clientConfigDao.getAllClientConfigs();
     }
 
@@ -133,6 +142,7 @@ public class ClientManagerImpl implements ClientManager {
      * @param id  The id of the ClientConfig to delete.
      */
     public void deleteClientConfig(int id) {
+        logger.debug("Using DAO to delete client configuration with id " + new Integer(id).toString());
         clientConfigDao.deleteClientConfig(id);
     }
 
@@ -143,6 +153,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The id of the newly created ClientConfig object.
      */
     public int createClientConfig(ClientConfig clientConfig) {
+        logger.debug("Using DAO to create new client configuration with docker host " + clientConfig.getDockerHost() + " and docker certificate path " + clientConfig.getDockerCertPath());
         Date now = new Date(System.currentTimeMillis());
         clientConfig.setDateCreated(now);
         clientConfig.setDateModified(now);
@@ -155,6 +166,7 @@ public class ClientManagerImpl implements ClientManager {
      * @param clientConfig  The existing ClientConfig with changes that needs to be saved.
      */
     public void updateClientConfig(ClientConfig clientConfig) {
+        logger.debug("Using DAO to update client configuration with docker host " + clientConfig.getDockerHost() + " and docker certificate path " + clientConfig.getDockerCertPath());
         Date now = new Date(System.currentTimeMillis());
         clientConfig.setDateModified(now);
         clientConfigDao.updateClientConfig(clientConfig);
@@ -168,6 +180,7 @@ public class ClientManagerImpl implements ClientManager {
      * @return  The ClientConfig object.
      */
     public ClientConfig getClientConfigFromSystemEnvars() {
+        logger.debug("Get client confirguration information from Docker system environment variables.");
         logger.info("Checking for Docker system environment variables...");
         Map<String, String> envars = System.getenv();
         ClientConfig clientConfig = new ClientConfig();

@@ -7,6 +7,8 @@ import edu.ucar.unidata.cloudcontrol.service.user.validators.CreateUserValidator
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,9 +28,11 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class CreateUserController {
 
+    protected static Logger logger = Logger.getLogger(CreateUserController.class);
+
     @Resource(name="userManager")
     private UserManager userManager;
-    
+
     @Autowired
     private CreateUserValidator createUserValidator;
 
@@ -54,6 +58,7 @@ public class CreateUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/create", method=RequestMethod.GET)
     public String createUser(Model model) {
+        logger.debug("Get create user form.");
         User user = new User();
         model.addAttribute("action", "createUser");
         model.addAttribute("user", user);
@@ -73,6 +78,7 @@ public class CreateUserController {
      */
     @RequestMapping(value="/welcome/register", method=RequestMethod.GET)
     public String register(Model model) {
+        logger.debug("Get new user registeration form.");
         User user = new User();
         model.addAttribute("action", "register");
         model.addAttribute("user", user);
@@ -94,10 +100,13 @@ public class CreateUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user/create", method=RequestMethod.POST)
     public ModelAndView createUser(@Valid User user, BindingResult result, Model model) {
+        logger.debug("Processing submitted create user form data.");
         if (result.hasErrors()) {
+            logger.debug("Validation errors detected in create user form data. Returning user to form view.");
             model.addAttribute("action", "createUser");
             return new ModelAndView("dashboard");
         } else {
+            logger.debug("No validation errors detected in create user form data. Proceeding with new user creation.");
             user = userManager.createUser(user);
             return new ModelAndView(new RedirectView("/dashboard/user/view/" + user.getUserName(), true));
         }
@@ -117,10 +126,13 @@ public class CreateUserController {
      */
     @RequestMapping(value="/welcome/register", method=RequestMethod.POST)
     public ModelAndView register(@Valid User user, BindingResult result, Model model) {
+        logger.debug("Processing submitted new user registration form data.");
         if (result.hasErrors()) {
+            logger.debug("Validation errors detected in new user registration form data. Returning user to new user registration view.");
             model.addAttribute("action", "register");
             return new ModelAndView("welcome");
         } else {
+            logger.debug("No validation errors detected in new user registration form data. Proceeding with new user regsitration.");
             userManager.createUser(user);
             return new ModelAndView(new RedirectView("/login", true));
         }

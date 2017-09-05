@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -71,6 +71,7 @@ public class EditUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateFullName(String input, Errors errors) {
+        logger.debug("Validating user full name.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("fullName", "fullName.required");
             return;
@@ -90,6 +91,7 @@ public class EditUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
      public void validateEmailAddress(String input, String userName, Errors errors) {
+        logger.debug("Validating user email address.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("emailAddress", "emailAddress.required");
             return;
@@ -106,7 +108,8 @@ public class EditUserValidator implements Validator  {
                 errors.rejectValue("emailAddress", "emailAddress.alreadyInUse");
             }
             return;
-        } catch (RecoverableDataAccessException e) {
+        } catch (DataRetrievalFailureException e) {
+            // confirmed email address isn't already in use.
             return;
         }
     }
@@ -118,6 +121,7 @@ public class EditUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateAccessLevel(int input, Errors errors) {
+        logger.debug("Validating user access level.");
         if ((input > 2) || (input < 1)) {
             errors.rejectValue("accessLevel", "accessLevel.options");
             return;
@@ -131,6 +135,7 @@ public class EditUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateAccountStatus(int input, Errors errors) {
+        logger.debug("Validating user account status.");
         if (input > 1) {
             errors.rejectValue("accountStatus", "accountStatus.options");
             return;

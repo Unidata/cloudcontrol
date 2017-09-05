@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
-import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -55,6 +54,7 @@ public class ClientConfigValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateDockerHost(String input, Errors errors) {
+        logger.debug("Validating docker host client configuration.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("dockerHost", "dockerHost.required");
             return;
@@ -73,6 +73,7 @@ public class ClientConfigValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateDockerCertPath(String input, Errors errors) {
+        logger.debug("Validating docker certificate path client configuration.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("dockerCertPath", "dockerCertPath.required");
             return;
@@ -91,6 +92,7 @@ public class ClientConfigValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
      public void validateDockerTlsVerify(int input, Errors errors) {
+        logger.debug("Validating docker TLS verify client configuration.");
         if (input != 1){
             errors.rejectValue("dockerTlsVerify", "dockerTlsVerify.wellFormed");
             return;

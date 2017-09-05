@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.springframework.dao.RecoverableDataAccessException;
+import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -75,6 +75,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateUserName(String input, Errors errors) {
+        logger.debug("Validating user name.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("userName", "userName.required");
             return;
@@ -93,7 +94,8 @@ public class CreateUserValidator implements Validator  {
             User user = userManager.lookupUser(input);
             errors.rejectValue("userName", "userName.alreadyInUse");
             return;
-        } catch (RecoverableDataAccessException e) {
+        } catch (DataRetrievalFailureException e) {
+            // confirmed username isn't already in use.
             return;
         }
     }
@@ -105,6 +107,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateFullName(String input, Errors errors) {
+        logger.debug("Validating user full name.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("fullName", "fullName.required");
             return;
@@ -123,6 +126,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
      public void validateEmailAddress(String input, Errors errors) {
+        logger.debug("Validating user email address.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue("emailAddress", "emailAddress.required");
             return;
@@ -137,7 +141,8 @@ public class CreateUserValidator implements Validator  {
             User user = userManager.lookupUserByEmailAddress(input);
             errors.rejectValue("emailAddress", "emailAddress.alreadyInUse");
             return;
-        } catch (RecoverableDataAccessException e) {
+        } catch (DataRetrievalFailureException e) {
+            // confirmed email address isn't already in use.
             return;
         }
     }
@@ -150,6 +155,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
      public void validatePassword(String formField, String input, Errors errors) {
+        logger.debug("Validating user password.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue(formField, "password.required");
             return;
@@ -169,6 +175,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void comparePasswords(String password, String confirmPassword, Errors errors) {
+        logger.debug("Comparing user password and confirm password entries.");
         if (!StringUtils.equals(password, confirmPassword)) {
             errors.rejectValue("confirmPassword", "password.match");
             return;
@@ -182,6 +189,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateAccessLevel(int input, Errors errors) {
+        logger.debug("Validating user access level.");
         if ((input > 2) || (input < 1)) {
             errors.rejectValue("accessLevel", "accessLevel.options");
             return;
@@ -195,6 +203,7 @@ public class CreateUserValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void validateAccountStatus(int input, Errors errors) {
+        logger.debug("Validating user account status.");
         if (input > 1) {
             errors.rejectValue("accountStatus", "accountStatus.options");
             return;

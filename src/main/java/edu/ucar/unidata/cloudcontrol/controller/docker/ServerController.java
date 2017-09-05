@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 public class ServerController {
+
+    protected static Logger logger = Logger.getLogger(ServerController.class);
 
     @Resource(name="serverManager")
     private ServerManager serverManager;
@@ -35,6 +39,7 @@ public class ServerController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/info", method=RequestMethod.GET)
     public String getInfo(Model model) {
+        logger.debug("Get get docker server information view.");
         _Info _info = serverManager.getInfo();
         if (!Objects.isNull(_info)) {
             model.addAttribute("serverInfo", _info);
@@ -55,6 +60,7 @@ public class ServerController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/server/version", method=RequestMethod.GET)
     public String getVersion(Model model) {
+        logger.debug("Get get docker server version view.");
         _Version _version = serverManager.getVersion();
         if (!Objects.isNull(_version)) {
             model.addAttribute("serverVersion", _version);

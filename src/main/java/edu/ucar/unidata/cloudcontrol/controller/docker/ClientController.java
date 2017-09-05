@@ -10,6 +10,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +36,8 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @Controller
 public class ClientController {
+
+    protected static Logger logger = Logger.getLogger(ClientController.class);
 
     @Resource(name = "clientManager")
     private ClientManager clientManager;
@@ -71,6 +75,7 @@ public class ClientController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value = "/dashboard", method = RequestMethod.GET)
     public String getDashboardPage(Authentication authentication, Model model) {
+        logger.debug("Get dashboard view.");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             List<ClientConfig> clientConfigs = clientManager.getAllClientConfigs();
@@ -105,6 +110,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/dashboard/docker/client/configure", method = RequestMethod.GET)
     public String configure(Model model) {
+        logger.debug("Get docker client configuration form.");
         List<ClientConfig> clientConfigs = clientManager.getAllClientConfigs();
         if (clientConfigs.size() > 0) {
             // the following for now until we implement connections to multiple docker instances
@@ -135,6 +141,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client", method=RequestMethod.GET)
     public String listClientConfigs(Model model) {
+        logger.debug("Get list all client configurations view.");
         List<ClientConfig> clientConfigs = clientManager.getAllClientConfigs();
         model.addAttribute("action", "listClientConfigs");
         // the following for now until we implement connections to multiple docker instances
@@ -159,6 +166,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/view/{id}", method=RequestMethod.GET)
     public String viewClientConfig(@PathVariable int id, Model model) {
+        logger.debug("Get specified client configuration view.");
         ClientConfig clientConfig = clientManager.lookupById(id);
         model.addAttribute("clientConfig", clientConfig);
         model.addAttribute("action", "viewClientConfig");
@@ -182,11 +190,14 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/configure", method=RequestMethod.POST)
     public ModelAndView createClientConfig(@Valid ClientConfig clientConfig, BindingResult result, Model model) {
+        logger.debug("Processing submitted client configuration form data.");
         if (result.hasErrors()) {
-           model.addAttribute("action", "configureClient");
-           model.addAttribute("clientConfig", clientConfig);
-           return new ModelAndView("dashboard");
+            logger.debug("Validation errors detected in client configuration form data. Returning user to form view.");
+            model.addAttribute("action", "configureClient");
+            model.addAttribute("clientConfig", clientConfig);
+            return new ModelAndView("dashboard");
         } else {
+            logger.debug("No validation errors detected in client configuration form data. Proceeding with client configuration.");
             UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             clientConfig.setCreatedBy(authUser.getUsername());
             clientConfig.setLastUpdatedBy(authUser.getUsername());
@@ -210,6 +221,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/edit/{id}", method=RequestMethod.GET)
     public String editClientConfig(@PathVariable int id, Model model) {
+        logger.debug("Get edit client configuration form.");
         ClientConfig clientConfig = clientManager.lookupById(id);
         model.addAttribute("clientConfig", clientConfig);
         model.addAttribute("action", "editClientConfig");
@@ -234,11 +246,14 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/docker/client/edit/{id}", method=RequestMethod.POST)
     public ModelAndView editClientConfig(@PathVariable int id, @Valid ClientConfig clientConfig, BindingResult result, Model model) {
+        logger.debug("Processing submitted edit client configuration form data.");
         if (result.hasErrors()) {
+            logger.debug("Validation errors detected in edit client configuration form data. Returning user to form view.");
             model.addAttribute("action", "editClientConfig");
             model.addAttribute("clientConfig", clientConfig);
             return new ModelAndView("dashboard");
         } else {
+            logger.debug("No validation errors detected in edit client configuration form data. Proceeding with edit client configuration process.");
             UserDetails authUser = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             clientConfig.setLastUpdatedBy(authUser.getUsername());
             ClientConfig dbClientConfig = clientManager.lookupById(id);

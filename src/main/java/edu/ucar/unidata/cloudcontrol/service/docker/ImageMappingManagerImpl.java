@@ -7,12 +7,16 @@ import edu.ucar.unidata.cloudcontrol.repository.docker.ImageMappingDao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.dao.DataRetrievalFailureException;
 
 /**
  * Service for processing requests associated with ImageMappings.
  */
 public class ImageMappingManagerImpl implements ImageMappingManager {
+
+    protected static Logger logger = Logger.getLogger(ImageMappingManagerImpl.class);
 
     private ImageMappingDao imageMappingDao;
 
@@ -23,6 +27,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @param imageMappingDao  The service mechanism data access object representing a ImageMapping.
      */
     public void setImageMappingDao(ImageMappingDao imageMappingDao) {
+        logger.debug("Setting image mapping data access object.");
         this.imageMappingDao = imageMappingDao;
     }
 
@@ -33,6 +38,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  The ImageMapping.
      */
     public ImageMapping lookupImageMapping(String imageId){
+        logger.debug("Using DAO to look up image mapping for image with id " + new Integer(imageId).toString());
         return imageMappingDao.lookupImageMapping(imageId);
     }
 
@@ -42,6 +48,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  The List of ImageMappings.
      */
     public List<ImageMapping> getAllImageMappings(){
+        logger.debug("Using DAO to look up all image mappings.");
         return imageMappingDao.getAllImageMappings();
     }
 
@@ -51,6 +58,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @param imageId  The Image ID.
      */
     public void deleteImageMapping(String imageId) {
+        logger.debug("Using DAO to delete image mapping for image with id " + new Integer(imageId).toString());
         imageMappingDao.deleteImageMapping(imageId);
     }
 
@@ -60,6 +68,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @param imageMapping  The ImageMapping to be created.
      */
     public void createImageMapping(ImageMapping imageMapping){
+        logger.debug("Using DAO to create new image mapping " + imageMapping.toString());
         imageMappingDao.createImageMapping(imageMapping);
     }
 
@@ -70,11 +79,14 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> filterByImageMapping(List<_Image> _images) {
+        logger.debug("Filtering images to see if any are public.");
         List<_Image> imageMappings = new ArrayList<_Image>();
         if (!_images.isEmpty()) {
+            logger.debug("We have " + new Integer(_images.size()).toString() + " images to filter.");
             imageMappings = new ArrayList<_Image>();
             for (_Image _image : _images) {
                 if (_image.getIsVisibleToUsers()) {
+                    logger.debug("Public image found: " + _image.getId());
                     imageMappings.add(_image);
                 }
             }
@@ -89,6 +101,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  Whether the Image is a ImageMapping or not.
      */
     public boolean isVisibleToUser(String imageId){
+        logger.debug("Testing to see if image " + imageId + "is a public image.");
         try {
             lookupImageMapping(imageId);
             return true;

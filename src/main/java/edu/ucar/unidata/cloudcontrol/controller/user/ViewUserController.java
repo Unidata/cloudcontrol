@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class ViewUserController {
+
+    protected static Logger logger = Logger.getLogger(ViewUserController.class);
 
     @Resource(name="userManager")
     private UserManager userManager;
@@ -40,6 +44,7 @@ public class ViewUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value="/dashboard/user", method=RequestMethod.GET)
     public String listUsers(Model model) {
+        logger.debug("Get list all users view.");
         List<User> users = userManager.getUserList();
         model.addAttribute("action", "listUsers");
         model.addAttribute("users", users);
@@ -62,6 +67,7 @@ public class ViewUserController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userName == authentication.name")
     @RequestMapping(value="/dashboard/user/view/{userName}", method=RequestMethod.GET)
     public String viewUser(@PathVariable String userName, Model model) {
+        logger.debug("Get specified user information view.");
         User user = userManager.lookupUser(userName);
         model.addAttribute("user", user);
         model.addAttribute("action", "viewUser");

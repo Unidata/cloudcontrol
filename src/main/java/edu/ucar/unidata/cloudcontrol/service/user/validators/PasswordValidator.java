@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
-import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -63,6 +62,7 @@ public class PasswordValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
      public void validatePassword(String formField, String input, Errors errors) {
+        logger.debug("Validating user password.");
         if (StringUtils.isBlank(input)) {
             errors.rejectValue(formField, "password.required");
             return;
@@ -82,6 +82,7 @@ public class PasswordValidator implements Validator  {
      * @param error  Object in which to store any validation errors.
      */
     public void comparePasswords(String password, String confirmPassword, Errors errors) {
+        logger.debug("Comparing user password and confirm password entries.");
         if (!StringUtils.equals(password, confirmPassword)) {
             errors.rejectValue("confirmPassword", "password.match");
             return;

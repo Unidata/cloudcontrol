@@ -49,6 +49,7 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A List edu.ucar.unidata.cloudcontrol.domain.docker._Image objects.
      */
     public List<_Image> getImageList() {
+        logger.debug("Getting a list of all images from docker server.");
         List<_Image> _images;
         DockerClient dockerClient = clientManager.initializeDockerClient();
         List<Image> images = dockerClient.listImagesCmd().withShowAll(false).exec();
@@ -82,6 +83,7 @@ public class ImageManagerImpl implements ImageManager {
      * @throws NotFoundException  If unable to find image.
      */
     public _Image getImage(String imageId) {
+        logger.debug("Getting docker image with id " + imageId);
         _Image _image = null;
         List<_Image> _images = getImageList();
         if (!_images.isEmpty()) {
@@ -108,6 +110,7 @@ public class ImageManagerImpl implements ImageManager {
      * @throws NotFoundException  If unable to find image to inspect.
      */
     public _InspectImageResponse inspectImage(String imageId) {
+        logger.debug("Inspecting image with id " + imageId);
         _InspectImageResponse _inspectImageResponse;
         try {
             DockerClient dockerClient = clientManager.initializeDockerClient();
@@ -127,12 +130,14 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap() {
+        logger.debug("Getting a map of all images and their statuses.");
          Map<String, String> idStatusMap = new HashMap<String, String>();
         List<_Image> _images = getImageList();
         if (!_images.isEmpty()) {
+            logger.debug("We have " + new Integer(_images.size()).toString() + " images to get status for.");
             for (_Image _image : _images) {
                 if (Objects.nonNull(_image)) {
-                    idStatusMap = new HashMap<String, String>();
+                    logger.debug("Processing status for image " +_image.getId() );
                     idStatusMap.put(_image.getId(), _image.getStatus());
                 }
             }
@@ -147,11 +152,13 @@ public class ImageManagerImpl implements ImageManager {
      * @return  A Map edu.ucar.unidata.cloudcontrol.domain.docker._Image statuses.
      */
     public Map<String, String> getImageStatusMap(List<_Image> _images) {
+        logger.debug("Getting a map of statuses for the provided image list.");
         Map<String, String> idStatusMap = new HashMap<String, String>();
         if (!_images.isEmpty()) {
+            logger.debug("We have " + new Integer(_images.size()).toString() + " images to get status for.");
             for (_Image _image : _images) {
                 if (Objects.nonNull(_image)) {
-                    idStatusMap = new HashMap<String, String>();
+                    logger.debug("Processing status for image " +_image.getId());
                     idStatusMap.put(_image.getId(), _image.getStatus());
                 }
             }
@@ -167,6 +174,7 @@ public class ImageManagerImpl implements ImageManager {
      * @throws NotFoundException  If unable to find and remove image.
      */
     public void removeImage(String imageId, String userName) {
+        logger.debug("Removing image with ID " + imageId + " from docker server.");
         _Image _image = getImage(imageId);
         String repoTags = _image.getRepoTags();
         if (imageMappingManager.isVisibleToUser(imageId)) {

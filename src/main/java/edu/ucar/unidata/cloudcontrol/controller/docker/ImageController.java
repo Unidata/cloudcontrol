@@ -75,6 +75,7 @@ public class ImageController {
     @PreAuthorize("isAuthenticated()")
     @RequestMapping(value="/dashboard/docker/image/list", method=RequestMethod.GET)
     public String getImageList(Authentication authentication, Model model) {
+        logger.debug("Get list all docker images view.");
         List<_Image> _images;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -98,6 +99,7 @@ public class ImageController {
     @RequestMapping(value="/dashboard/docker/image/{imageId}/start", method=RequestMethod.GET)
     @ResponseBody
     public String startImage(@PathVariable String imageId, Authentication authentication) {
+        logger.debug("Processing start docker image command.");
         // check to see if user is allow to access/manipulate this image
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -122,6 +124,7 @@ public class ImageController {
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{containerId}/stop", method=RequestMethod.GET)
     public String stopImage(@PathVariable String containerId, Authentication authentication) {
+        logger.debug("Processing stop docker image command.");
         // check to see if user is allow to access/manipulate this image
         try{
             _Container _container = containerManager.getContainer(containerId);
@@ -166,7 +169,8 @@ public class ImageController {
      */
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/list/status", method=RequestMethod.GET)
-    public Map<String,String> getImageList(Authentication authentication) {
+    public Map<String,String> getImageStatusMap(Authentication authentication) {
+        logger.debug("Get all docker images statuses.");
         List<_Image> _images;
         Map<String,String> statusMap;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -193,6 +197,7 @@ public class ImageController {
      */
     @RequestMapping(value="/dashboard/docker/image/{id}/inspect", method=RequestMethod.GET)
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) {
+        logger.debug("Get inspect docker image view.");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             if (!imageMappingManager.isVisibleToUser(id)) {
@@ -220,6 +225,7 @@ public class ImageController {
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{id}/show", method=RequestMethod.GET)
     public String addImageMapping(@PathVariable String id) {
+        logger.debug("Processing add image to user display request.");
         ImageMapping imageMapping = new ImageMapping();
         imageMapping.setImageId(id);
         imageMappingManager.createImageMapping(imageMapping);
@@ -243,6 +249,7 @@ public class ImageController {
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{id}/hide", method=RequestMethod.GET)
     public String removeImageMapping(@PathVariable String id) {
+        logger.debug("Processing hide image from user display request.");
         imageMappingManager.deleteImageMapping(id);
         if (imageMappingManager.isVisibleToUser(id)) {
             return "Error: Unable to hide image from user view.";
@@ -264,6 +271,7 @@ public class ImageController {
     @ResponseBody
     @RequestMapping(value="/dashboard/docker/image/{id}/remove", method=RequestMethod.GET)
     public String removeImage(@PathVariable String id, Model model) {
+        logger.debug("Processing remove image from docker server request.");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String userName = auth.getName(); //get logged in username
         imageManager.removeImage(id, userName);
