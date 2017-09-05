@@ -1,9 +1,12 @@
 package edu.ucar.unidata.cloudcontrol.service.user.validators;
 
-import org.apache.commons.lang3.StringUtils;
+import edu.ucar.unidata.cloudcontrol.domain.User;
+import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,8 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 /**
  * Validator class for the form-backing object for a User creation/registration.
@@ -209,13 +210,13 @@ public class CreateUserValidator implements Validator  {
      */
     public void validateInput(String formField, String input, Errors errors) {
         String badChar = checkForNaughtyChars(input);
-        if (badChar != null) {
+        if (Objects.nonNull(badChar)) {
             logger.warn("Bad value submitted for " + formField + " : " + badChar);
             errors.rejectValue(formField, "user.error", "This character is not allowed: " + badChar);
             return;
         }
         String badString = checkForNaughtyStrings(input);
-        if (badString != null) {
+        if (Objects.nonNull(badString)) {
             logger.warn("Bad value submitted for " + formField + " : " + badString);
             errors.rejectValue(formField, "user.error", "This string is not allowed: " + badString);
             return;

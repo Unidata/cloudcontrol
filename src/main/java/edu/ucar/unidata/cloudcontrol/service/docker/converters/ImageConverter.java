@@ -1,29 +1,27 @@
 package edu.ucar.unidata.cloudcontrol.service.docker.converters;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
+import edu.ucar.unidata.cloudcontrol.domain.docker._GraphData;
+import edu.ucar.unidata.cloudcontrol.domain.docker._GraphDriver;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import javax.annotation.Resource;
-
-import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.GraphData;
 import com.github.dockerjava.api.command.GraphDriver;
 import com.github.dockerjava.api.model.Image;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
-import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
-import edu.ucar.unidata.cloudcontrol.domain.docker._GraphData;
-import edu.ucar.unidata.cloudcontrol.domain.docker._GraphDriver;
-
 /**
  * Service for converting com.github.dockerjava.* Image-related objects to a corresponding edu.ucar.unidata.* objects.
  */
 public class ImageConverter {
-    protected static Logger logger = Logger.getLogger(ImageConverter.class);
 
     /**
      * Utility method to process a List of com.github.dockerjava.api.model.Image objects
@@ -36,17 +34,16 @@ public class ImageConverter {
         List<_Image> _images = new ArrayList<_Image>(images.size());
         for (Image image : images) {
             _Image _image = convertImage(image);
-            if (_image != null) {
+            if (Objects.nonNull(_image)) {
                 _images.add(_image);
             }
         }
         if (_images.isEmpty()) {
             _images = null;
         }
-		
         return _images;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.Image object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Image object.
@@ -69,8 +66,8 @@ public class ImageConverter {
         };
         _Image _image = mapImageTo_Image.apply(image);
         return _image;
-    }   
-    
+    }
+
 
     /**
      * Converts a com.github.dockerjava.api.command.InspectImageResponse object to
@@ -105,7 +102,7 @@ public class ImageConverter {
         _InspectImageResponse _inspectImageResponse = mapInspectImageResponseTo_InspectImageResponse.apply(inspectImageResponse);
         return _inspectImageResponse;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.command.GraphDriver object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._GraphDriver object.
@@ -125,7 +122,7 @@ public class ImageConverter {
         _GraphDriver _graphDriver = mapGraphDriverTo_GraphDriver.apply(graphDriver);
         return _graphDriver;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.command.GraphData object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._GraphData object.

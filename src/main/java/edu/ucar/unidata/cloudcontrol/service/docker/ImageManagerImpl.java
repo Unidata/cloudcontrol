@@ -54,7 +54,7 @@ public class ImageManagerImpl implements ImageManager {
         List<Image> images = dockerClient.listImagesCmd().withShowAll(false).exec();
         ImageConverter imageConverter = new ImageConverter();
         List<_Image> _convertedImages = imageConverter.processImageList(images);
-        if (_convertedImages != null) {
+        if (Objects.nonNull(_convertedImages)) {
             Map<String, String> _containerStatusMap = containerManager.getContainerStatusMap();
             _images = new ArrayList<_Image>(_convertedImages.size());
             for (_Image i : _convertedImages) {

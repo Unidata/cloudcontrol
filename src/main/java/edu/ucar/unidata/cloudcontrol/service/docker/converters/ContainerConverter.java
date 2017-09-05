@@ -1,12 +1,18 @@
 package edu.ucar.unidata.cloudcontrol.service.docker.converters;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
+import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerHostConfig;
+import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork;
+import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetworkSettings;
+import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort;
+import edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse;
+import edu.ucar.unidata.cloudcontrol.domain.docker._Volume;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import org.apache.log4j.Logger;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
@@ -19,21 +25,10 @@ import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.Volume;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerHostConfig;
-import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork;
-import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetworkSettings;
-import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort;
-import edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Volume;
-
 /**
  * Service for converting com.github.dockerjava.* Container-related objects to a corresponding edu.ucar.unidata.* objects.
  */
 public class ContainerConverter {
-    
-    protected static Logger logger = Logger.getLogger(ContainerConverter.class);
-        
     /**
      * Utility method to process a List of com.github.dockerjava.api.model.Container objects
      * to a corresponding List of edu.ucar.unidata.cloudcontrol.domain.docker._Container objects.
@@ -49,7 +44,7 @@ public class ContainerConverter {
         }
         return _containers;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.Container object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Container object.
@@ -80,7 +75,7 @@ public class ContainerConverter {
         _Container _container = mapContainerTo_Container.apply(container);
         return _container;
     }
-    
+
     /**
      * Utility method to process an array of com.github.dockerjava.api.model.ContainerPort objects
      * to a corresponding array of edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort objects.
@@ -95,7 +90,7 @@ public class ContainerConverter {
         }
         return _containerPorts;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.ContainerPort object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._ContainerPort object.
@@ -117,7 +112,7 @@ public class ContainerConverter {
         _ContainerPort _containerPort = mapContainerPortTo_ContainerPort.apply(containerPort);
         return _containerPort;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.ContainerHostConfig object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._ContainerHostConfig object.
@@ -136,7 +131,7 @@ public class ContainerConverter {
         _ContainerHostConfig _containerHostConfig = mapContainerHostConfigTo_ContainerHostConfig.apply(containerHostConfig);
         return _containerHostConfig;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.ContainerNetworkSettings object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetworkSettings object.
@@ -155,7 +150,7 @@ public class ContainerConverter {
         _ContainerNetworkSettings _containerNetworkSettings = mapContainerNetworkSettingsTo_ContainerNetworkSettings.apply(containerNetworkSettings);
         return _containerNetworkSettings;
     }
-    
+
     /**
      * Utility method to process a Map of com.github.dockerjava.api.model.ContainerNetwork objects
      * to a corresponding Map of edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork objects.
@@ -170,7 +165,7 @@ public class ContainerConverter {
         }
         return _containerNetworkMap;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.ContainerNetwork object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._ContainerNetwork object.
@@ -198,7 +193,7 @@ public class ContainerConverter {
         _ContainerNetwork _network = mapContainerNetworkTo_ContainerNetwork.apply(network);
         return _network;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.command.InspectContainerResponse object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse object.
@@ -239,7 +234,7 @@ public class ContainerConverter {
         _InspectContainerResponse _inspectContainerResponse = mapInspectContainerResponseTo_InspectContainerResponse.apply(inspectContainerResponse);
         return _inspectContainerResponse;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.command.InspectContainerResponse.ContainerState object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._ContainerState object.
@@ -286,7 +281,7 @@ public class ContainerConverter {
         }
         return _mounts;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.command.InspectContainerResponse.Mount object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._InspectContainerResponse._Mount object.
@@ -309,7 +304,7 @@ public class ContainerConverter {
         _InspectContainerResponse._Mount _mount = mapMountTo_Mount.apply(mount);
         return _mount;
     }
-    
+
     /**
      * Converts a com.github.dockerjava.api.model.Volume object to
      * a edu.ucar.unidata.cloudcontrol.domain.docker._Volume object.
