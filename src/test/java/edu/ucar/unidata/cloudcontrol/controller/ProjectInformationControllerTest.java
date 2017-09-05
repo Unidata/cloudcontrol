@@ -19,20 +19,20 @@ import static org.hamcrest.Matchers.equalTo;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
- * Tests for edu.ucar.unidata.cloudcontrol.controller.MiscController
+ * Tests for edu.ucar.unidata.cloudcontrol.controller.ProjectInformationController
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 //@ContextConfiguration("/applicationContext.xml")
 @ContextConfiguration(classes = {WebAppContext.class, SecurityConfig.class})
-public class MiscControllerTest {
+public class ProjectInformationControllerTest {
 
     private MockMvc mockMvc;
 
@@ -60,8 +60,8 @@ public class MiscControllerTest {
     public void gettingStarted_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
             .andExpect(status().isOk())
-            .andExpect(view().name("misc"))
-            .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
+            .andExpect(view().name("projectInformation"))
+            .andExpect(forwardedUrl("/WEB-INF/views/projectInformation.jsp"));
           //.andDo(print());
     }
 
@@ -76,8 +76,8 @@ public class MiscControllerTest {
     public void about_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
     mockMvc.perform(get("/about"))
             .andExpect(status().isOk())
-            .andExpect(view().name("misc"))
-            .andExpect(forwardedUrl("/WEB-INF/views/misc.jsp"));
+            .andExpect(view().name("projectInformation"))
+            .andExpect(forwardedUrl("/WEB-INF/views/projectInformation.jsp"));
           //.andDo(print());
     }
 
