@@ -1,15 +1,13 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
+import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
+
 import java.util.List;
 import java.util.Map;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
-
-import edu.ucar.unidata.cloudcontrol.domain.docker.ContainerMapping;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
-
 
 /**
  * Service for processing Docker container-related api requests.

@@ -1,11 +1,7 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
-import java.util.List;
-import java.util.Map;
-
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Version;
-
 
 /**
  * Service for processing docker server and system-related api requests.

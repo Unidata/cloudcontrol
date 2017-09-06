@@ -7,11 +7,8 @@ import edu.ucar.unidata.cloudcontrol.domain.docker._GraphDriver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-
-import javax.annotation.Resource;
 
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.GraphData;

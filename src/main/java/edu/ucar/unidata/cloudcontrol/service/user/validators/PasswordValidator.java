@@ -3,7 +3,6 @@ package edu.ucar.unidata.cloudcontrol.service.user.validators;
 import edu.ucar.unidata.cloudcontrol.domain.User;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 

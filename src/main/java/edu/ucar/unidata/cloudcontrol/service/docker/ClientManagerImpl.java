@@ -3,9 +3,7 @@ package edu.ucar.unidata.cloudcontrol.service.docker;
 import edu.ucar.unidata.cloudcontrol.domain.docker.ClientConfig;
 import edu.ucar.unidata.cloudcontrol.repository.docker.ClientConfigDao;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

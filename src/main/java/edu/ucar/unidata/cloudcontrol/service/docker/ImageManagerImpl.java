@@ -1,12 +1,9 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
-import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InspectImageResponse;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.converters.ImageConverter;
 
