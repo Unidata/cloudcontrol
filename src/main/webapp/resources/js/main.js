@@ -1,45 +1,44 @@
 $(document).ready(function() {
-
     /* tool tips */
-    $('.tooltip').tooltipster({
+    $(".tooltip").tooltipster({
         delay: 0,
-        theme: 'tooltipster-light',
-        trigger: 'hover',
-        position: 'top-left',
-        contentAsHTML: 'true'
+        theme: "tooltipster-light",
+        trigger: "hover",
+        position: "top-left",
+        contentAsHTML: "true"
     });
-       
+
     /* horizontal nav drop down menu */
-    $('ul.nav').dropit({ action: 'click', triggerEl: 'b' });
+    $("ul.nav").dropit({ action: "click", triggerEl: "b" });
 
     /* left nav menu */
-    $('.accordion h3').click(function() {
-       $(this).toggleClass('expand');
+    $(".accordion h3").click(function() {
+       $(this).toggleClass("expand");
        $(this).next().toggle();
        return false;
-    }).next().hide();       
+    }).next().hide();
 
-    var $selected = $('.accordion a[href=\'' + window.location.pathname + '\']');
-    $selected.removeAttr('href');
-    $selected.parent('li').toggleClass('selected').parent('ul').toggle();
-    $selected.parents('ul').prev().toggleClass('expand');
+    var $selected = $(".accordion a[href=\"" + window.location.pathname + "\"]");
+    $selected.removeAttr("href");
+    $selected.parent("li").toggleClass("selected").parent("ul").toggle();
+    $selected.parents("ul").prev().toggleClass("expand");
 
     /* toggle */
     toggleTheThings();
-    
+
     /* zebra stripes */
     $("table tbody tr:nth-child(odd)").addClass("odd");
     $("table.list").tablesorter();
-    $("table.list").bind("sortEnd",function() { 
+    $("table.list").bind("sortEnd",function() {
         $("table tbody tr").removeClass("odd");
         $("table tbody tr:nth-child(odd)").addClass("odd");
-    }); 
-    
+    });
+
     /* AJAX requests */
     $("button").on( "click", function() {
         imageAction($(this));
     });
-  
+
     $(document).ajaxSend(function( event, jqxhr, settings ){
         if (!settings.url.includes("status")) {
             $("#wait").css("display", "block");
@@ -48,7 +47,7 @@ $(document).ready(function() {
     $(document).ajaxComplete(function( event, jqxhr, settings ){
         $("#wait").css("display", "none");
     });
-    
+
     /* image status refresh */
 //    setInterval(function () {
 //        refreshData();
@@ -58,23 +57,23 @@ $(document).ready(function() {
 
 function toggleTheThings () {
     $(".hideandshow").hide();
-    function runEffect(item){ 
-        var corresponding = $(item).attr('id') + "Section";            
+    function runEffect(item){
+        var corresponding = $(item).attr("id") + "Section";
         $("#"+ corresponding).toggle();
         $(item).toggleClass("expand");
         var contents = $(item).html();
-        if (contents.match('show')) {
-            $(item).html(contents.replace('show','hide'));
+        if (contents.match("show")) {
+            $(item).html(contents.replace("show","hide"));
         } else {
-            $(item).html(contents.replace('hide','show'));
+            $(item).html(contents.replace("hide","show"));
         }
-    };    
+    };
 
-    $(".toggle").click(function () {  
+    $(".toggle").click(function () {
         runEffect($(this));
         return false;
-    });   
-} 
+    });
+}
 
 
 
@@ -86,11 +85,11 @@ function imageAction(button) {
             modal: true,
             open: function () {
                 $(this).html("WARNING: This action will remove the image from the Docker server. <br/><br/>Press <b>Remove Image</b> if you wish to continue.");
-            },  
+            },
             width: 300,
             height: 200,
             title: "Remove Image " + reposTags,
-            buttons: { 
+            buttons: {
                 "Remove Image": function() {
                     imageAjaxRequest(button, reposTags, action);
                     $(this).dialog( "close" );
@@ -111,17 +110,17 @@ function imageAjaxRequest(button, reposTags, action) {
         url: url
     })
     .done(function(data){
-		console.log(data);
+        console.log(data);
         if (action === "inspect") {
             $("#dialog").dialog({
                 modal: true,
                 open: function () {
                     $(this).load(url);
-                },   
+                },
                 width: 600,
                 height: 500,
                 title: "Inspection Details for Image " + reposTags,
-                buttons: { 
+                buttons: {
                     Close: function() {
                         $(this).dialog("close");
                     }
@@ -133,11 +132,11 @@ function imageAjaxRequest(button, reposTags, action) {
                     $(button).html("Stop Image");
                     $(button).attr("class", "stop");
                     $(button).attr("id", data);
-			//		if (reposTags.includes("cloudidv")) {
-			//			var url = "http://192.168.99.100:6080";
-			//			launch(url);
-			//		}
-                } 
+            //        if (reposTags.includes("cloudidv")) {
+            //            var url = "http://192.168.99.100:6080";
+            //            launch(url);
+            //        }
+                }
                 if (action === "stop"){
                     $(button).html("Start Image");
                     $(button).attr("class", "start");
@@ -146,15 +145,15 @@ function imageAjaxRequest(button, reposTags, action) {
                 if (action === "show"){
                     $(button).html("Hide from Users");
                     $(button).attr("class", "hide");
-                    
+
                 }
                 if (action === "hide"){
                     $(button).html("Show to Users");
                     $(button).attr("class", "show");
-                    
+
                 }
                 if (action !== "remove"){
-                    $(button).prev().children('span').html(data);
+                    $(button).prev().children("span").html(data);
                     var selector;
                     if (action === "start" || action === "stop") {
                         selector = "tr#" + $(button).attr("id").replace(":", "") + "Toggle td:nth-child(3)"
@@ -163,27 +162,27 @@ function imageAjaxRequest(button, reposTags, action) {
                         selector = "tr#" + $(button).attr("id").replace(":", "") + "Toggle td:nth-child(4)"
                     }
                     $(selector).html(data);
-                }     
-				
-				if (action === "remove") {
-		            location.reload();
-				} 
-            } else { // generic error message 
+                }
+
+                if (action === "remove") {
+                    location.reload();
+                }
+            } else { // generic error message
                 $("#dialog").dialog({
                     modal: true,
                     open: function () {
                         $(this).text(data);
-                    },   
+                    },
                     width: 300,
                     height: 200,
                     title: "Error",
-                    buttons: { 
+                    buttons: {
                         Close: function() {
                             $(this).dialog("close");
                         }
                     }
                 });
-            }            
+            }
         }
     })
     .fail(function(data){
@@ -191,11 +190,11 @@ function imageAjaxRequest(button, reposTags, action) {
             modal: true,
             open: function () {
                 $(this).text("Unable to " + action + " image.  Please contact the site administrator.");
-            },   
+            },
             width: 300,
             height: 200,
             title: "Error",
-            buttons: { 
+            buttons: {
                 Close: function() {
                     $(this).dialog("close");
                 }
@@ -217,16 +216,16 @@ function refreshData() {
             $(statusColumn).html(status);
             var imageconfigurationRow = $("#" + id.replace(":", "") + "ToggleSection td div p:contains('Status') span");
             imageconfigurationRow.html(status);
-        }        
+        }
     });
 
 }
 
 function launch(url) {
-	setTimeout(function(){
-	    window.open(url);
-	}, 5000);
-	return false;
+    setTimeout(function(){
+        window.open(url);
+    }, 5000);
+    return false;
 }
 
 if (!String.prototype.splice) {
