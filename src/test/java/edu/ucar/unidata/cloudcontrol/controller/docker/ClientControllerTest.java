@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.theInstance;
 
 import static org.junit.Assert.assertThat;
 
-import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
@@ -84,9 +83,9 @@ public class ClientControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(clientManagerMock);
-        Mockito.reset(clientConfigValidatorMock);
-        Mockito.when(clientConfigValidatorMock.supports(any(Class.class))).thenReturn(true);
+        reset(clientManagerMock);
+        reset(clientConfigValidatorMock);
+        when(clientConfigValidatorMock.supports(any(Class.class))).thenReturn(true);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)

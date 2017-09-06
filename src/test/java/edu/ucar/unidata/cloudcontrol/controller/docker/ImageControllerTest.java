@@ -8,7 +8,6 @@ import edu.ucar.unidata.cloudcontrol.config.WebAppContext;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
-import edu.ucar.unidata.cloudcontrol.domain.docker._ContainerBuilder;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ImageBuilder;
 import edu.ucar.unidata.cloudcontrol.domain.docker._InfoBuilder;
 import edu.ucar.unidata.cloudcontrol.service.docker.ClientManager;
@@ -46,7 +45,6 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.theInstance;
 
 import static org.junit.Assert.assertThat;
@@ -102,12 +100,12 @@ public class ImageControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(clientManagerMock);
-        Mockito.reset(containerManagerMock);
-        Mockito.reset(containerMappingManagerMock);
-        Mockito.reset(imageManagerMock);
-        Mockito.reset(imageMappingManagerMock);
-        Mockito.reset(serverManagerMock);
+        reset(clientManagerMock);
+        reset(containerManagerMock);
+        reset(containerMappingManagerMock);
+        reset(imageManagerMock);
+        reset(imageMappingManagerMock);
+        reset(serverManagerMock);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)

@@ -3,14 +3,13 @@ package edu.ucar.unidata.cloudcontrol.service.user.validators;
 import edu.ucar.unidata.cloudcontrol.domain.User;
 import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
-
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

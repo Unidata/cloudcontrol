@@ -61,7 +61,7 @@ public class ServerControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(serverManagerMock);
+        reset(serverManagerMock);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
