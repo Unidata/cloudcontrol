@@ -12,7 +12,6 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  * Controller to issue rudimentary image-related Docker commands.
@@ -265,7 +263,7 @@ public class ImageController {
      *
      * @param id  The Image ID.
      * @param model  The Model used by the View.
-     * @return  Redirected view path for the ViewResolver.
+     * @return  Notification of successful image removal.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseBody

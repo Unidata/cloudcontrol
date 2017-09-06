@@ -1,6 +1,5 @@
 package edu.ucar.unidata.cloudcontrol.service.docker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucar.unidata.cloudcontrol.domain.docker.ImageMapping;
