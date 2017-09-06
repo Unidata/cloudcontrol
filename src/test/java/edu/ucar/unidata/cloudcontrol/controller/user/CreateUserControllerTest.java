@@ -240,17 +240,6 @@ public class CreateUserControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void createUser_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
-        User testUserOne = new UserBuilder()
-            .userId(1)
-            .userName("testUserOne")
-            .fullName("Test User One")
-            .emailAddress("testUserOne@foo.bar")
-            .password("password")
-            .confirmPassword("password")
-            .accessLevel(1)
-            .accountStatus(1)
-            .build();
-
         when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/dashboard/user/create").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -345,18 +334,6 @@ public class CreateUserControllerTest {
 
     @Test
     public void register_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
-
-        User testUserOne = new UserBuilder()
-            .userId(1)
-            .userName("testUserOne")
-            .fullName("Test User One")
-            .emailAddress("testUserOne@foo.bar")
-            .password("password")
-            .confirmPassword("password")
-            .accessLevel(1)
-            .accountStatus(1)
-            .build();
-
         when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/welcome/register").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
