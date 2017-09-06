@@ -65,9 +65,6 @@
   </servlet-mapping>
 
  <error-page>
-   <location>/error</location>
- </error-page>
- <error-page>
    <exception-type>javax.lang.RuntimeException</exception-type>
    <location>/error</location>
  </error-page>
