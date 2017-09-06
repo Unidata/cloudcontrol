@@ -2,6 +2,7 @@
 
 [![Travis Build Status](https://travis-ci.org/Unidata/cloudcontrol.svg?branch=master)](https://travis-ci.org/Unidata/cloudcontrol)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/8628/badge.svg)](https://scan.coverity.com/projects/cloudcontrol)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8ce8272727f4215a860a45d7c91d317)](https://www.codacy.com/app/oxelson/cloudcontrol?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Unidata/cloudcontrol&amp;utm_campaign=Badge_Grade)
        
 ### About CloudControl   
 
