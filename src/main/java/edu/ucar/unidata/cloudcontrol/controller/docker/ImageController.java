@@ -10,7 +10,6 @@ import edu.ucar.unidata.cloudcontrol.service.docker.ContainerManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ContainerMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageMappingManager;
 import edu.ucar.unidata.cloudcontrol.service.docker.ImageManager;
-import edu.ucar.unidata.cloudcontrol.service.docker.ServerManager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,9 +45,6 @@ public class ImageController {
 
     @Resource(name="imageManager")
     private ImageManager imageManager;
-
-    @Resource(name="serverManager")
-    private ServerManager serverManager;
 
     @Resource(name="containerManager")
     private ContainerManager containerManager;

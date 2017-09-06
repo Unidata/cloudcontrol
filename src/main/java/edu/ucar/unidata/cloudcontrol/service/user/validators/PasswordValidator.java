@@ -1,7 +1,6 @@
 package edu.ucar.unidata.cloudcontrol.service.user.validators;
 
 import edu.ucar.unidata.cloudcontrol.domain.User;
-import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -25,10 +24,6 @@ public class PasswordValidator implements Validator  {
 
     private String[] NAUGHTY_STRINGS = {"<script>", "../", "svg", "javascript", "::", "&quot;", "fromcharCode", "%3", "$#", "alert(", ".js", ".source", "\\", "scriptlet", ".css", "binding:", ".htc", "vbscript", "mocha:", "livescript:", "base64", "\00", "xss:", "%77", "0x", "IS NULL;", "1;", "; --", "1=1"};
     private String[] NAUGHTY_CHARS = {"<", ">", "`", "^", "|", "}", "{"};
-
-    @Resource(name="userManager")
-    private UserManager userManager;
-
 
     /**
      * Checks to see if Object class can be validated.

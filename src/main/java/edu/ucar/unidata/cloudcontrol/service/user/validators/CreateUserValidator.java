@@ -91,7 +91,7 @@ public class CreateUserValidator implements Validator  {
             return;
         }
         try {
-            User user = userManager.lookupUser(input);
+            userManager.lookupUser(input);
             errors.rejectValue("userName", "userName.alreadyInUse");
             return;
         } catch (DataRetrievalFailureException e) {

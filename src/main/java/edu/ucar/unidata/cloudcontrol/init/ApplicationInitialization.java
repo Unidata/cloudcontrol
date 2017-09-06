@@ -140,7 +140,6 @@ public class ApplicationInitialization implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        Connection connection = null;
         logger.info("Application context destruction..."); 
         if (databaseSelected.equals("derby")) { 
             Enumeration<Driver> drivers = DriverManager.getDrivers();
