@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/views/jspf/taglibs.jspf" %>
 <%-- This view is to show the results of an "Inspect Image" command.  (admin and authenticated users). --%>
      <script>
