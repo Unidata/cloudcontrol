@@ -5,7 +5,6 @@ import com.github.dockerjava.api.exception.NotModifiedException;
 
 import edu.ucar.unidata.cloudcontrol.config.SecurityConfig;
 import edu.ucar.unidata.cloudcontrol.config.WebAppContext;
-import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Info;
 import edu.ucar.unidata.cloudcontrol.domain.docker._ImageBuilder;
@@ -25,15 +24,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.mockito.Mockito;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.ContentResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -41,7 +37,6 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
@@ -49,7 +44,6 @@ import static org.hamcrest.Matchers.theInstance;
 
 import static org.junit.Assert.assertThat;
 
-import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -59,7 +53,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -114,7 +108,7 @@ public class ImageControllerTest {
     }
 
     @Test
-    public void getImageList_UnauthenticatedAccessToImageListShouldBeRedirectedToLogin() throws Exception {
+    public void getImageListUnauthenticatedAccessToImageListShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/list"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -123,7 +117,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getImageList_AccessToImageListWithAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getImageListAccessToImageListWithAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/list").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -133,7 +127,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getImageList_AccessToImageListWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getImageListAccessToImageListWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/list").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -143,8 +137,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getImageList_ModelShouldContainListOfUnfilteredImagesAndListImagesActionForUserWithAdminRole() throws Exception {
-
+    public void getImageListModelShouldContainListOfUnfilteredImagesAndListImagesActionForUserWithAdminRole() throws Exception {
         _Image testImageOne = new _ImageBuilder()
             .id("77af4d6b9913")
             .isVisibleToUsers(true)
@@ -174,8 +167,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getImageList_ModelShouldContainListOfFilteredImagesAndListImagesActionForUserWithUserRole() throws Exception {
-
+    public void getImageListModelShouldContainListOfFilteredImagesAndListImagesActionForUserWithUserRole() throws Exception {
         _Image testImageOne = new _ImageBuilder()
             .id("77af4d6b9913")
             .isVisibleToUsers(true)
@@ -207,8 +199,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getImageList_ModelShouldContainAnEmptyListOfImagesAndListImagesAction() throws Exception {
-
+    public void getImageListModelShouldContainAnEmptyListOfImagesAndListImagesAction() throws Exception {
         _Info testInfo = new _InfoBuilder()
             .architecture("x86_64")
             .images(0)
@@ -229,7 +220,7 @@ public class ImageControllerTest {
     }
 
     @Test
-    public void startImage_UnauthenticatedAjaxGetRequestToStartImageShouldBeRedirectedToLogin() throws Exception {
+    public void startImageUnauthenticatedAjaxGetRequestToStartImageShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -238,7 +229,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_AjaxGetRequestToStartImageWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void startImageAjaxGetRequestToStartImageWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
             .andExpect(status().isOk());
           //.andDo(print());
@@ -246,7 +237,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void startImage_AjaxGetRequestToStartPublicImageWithAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void startImageAjaxGetRequestToStartPublicImageWithAuthenticatedUserShouldBeAllowed() throws Exception {
 
         when(imageMappingManagerMock.isVisibleToUser("77af4d6b9913")).thenReturn(true);
         mockMvc.perform(get("/dashboard/docker/image/77af4d6b9913/start").with(csrf()))
@@ -256,7 +247,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void startImage_AjaxGetRequestToStartNonPublicImageWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void startImageAjaxGetRequestToStartNonPublicImageWithAuthenticatedUserShouldBeDenied() throws Exception {
 
         when(imageMappingManagerMock.isVisibleToUser("b6fa739cedf5")).thenReturn(false);
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
@@ -267,7 +258,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_ImageStartedSuccessfullyShouldReturnContainerId() throws Exception {
+    public void startImageImageStartedSuccessfullyShouldReturnContainerId() throws Exception {
 
         when(containerManagerMock.startContainer("b6fa739cedf5", "admin")).thenReturn("8dfafdbc3a40");
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
@@ -281,7 +272,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_ImageContainerAlreadyRunningShouldThrowNotModifiedException() throws Exception {
+    public void startImageImageContainerAlreadyRunningShouldThrowNotModifiedException() throws Exception {
         when(containerManagerMock.startContainer("b6fa739cedf5", "admin")).thenThrow(new NotModifiedException("Container 8dfafdbc3a40 is already running."));
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
             .andExpect(model().attribute("exception", isA(NotModifiedException.class)))
@@ -296,7 +287,7 @@ public class ImageControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void startImage_StartedImageContainerNotFoundShouldThrowNotFoundException() throws Exception {
+    public void startImageStartedImageContainerNotFoundShouldThrowNotFoundException() throws Exception {
         when(containerManagerMock.startContainer("b6fa739cedf5", "admin")).thenThrow(new NotFoundException("Unable to find and start container 8dfafdbc3a40."));
         mockMvc.perform(get("/dashboard/docker/image/b6fa739cedf5/start").with(csrf()))
             .andExpect(model().attribute("exception", isA(NotFoundException.class)))

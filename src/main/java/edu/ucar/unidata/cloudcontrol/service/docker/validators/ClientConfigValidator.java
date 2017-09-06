@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 
 import java.util.Objects;
 
-import javax.annotation.Resource;
-
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

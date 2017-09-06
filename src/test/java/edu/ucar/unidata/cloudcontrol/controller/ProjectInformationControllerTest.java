@@ -48,7 +48,7 @@ public class ProjectInformationControllerTest {
     }
 
     @Test
-    public void getWelcomePage_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
+    public void getWelcomePageUnauthenticatedAccessShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/welcome"))
             .andExpect(status().isOk())
             .andExpect(view().name("welcome"))
@@ -57,7 +57,7 @@ public class ProjectInformationControllerTest {
     }
 
     @Test
-    public void gettingStarted_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
+    public void gettingStartedUnauthenticatedAccessShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
             .andExpect(status().isOk())
             .andExpect(view().name("projectInformation"))
@@ -66,14 +66,14 @@ public class ProjectInformationControllerTest {
     }
 
     @Test
-    public void gettingStarted_ModelShouldContainGettingStartedAction() throws Exception {
+    public void gettingStartedModelShouldContainGettingStartedAction() throws Exception {
         mockMvc.perform(get("/gettingStarted"))
             .andExpect(model().attribute("action", equalTo("gettingStarted")));
           //.andDo(print());
     }
 
     @Test
-    public void about_UnauthenticatedAccessShouldBeSuccessful() throws Exception {
+    public void aboutUnauthenticatedAccessShouldBeSuccessful() throws Exception {
     mockMvc.perform(get("/about"))
             .andExpect(status().isOk())
             .andExpect(view().name("projectInformation"))
@@ -82,7 +82,7 @@ public class ProjectInformationControllerTest {
     }
 
     @Test
-    public void about_ModelShouldContainAboutAction() throws Exception {
+    public void aboutModelShouldContainAboutAction() throws Exception {
     mockMvc.perform(get("/about"))
             .andExpect(model().attribute("action", equalTo("about")));
           //.andDo(print());

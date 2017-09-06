@@ -16,8 +16,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc

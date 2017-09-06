@@ -63,7 +63,7 @@ public class ContainerControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(containerManagerMock);
+        reset(containerManagerMock);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
@@ -72,7 +72,7 @@ public class ContainerControllerTest {
     }
 
     @Test
-    public void getContainerList_UnauthenticatedAccessToContainerListShouldBeRedirectedToLogin() throws Exception {
+    public void getContainerListUnauthenticatedAccessToContainerListShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/container/list"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -81,7 +81,7 @@ public class ContainerControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getContainerList_AccessToContainerListWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void getContainerListAccessToContainerListWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -91,7 +91,7 @@ public class ContainerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getContainerList_AccessToContainerListWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getContainerListAccessToContainerListWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -101,7 +101,7 @@ public class ContainerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getContainerList_ModelShouldContainNoContainerList() throws Exception {
+    public void getContainerListModelShouldContainNoContainerList() throws Exception {
         when(containerManagerMock.getContainerList()).thenReturn(null);
         mockMvc.perform(get("/dashboard/docker/container/list").with(csrf()))
             .andExpect(model().attribute("containerList", is(nullValue())));
@@ -112,7 +112,7 @@ public class ContainerControllerTest {
     }
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getContainerList_ModelShouldContainListOfContainers() throws Exception {
+    public void getContainerListModelShouldContainListOfContainers() throws Exception {
         _Container testContainerOne = new _ContainerBuilder()
             .id("77af4d6b9913")
             .build();

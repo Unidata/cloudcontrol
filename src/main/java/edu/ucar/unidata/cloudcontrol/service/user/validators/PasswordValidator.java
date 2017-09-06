@@ -4,8 +4,6 @@ import edu.ucar.unidata.cloudcontrol.domain.User;
 
 import java.util.Objects;
 
-import javax.annotation.Resource;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 

@@ -40,9 +40,7 @@ import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -51,10 +49,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-//import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -79,9 +77,9 @@ public class CreateUserControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(userManagerMock);
-        Mockito.reset(createUserValidatorMock);
-        Mockito.when(createUserValidatorMock.supports(any(Class.class))).thenReturn(true);
+        reset(userManagerMock);
+        reset(createUserValidatorMock);
+        when(createUserValidatorMock.supports(any(Class.class))).thenReturn(true);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
@@ -91,7 +89,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    public void createUser_AccessToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void createUserAccessToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -101,7 +99,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_AccessToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void createUserAccessToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -111,7 +109,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_ModelShouldContainEmptyUserAndCreateUserAction() throws Exception {
+    public void createUserModelShouldContainEmptyUserAndCreateUserAction() throws Exception {
         mockMvc.perform(get("/dashboard/user/create").with(csrf()))
             .andExpect(model().attribute("action", equalTo("createUser")))
             .andExpect(model().attribute("user", hasProperty("userId", is(0))))
@@ -128,7 +126,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_UnauthenticatedAccessToRegisterFormShouldBeSuccessful() throws Exception {
+    public void registerUnauthenticatedAccessToRegisterFormShouldBeSuccessful() throws Exception {
         mockMvc.perform(get("/welcome/register"))
             .andExpect(status().isOk())
             .andExpect(view().name("welcome"))
@@ -137,7 +135,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_ModelShouldContainEmptyUserAndRegsiterAction() throws Exception {
+    public void registerModelShouldContainEmptyUserAndRegsiterAction() throws Exception {
         mockMvc.perform(get("/welcome/register"))
             .andExpect(model().attribute("action", equalTo("register")))
             .andExpect(model().attribute("user", hasProperty("userId", is(0))))
@@ -155,7 +153,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = {"USER"})
-    public void createUser_PostToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void createUserPostToCreateUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/user/create").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -165,7 +163,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_PostToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void createUserPostToCreateUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .build();
@@ -180,7 +178,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_UserValidationErrorShouldRenderCreateUserView() throws Exception {
+    public void createUserUserValidationErrorShouldRenderCreateUserView() throws Exception {
 
         doAnswer(new Answer() {
             @Override
@@ -199,7 +197,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_NewUserCreatedSuccessfullyShouldRedirectToUserView() throws Exception {
+    public void createUserNewUserCreatedSuccessfullyShouldRedirectToUserView() throws Exception {
 
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -227,7 +225,7 @@ public class CreateUserControllerTest {
             .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock).createUser(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
 
@@ -238,7 +236,7 @@ public class CreateUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createUser_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+    public void createUserNewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/dashboard/user/create").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -256,13 +254,13 @@ public class CreateUserControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock).createUser(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
     }
 
     @Test
-    public void register_UnauthenticatedPostsToRegisterFormShouldBeSuccessful() throws Exception {
+    public void registerUnauthenticatedPostsToRegisterFormShouldBeSuccessful() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .build();
@@ -276,7 +274,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_UserValidationErrorShouldRenderCreateUserView() throws Exception {
+    public void registerUserValidationErrorShouldRenderCreateUserView() throws Exception {
 
         doAnswer(new Answer() {
             @Override
@@ -294,7 +292,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_NewUserCreatedSuccessfullyShouldRedirectToUserView() throws Exception {
+    public void registerNewUserCreatedSuccessfullyShouldRedirectToUserView() throws Exception {
 
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -322,7 +320,7 @@ public class CreateUserControllerTest {
             .andExpect(redirectedUrl("/login"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock).createUser(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
 
@@ -332,7 +330,7 @@ public class CreateUserControllerTest {
     }
 
     @Test
-    public void register_NewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+    public void registerNewlyCreatedUserNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(userManagerMock.createUser(org.mockito.ArgumentMatchers.isA(User.class))).thenThrow(new DataRetrievalFailureException("Unable to create new User"));
         mockMvc.perform(post("/welcome/register").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -350,7 +348,7 @@ public class CreateUserControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock).createUser(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
     }

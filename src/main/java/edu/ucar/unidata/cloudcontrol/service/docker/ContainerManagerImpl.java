@@ -312,7 +312,6 @@ public class ContainerManagerImpl implements ContainerManager {
                         stopContainer(_container.getId());
                     }
                     dockerClient.removeContainerCmd(_container.getId()).withForce(true).exec();
-                    _Container _c = getContainer(_container.getId());
                 }
             }
         } catch (NotFoundException e) {

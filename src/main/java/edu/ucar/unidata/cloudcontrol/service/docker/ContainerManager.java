@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectContainerResponse;
-import com.github.dockerjava.api.model.Container;
 
 /**
  * Service for processing Docker container-related api requests.

@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -91,7 +90,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "testUserTwo", roles = {"USER"})
-    public void editUserPassword_AccessToResetPasswordFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void editUserPasswordAccessToResetPasswordFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/password/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -101,7 +100,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void editUserPassword_AccessToResetPasswordFormWithAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPasswordAccessToResetPasswordFormWithAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/password/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -111,7 +110,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_AccessToResetPasswordFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPasswordAccessToResetPasswordFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/password/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -121,7 +120,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_ModelShouldContainUserWithPasswordToEditAndResetPasswordAction() throws Exception {
+    public void editUserPasswordModelShouldContainUserWithPasswordToEditAndResetPasswordAction() throws Exception {
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
@@ -140,7 +139,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "testUsertwo", roles = {"USER"})
-    public void editUserPassword_PostToResetPasswordFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void editUserPasswordPostToResetPasswordFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/user/password/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -150,7 +149,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void editUserPassword_PostToResetPasswordFormWithAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPasswordPostToResetPasswordFormWithAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
             .build();
 
@@ -165,7 +164,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_PostToResetPasswordFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPasswordPostToResetPasswordFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
             .build();
 
@@ -179,7 +178,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_UserPasswordValidationErrorShouldRenderResetPasswordView() throws Exception {
+    public void editUserPasswordUserPasswordValidationErrorShouldRenderResetPasswordView() throws Exception {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -197,7 +196,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_UserPasswordEditedSuccessfullyShouldRedirectToUserView() throws Exception {
+    public void editUserPasswordUserPasswordEditedSuccessfullyShouldRedirectToUserView() throws Exception {
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
@@ -214,7 +213,7 @@ public class ResetPasswordControllerTest {
             .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock, times(1)).lookupUser("testUserOne");
         verify(userManagerMock).updatePassword(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
@@ -226,7 +225,7 @@ public class ResetPasswordControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUserPassword_UnableToEditUserPasswordShouldThrowDataRetrievalFailureException() throws Exception {
+    public void editUserPasswordUnableToEditUserPasswordShouldThrowDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .password("password")
             .confirmPassword("password")
@@ -245,7 +244,7 @@ public class ResetPasswordControllerTest {
             .andExpect(forwardedUrl("/WEB-INF/views/fatalError.jsp"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock, times(1)).lookupUser("testUserOne");
         verify(userManagerMock).updatePassword(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);

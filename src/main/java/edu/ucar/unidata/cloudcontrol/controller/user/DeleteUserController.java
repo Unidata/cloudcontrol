@@ -6,7 +6,6 @@ import edu.ucar.unidata.cloudcontrol.service.user.UserManager;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
 

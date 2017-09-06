@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -70,7 +69,7 @@ public class DeleteUserControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(userManagerMock);
+        reset(userManagerMock);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
@@ -80,7 +79,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void deleteUser_AccessToDeleteUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void deleteUserAccessToDeleteUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -91,7 +90,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_AccessToDeleteUserFormWithAdminAsAuthorizedUserShouldbeAllowed() throws Exception {
+    public void deleteUserAccessToDeleteUserFormWithAdminAsAuthorizedUserShouldbeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -101,7 +100,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_ModelShouldContainUserObjectAndDeleteUserAction() throws Exception {
+    public void deleteUserModelShouldContainUserObjectAndDeleteUserAction() throws Exception {
         Date now = new Date(System.currentTimeMillis());
         User testUserOne = new UserBuilder()
             .userId(1)
@@ -136,7 +135,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_UserToDeletedNotFoundShouldDataRetrievalFailureException() throws Exception {
+    public void deleteUserUserToDeletedNotFoundShouldDataRetrievalFailureException() throws Exception {
         when(userManagerMock.lookupUser("testUserOne")).thenThrow(new DataRetrievalFailureException("Unable to find User with userId 1"));
         mockMvc.perform(get("/dashboard/user/delete/testUserOne").with(csrf()))
             .andExpect(model().attribute("exception", isA(DataRetrievalFailureException.class)))
@@ -151,7 +150,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void deleteUser_PostsToDeleteUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void deleteUserPostsToDeleteUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/user/delete").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -161,7 +160,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_PostsToDeleteUserFormWithAdminAsAuthorizedUserShouldbeAllowed() throws Exception {
+    public void deleteUserPostsToDeleteUserFormWithAdminAsAuthorizedUserShouldbeAllowed() throws Exception {
         mockMvc.perform(post("/dashboard/user/delete").with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(model().attribute("action", equalTo("listUsers")))
@@ -171,7 +170,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_UserDeletedSuccessfullyModelShouldContainListOfUsersAndListUsersAction() throws Exception {
+    public void deleteUserUserDeletedSuccessfullyModelShouldContainListOfUsersAndListUsersAction() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")
@@ -199,7 +198,7 @@ public class DeleteUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void deleteUser_UnableToDeletedUserShouldDataRetrievalFailureException() throws Exception {
+    public void deleteUserUnableToDeletedUserShouldDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .userId(1)
             .userName("testUserOne")

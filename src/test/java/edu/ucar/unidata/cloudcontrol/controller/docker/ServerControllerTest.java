@@ -12,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.mockito.Mockito;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
@@ -70,7 +68,7 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void getInfo_UnauthenticatedAccessToServerInfoShouldBeRedirectedToLogin() throws Exception {
+    public void getInfoUnauthenticatedAccessToServerInfoShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/info"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -79,7 +77,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getInfo_AccessToServerInfoWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void getInfoAccessToServerInfoWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/info").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -89,7 +87,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getInfo_AccessToServerInfoWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getInfoAccessToServerInfoWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/info").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -99,7 +97,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getInfo_ModelShouldContainNoServerInfoObjectAndServerInfoAction() throws Exception {
+    public void getInfoModelShouldContainNoServerInfoObjectAndServerInfoAction() throws Exception {
         when(serverManagerMock.getInfo()).thenReturn(null);
         mockMvc.perform(get("/dashboard/docker/server/info").with(csrf()))
             .andExpect(model().attribute("action", equalTo("serverInfo")));
@@ -111,7 +109,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getInfo_ModelShouldContainServerInfoAndServerInfoAction() throws Exception {
+    public void getInfoModelShouldContainServerInfoAndServerInfoAction() throws Exception {
         _Info testInfo = new _InfoBuilder()
             .architecture("x86_64")
             .images(4)
@@ -129,7 +127,7 @@ public class ServerControllerTest {
     }
 
     @Test
-    public void getVersion_UnauthenticatedAccessToServerVersionShouldBeRedirectedToLogin() throws Exception {
+    public void getVersionUnauthenticatedAccessToServerVersionShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/version"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -138,7 +136,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getVersion_AccessToServerVersionWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void getVersionAccessToServerVersionWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/version").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -148,7 +146,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getVersion_AccessToServerVersionWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getVersionAccessToServerVersionWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/server/version").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -158,7 +156,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getVersion_ModelShouldContainNoServerVersionObjectAndServerVersionAction() throws Exception {
+    public void getVersionModelShouldContainNoServerVersionObjectAndServerVersionAction() throws Exception {
         when(serverManagerMock.getVersion()).thenReturn(null);
         mockMvc.perform(get("/dashboard/docker/server/version").with(csrf()))
             .andExpect(model().attribute("action", equalTo("serverVersion")));
@@ -170,7 +168,7 @@ public class ServerControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getVersion_ModelShouldContainServerVersionAndServerVersionAction() throws Exception {
+    public void getVersionModelShouldContainServerVersionAndServerVersionAction() throws Exception {
         _Version testVersion = new _VersionBuilder()
             .apiVersion("1.23")
             .build();

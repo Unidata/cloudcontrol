@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -30,7 +29,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -94,7 +92,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void getDashboardPage_UnauthenticatedAccessToDashboardShouldBeRedirectedToLogin() throws Exception {
+    public void getDashboardPageUnauthenticatedAccessToDashboardShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -103,7 +101,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void getDashboardPage_AccessToDashboardWithAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getDashboardPageAccessToDashboardWithAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -113,7 +111,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getDashboardPage_AccessToDashboardWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void getDashboardPageAccessToDashboardWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -123,7 +121,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getDashboardPage_ModelShouldContainEmptyClientConfigAndConfigureClientAction() throws Exception {
+    public void getDashboardPageModelShouldContainEmptyClientConfigAndConfigureClientAction() throws Exception {
         mockMvc.perform(get("/dashboard").with(csrf()))
             .andExpect(model().attribute("action", equalTo("configureClient")))
             .andExpect(model().attribute("clientConfig", hasProperty("id", is(0))))
@@ -139,7 +137,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void getDashboardPage_ModelShouldContainRequestedClientConfigAndNoSpecifiedAction() throws Exception {
+    public void getDashboardPageModelShouldContainRequestedClientConfigAndNoSpecifiedAction() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -168,7 +166,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void configure_UnauthenticatedAccessToClientConfigurationShouldBeRedirectedToLogin() throws Exception {
+    public void configureUnauthenticatedAccessToClientConfigurationShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/configure"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -177,7 +175,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void configure_AccessToClientConfigurationWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void configureAccessToClientConfigurationWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/configure").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -187,7 +185,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void configure_AccessToClientConfigurationWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void configureAccessToClientConfigurationWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/configure").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -197,7 +195,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void configure_ModelShouldContainEmptyClientConfigAndConfigureClientAction() throws Exception {
+    public void configureModelShouldContainEmptyClientConfigAndConfigureClientAction() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/configure").with(csrf()))
             .andExpect(model().attribute("action", equalTo("configureClient")))
             .andExpect(model().attribute("clientConfig", hasProperty("id", is(0))))
@@ -213,7 +211,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void configure_ModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
+    public void configureModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -243,7 +241,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void listClientConfigs_UnauthenticatedAccessToListOfClientConfigurationsShouldBeRedirectedToLogin() throws Exception {
+    public void listClientConfigsUnauthenticatedAccessToListOfClientConfigurationsShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -252,7 +250,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testClientOne", roles = {"USER"})
-    public void listClientConfigs_AccessToListOfClientConfigurationsWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void listClientConfigsAccessToListOfClientConfigurationsWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -262,7 +260,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void listClientConfigs_AccessToListOfClientConfigurationsWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void listClientConfigsAccessToListOfClientConfigurationsWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -272,7 +270,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void listClientConfigs_ModelShouldContainListOfRequestedClientConfigsAndListClientConfigsAction() throws Exception {
+    public void listClientConfigsModelShouldContainListOfRequestedClientConfigsAndListClientConfigsAction() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -302,7 +300,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void viewClientConfig_UnauthenticatedAccessToClientConfigurationInformationShouldBeRedirectedToLogin() throws Exception {
+    public void viewClientConfigUnauthenticatedAccessToClientConfigurationInformationShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/view/1"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -311,7 +309,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testClientOne", roles = {"USER"})
-    public void viewClientConfig_AccessToClientConfigurationInformationWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void viewClientConfigAccessToClientConfigurationInformationWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -321,7 +319,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void viewClientConfig_AccessToClientConfigurationInformationWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void viewClientConfigAccessToClientConfigurationInformationWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -331,7 +329,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void viewClientConfig_ModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
+    public void viewClientConfigModelShouldContainRequestedClientConfigAndViewClientConfigAction() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -353,7 +351,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void viewClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+    public void viewClientConfigRequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/view/1").with(csrf()))
             .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
@@ -367,7 +365,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void createClientConfig_UnauthenticatedPostToCreateClientConfigFormShouldBeForbidden() throws Exception {
+    public void createClientConfigUnauthenticatedPostToCreateClientConfigFormShouldBeForbidden() throws Exception {
         mockMvc.perform(post("/dashboard/docker/client/configure"))
            .andExpect(status().isForbidden());
           //.andDo(print());
@@ -375,7 +373,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testClientOne", roles = {"USER"})
-    public void createClientConfig_PostToCreateClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void createClientConfigPostToCreateClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -385,7 +383,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createClientConfig_PostToCreateClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void createClientConfigPostToCreateClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf()))
           .andExpect(status().is3xxRedirection())
           .andExpect(redirectedUrl("/dashboard/docker/client/view/0"));
@@ -394,7 +392,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createClientConfig_ClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
+    public void createClientConfigClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -412,7 +410,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createClientConfig_ClientConfigCreatedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
+    public void createClientConfigClientConfigCreatedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
         when(clientManagerMock.createClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class))).thenReturn(1);
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -439,7 +437,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void createClientConfig_ClientConfigNotCreatedShouldThrowDataRetrievalFailureException() throws Exception {
+    public void createClientConfigClientConfigNotCreatedShouldThrowDataRetrievalFailureException() throws Exception {
         when(clientManagerMock.createClientConfig(org.mockito.ArgumentMatchers.isA(ClientConfig.class))).thenThrow(new DataRetrievalFailureException("Unable to create ClientConfig"));
         mockMvc.perform(post("/dashboard/docker/client/configure").with(csrf())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -458,7 +456,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void editClientConfig_UnauthenticatedAccessToEditClientConfigFormShouldBeRedirectedToLogin() throws Exception {
+    public void editClientConfigUnauthenticatedAccessToEditClientConfigFormShouldBeRedirectedToLogin() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/edit/1"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("http://localhost/j_spring_security_check"));
@@ -467,7 +465,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testClientOne", roles = {"USER"})
-    public void editClientConfig_AccessToEditClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void editClientConfigAccessToEditClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -477,7 +475,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_AccessToEditClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void editClientConfigAccessToEditClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -487,7 +485,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_ModelShouldContainRequestedClientConfigAndEditClientConfigAction() throws Exception {
+    public void editClientConfigModelShouldContainRequestedClientConfigAndEditClientConfigAction() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -509,7 +507,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_RequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
+    public void editClientConfigRequestedClientConfigNotFoundShouldThrowDataRetrievalFailureException() throws Exception {
         when(clientManagerMock.lookupById(1)).thenThrow(new DataRetrievalFailureException("Unable to find ClientConfig with id 1"));
         mockMvc.perform(get("/dashboard/docker/client/edit/1").with(csrf()))
             .andExpect(model().attribute("exception", org.hamcrest.Matchers.isA(DataRetrievalFailureException.class)))
@@ -523,7 +521,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void editClientConfig_UnauthenticatedPostToEditClientConfigFormShouldBeForbidden() throws Exception {
+    public void editClientConfigUnauthenticatedPostToEditClientConfigFormShouldBeForbidden() throws Exception {
         mockMvc.perform(post("/dashboard/docker/client/edit/1"))
            .andExpect(status().isForbidden());
           //.andDo(print());
@@ -531,7 +529,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "testClientOne", roles = {"USER"})
-    public void editClientConfig_PostToEditClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
+    public void editClientConfigPostToEditClientConfigFormWithAuthenticatedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/docker/client/edit/1").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -541,7 +539,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_PostToEditClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
+    public void editClientConfigPostToEditClientConfigFormWithAdminAsAuthenticatedUserShouldBeAllowed() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -560,7 +558,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_ClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
+    public void editClientConfigClientConfigValidationErrorShouldRenderConfigureClientForm() throws Exception {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -578,7 +576,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_ClientConfigEditedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
+    public void editClientConfigClientConfigEditedSuccessfullyShouldRedirectToViewOfClientConfig() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")
@@ -616,7 +614,7 @@ public class ClientControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editClientConfig_ClientConfigNotEditedShouldThrowDataRetrievalFailureException() throws Exception {
+    public void editClientConfigClientConfigNotEditedShouldThrowDataRetrievalFailureException() throws Exception {
         ClientConfig testClientConfigOne = new ClientConfigBuilder()
             .id(1)
             .dockerHost("tcp://127.0.0.1:2375")

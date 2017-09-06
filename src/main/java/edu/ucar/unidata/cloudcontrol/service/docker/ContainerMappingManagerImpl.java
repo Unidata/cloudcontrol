@@ -5,7 +5,6 @@ import edu.ucar.unidata.cloudcontrol.domain.docker._Container;
 import edu.ucar.unidata.cloudcontrol.domain.docker._Image;
 import edu.ucar.unidata.cloudcontrol.repository.docker.ContainerMappingDao;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

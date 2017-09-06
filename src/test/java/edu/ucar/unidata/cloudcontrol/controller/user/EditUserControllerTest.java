@@ -40,7 +40,6 @@ import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -79,9 +78,9 @@ public class EditUserControllerTest {
 
     @Before
     public void setUp() {
-        Mockito.reset(userManagerMock);
-        Mockito.reset(editUserValidatorMock);
-        Mockito.when(editUserValidatorMock.supports(any(Class.class))).thenReturn(true);
+        reset(userManagerMock);
+        reset(editUserValidatorMock);
+        when(editUserValidatorMock.supports(any(Class.class))).thenReturn(true);
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(context)
@@ -91,7 +90,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserTwo", roles = {"USER"})
-    public void editUser_AccessToEditUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void editUserAccessToEditUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(get("/dashboard/user/edit/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -101,7 +100,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void editUser_AccessToEditUserFormWithAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserAccessToEditUserFormWithAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/edit/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -111,7 +110,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_AccessToEditUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserAccessToEditUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         mockMvc.perform(get("/dashboard/user/edit/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("dashboard"))
@@ -121,7 +120,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_ModelShouldContainUserToEditAndEditUserAction() throws Exception {
+    public void editUserModelShouldContainUserToEditAndEditUserAction() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
@@ -146,7 +145,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUsertwo", roles = {"USER"})
-    public void editUser_PostToEditUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
+    public void editUserPostToEditUserFormWithUnauthorizedUserShouldBeDenied() throws Exception {
         mockMvc.perform(post("/dashboard/user/edit/testUserOne").with(csrf()))
             .andExpect(status().isOk())
             .andExpect(view().name("denied"))
@@ -156,7 +155,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "testUserOne", roles = {"USER"})
-    public void editUser_PostToEditUserFormWithAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPostToEditUserFormWithAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
             .build();
 
@@ -171,7 +170,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_PostToEditUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
+    public void editUserPostToEditUserFormWithAdminAsAuthorizedUserShouldBeAllowed() throws Exception {
         User testUserOne = new UserBuilder()
             .build();
 
@@ -185,7 +184,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_UserValidationErrorShouldRenderEditUserView() throws Exception {
+    public void editUserUserValidationErrorShouldRenderEditUserView() throws Exception {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -203,7 +202,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_UserEditedSuccessfullyShouldRedirectToUserView() throws Exception {
+    public void editUserUserEditedSuccessfullyShouldRedirectToUserView() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
@@ -226,7 +225,7 @@ public class EditUserControllerTest {
             .andExpect(redirectedUrl("/dashboard/user/view/testUserOne"));
           //.andDo(print());
 
-        ArgumentCaptor<User> formObjectArgument = ArgumentCaptor.forClass(User.class);
+        ArgumentCaptor<User> formObjectArgument = forClass(User.class);
         verify(userManagerMock, times(1)).lookupUser("testUserOne");
         verify(userManagerMock).updateUser(formObjectArgument.capture());
         verifyNoMoreInteractions(userManagerMock);
@@ -242,7 +241,7 @@ public class EditUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void editUser_EditedUserNotFoundShouldDataRetrievalFailureException() throws Exception {
+    public void editUserEditedUserNotFoundShouldDataRetrievalFailureException() throws Exception {
         User testUserOne = new UserBuilder()
             .userName("testUserOne")
             .fullName("Test User One")
