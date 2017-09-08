@@ -66,6 +66,7 @@ public class ImageController {
     public String getImageList(Authentication authentication, Model model) {
         logger.debug("Get list all docker images view.");
         List<_Image> _images;
+        logger.debug("Checking to see what images the user making the request has permission to access...");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList(); // can be empty
@@ -89,6 +90,7 @@ public class ImageController {
     @ResponseBody
     public String startImage(@PathVariable String imageId, Authentication authentication) {
         logger.debug("Processing start docker image command.");
+        logger.debug("Checking to see if user issuing start command has permission to do so...");
         // check to see if user is allow to access/manipulate this image
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
@@ -114,6 +116,7 @@ public class ImageController {
     @RequestMapping(value="/dashboard/docker/image/{containerId}/stop", method=RequestMethod.GET)
     public String stopImage(@PathVariable String containerId, Authentication authentication) {
         logger.debug("Processing stop docker image command.");
+        logger.debug("Checking to see if user issuing stop command has permission to do so...");
         // check to see if user is allow to access/manipulate this image
         try{
             _Container _container = containerManager.getContainer(containerId);
@@ -162,6 +165,7 @@ public class ImageController {
         logger.debug("Get all docker images statuses.");
         List<_Image> _images;
         Map<String,String> statusMap;
+        logger.debug("Checking to see what images the user making the request has permission to access...");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             _images = imageManager.getImageList();
@@ -187,6 +191,7 @@ public class ImageController {
     @RequestMapping(value="/dashboard/docker/image/{id}/inspect", method=RequestMethod.GET)
     public String inspectImage(@PathVariable String id, Authentication authentication, Model model) {
         logger.debug("Get inspect docker image view.");
+        logger.debug("Checking to see what images the user making the request has permission to access...");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             if (!imageMappingManager.isVisibleToUser(id)) {

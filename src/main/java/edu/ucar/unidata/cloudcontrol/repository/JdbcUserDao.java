@@ -33,13 +33,16 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws DataRetrievalFailureException  If unable to lookup User with the given userId.
      */
     public User lookupUser(int userId) {
+        logger.debug("Querying database for user with id " + new Integer(userId).toString());
         String sql = "SELECT * FROM users WHERE userId = ?";
+        logger.debug("SELECT * FROM users WHERE userId =" + new Integer(userId).toString());
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userId);
         if (users.isEmpty()) {
             String message = "Unable to find User with userId " + new Integer(userId).toString();
             logger.error(message);
             throw new DataRetrievalFailureException(message);
         }
+        logger.debug("Entry found for user with id " + new Integer(userId).toString());
         return users.get(0);
     }
 
@@ -51,13 +54,16 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws DataRetrievalFailureException  If unable to lookup User with the given userName.
      */
     public User lookupUser(String userName) {
+        logger.debug("Querying database for user with userName " + userName);
         String sql = "SELECT * FROM users WHERE userName = ?";
+        logger.debug("SELECT * FROM users WHERE userName =" + userName);
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), userName);
         if (users.isEmpty()) {
             String message = "Unable to find User with userName " + userName;
             logger.error(message);
             throw new DataRetrievalFailureException(message);
         }
+        logger.debug("Entry found for user with userName " + userName);
         return users.get(0);
     }
 
@@ -69,13 +75,16 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws DataRetrievalFailureException  If unable to lookup User with the given emailAddress.
      */
     public User lookupUserByEmailAddress(String emailAddress) {
+        logger.debug("Querying database for user with emailAddress " + emailAddress);
         String sql = "SELECT * FROM users WHERE emailAddress = ?";
+        logger.debug("SELECT * FROM users WHERE emailAddress =" + emailAddress);
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), emailAddress);
         if (users.isEmpty()) {
             String message = "Unable to find User with emailAddress " + emailAddress;
             logger.error(message);
             throw new DataRetrievalFailureException(message);
         }
+        logger.debug("Entry found for user with emailAddress " + emailAddress);
         return users.get(0);
     }
 
@@ -85,7 +94,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @return  A List of users.
      */
     public List<User> getUserList() {
+        logger.debug("Querying database for all users.");
         String sql = "SELECT * FROM users ORDER BY dateCreated DESC";
+        logger.debug("SELECT * FROM users ORDER BY dateCreated DESC");
         List<User> users = getJdbcTemplate().query(sql, new UserMapper());
         if (users.isEmpty()) {
             logger.info("No users persisted yet.");
@@ -100,7 +111,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws DataRetrievalFailureException  If unable to find and delete the User.
      */
     public void deleteUser(int userId) {
+        logger.debug("Deleting user entry in database for user with userId " + new Integer(userId).toString());
         String sql = "DELETE FROM users WHERE userId = ?";
+        logger.debug("DELETE FROM users WHERE userId =" + new Integer(userId).toString());
         int rowsAffected  = getJdbcTemplate().update(sql, userId);
         if (rowsAffected <= 0) {
             String message = "Unable to delete User. No User found with userId " + new Integer(userId).toString();
@@ -119,7 +132,10 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @return  The peristed User.
      */
     public User createUser(User user) {
+        logger.debug("Creating entry in database for user " + user.getUserName());
+        logger.debug("Checking to see if user already exists in the database... ");
         String sql = "SELECT * FROM users WHERE userName = ?";
+        logger.debug("SELECT * FROM users WHERE userName =" + user.getUserName());
         List<User> users = getJdbcTemplate().query(sql, new UserMapper(), user.getUserName());
         if (!users.isEmpty()) {
             throw new DataRetrievalFailureException("User with userName \"" +  user.getUserName() + "\" already exists.");
@@ -129,9 +145,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             Number newUserId = insertActor.executeAndReturnKey(parameters);
             if (Objects.nonNull(newUserId)) {
                 user.setUserId(newUserId.intValue());
-                logger.info("Creating new user " + user.getUserName());
+                logger.debug("User entry persisted in database: " + user.getUserName());
             } else {
-                String message = "Unable to create and persist new User " + user.toString();
+                String message = "Unable to create and persist new User " + user.getUserName();
                 logger.error(message);
                 throw new DataRetrievalFailureException(message);
             }
@@ -147,7 +163,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @return  The updated User.
      */
     public User updateUser(User user) {
+        logger.debug("Updating entry in database for user " + user.getUserName());
         String sql = "UPDATE users SET userName = ?, emailAddress = ?, fullName = ?, accessLevel = ?, accountStatus = ?, dateModified = ? WHERE userId = ?";
+        logger.debug("UPDATE users SET userName = " + user.getUserName() + ", emailAddress = " +user.getEmailAddress() + ", fullName = " + user.getFullName() + ", accessLevel = " + user.getAccessLevel() + ", accountStatus = " + user.getAccountStatus() + ", dateModified = " + user.getDateModified().toString() + " WHERE userId = " + new Integer(user.getUserId()).toString());
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
             user.getUserName(),
@@ -175,7 +193,9 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
      * @throws DataRetrievalFailureException  If unable to find the User to update.
      */
     public void updatePassword(User user) {
+        logger.debug("Updating password in database for user " + user.getUserName());
         String sql = "UPDATE users SET password = ?, dateModified = ? WHERE userName = ?";
+        logger.debug("UPDATE users SET password = **************, dateModified = " + user.getDateModified() + " WHERE userName = " + user.getUserName());
         int rowsAffected  = getJdbcTemplate().update(sql, new Object[] {
             // order matters here
             user.getPassword(),
@@ -183,7 +203,7 @@ public class JdbcUserDao extends JdbcDaoSupport implements UserDao {
             user.getUserName()
         });
         if (rowsAffected  <= 0) {
-            String message = "Unable to update User's password.  User not found " + user.toString();
+            String message = "Unable to update User's password.  User not found " + user.getUserName();
             logger.error(message);
             throw new DataRetrievalFailureException(message);
         } else {

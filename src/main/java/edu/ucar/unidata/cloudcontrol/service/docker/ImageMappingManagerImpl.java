@@ -38,7 +38,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @return  The ImageMapping.
      */
     public ImageMapping lookupImageMapping(String imageId){
-        logger.debug("Using DAO to look up image mapping for image with id " + new Integer(imageId).toString());
+        logger.debug("Using DAO to look up image mapping for image with id " + imageId);
         return imageMappingDao.lookupImageMapping(imageId);
     }
 
@@ -58,7 +58,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
      * @param imageId  The Image ID.
      */
     public void deleteImageMapping(String imageId) {
-        logger.debug("Using DAO to delete image mapping for image with id " + new Integer(imageId).toString());
+        logger.debug("Using DAO to delete image mapping for image with id " + imageId);
         imageMappingDao.deleteImageMapping(imageId);
     }
 
@@ -106,6 +106,7 @@ public class ImageMappingManagerImpl implements ImageMappingManager {
             lookupImageMapping(imageId);
             return true;
         } catch (DataRetrievalFailureException e) {
+            logger.info("No image mapping for image " + imageId + " created.");
             return false;
         }
     }
