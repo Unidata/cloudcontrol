@@ -1,6 +1,5 @@
 # CloudControl    <img src="https://github.com/Unidata/cloudcontrol/blob/master/src/main/webapp/resources/images/header.png" alt="CloudControl   "/>
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e91e1a3ef5674fe898d4c1acf6f80dc7)](https://www.codacy.com/app/oxelson/cloudcontrol?utm_source=github.com&utm_medium=referral&utm_content=Unidata/cloudcontrol&utm_campaign=badger)
 [![Travis Build Status](https://travis-ci.org/Unidata/cloudcontrol.svg?branch=master)](https://travis-ci.org/Unidata/cloudcontrol)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/8628/badge.svg)](https://scan.coverity.com/projects/cloudcontrol)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f8ce8272727f4215a860a45d7c91d317)](https://www.codacy.com/app/oxelson/cloudcontrol?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Unidata/cloudcontrol&amp;utm_campaign=Badge_Grade)
